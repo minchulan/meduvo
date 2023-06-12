@@ -1,25 +1,39 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import './App.css';
+import Navbar from './Navbar';
+import Home from './Home';
+import { UserProvider } from "./context/user";
+import Login from './Login';
+import Signup from './Signup';
+import Contact from './Contact';
 
-function App() {
+const App = () => {
+  const [patients, setPatients] = useState([]);
+  const [errors, setErrors] = useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main className={true ? "dark-mode" : ""}>
+      <UserProvider>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
+      </UserProvider>
+    </main>
   );
 }
 
 export default App;
+
+
+//-----------------------------------
+// <h1>Meduvo</h1>
+// <p>
+//   Meduvo is your patient scheduling automation platform for
+//   eliminating back-and-forth emails with your patients for finding the
+//   perfect time -- and so much more.
+// </p>

@@ -1,3 +1,4 @@
+/* App  */
 .App {
   text-align: center;
 }
@@ -35,4 +36,32 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Navbar  */
+.navbar {
+  display: flex;
+  justify-content: flex-end; /* Align elements to the far right */
+  align-items: center; /* Center items vertically */
+  background-color: #f1f1f1;
+  padding: 10px;
+}
+
+.nav-links {
+  display: flex; /* Display the navLink elements horizontally */
+  gap: 15px; /* Add some spacing between the elements */
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+}
+
+.nav-links a:hover {
+  background-color: #ddd;
+}
+
+.small-button {
+  font-size: 12px; /* Adjust the font size to make the button smaller */
+  padding: 6px 10px; /* Adjust the padding to make the button smaller */
 }
