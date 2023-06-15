@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_09_214746) do
+ActiveRecord::Schema.define(version: 2023_06_12_213241) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,10 +18,22 @@ ActiveRecord::Schema.define(version: 2023_06_09_214746) do
   create_table "appointments", force: :cascade do |t|
     t.integer "user_id"
     t.integer "patient_id"
-    t.string "type"
+    t.string "category"
     t.string "name"
     t.string "location"
     t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "contacts", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.date "dob"
+    t.string "email"
+    t.string "phone"
+    t.text "address"
+    t.text "notes"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -40,6 +52,7 @@ ActiveRecord::Schema.define(version: 2023_06_09_214746) do
     t.string "viewed_notice_of_privacy_practices"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "notes"
   end
 
   create_table "users", force: :cascade do |t|

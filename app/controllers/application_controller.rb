@@ -8,8 +8,8 @@ class ApplicationController < ActionController::API
 
   private 
   
-  def authenticate_user #responsible for authenticating the user 
-    return render json: { error: {User: "Unauthorized" }}, status: :unauthorized unless current_user
+  def authenticate_user #checking if a user is logged in only
+    render json: { error: {User: "Unauthorized" }}, status: :unauthorized unless current_user
     # session.include? :user_id
   end 
 

@@ -1,9 +1,11 @@
 class PatientsController < ApplicationController
     before_action :is_authorized?, only: [:create]
+
     # GET '/patients'
     def index
         patients = Patient.all
         render json: patients 
+        # render json: PatientSerializer.new(current_user.patients).serializable_hash <--not for all the patients out there but only the patients that belong to the user. 
     end 
 
     # POST '/patients'

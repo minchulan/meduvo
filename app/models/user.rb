@@ -4,7 +4,6 @@ class User < ApplicationRecord
     has_many :appointments, dependent: :destroy 
     has_many :patients, through: :appointments
 
-    validates :username, presence: true , uniqueness: true, length: {in:4..25}
     validates :email, presence: true, uniqueness: true, format: {with: /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i}
     validates :password, length: {in: 6..25}
 end

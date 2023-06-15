@@ -6,7 +6,7 @@ class UsersController < ApplicationController
         @user = User.create(user_params)
         if @user.valid?
             session[:user_id] = @user.id 
-            render json: { message: 'User created successfully' }, status: :created
+            render json: UserSerializer.new(user).to_json, status: :created
         else 
             render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity 
         end
@@ -30,7 +30,7 @@ class UsersController < ApplicationController
     private 
 
     def user_params
-        params.permit(:username, :email, :password)
+        params.require(:user).permit(:email, :password)
     end 
 
 end
@@ -75,21 +75,37 @@ end
 
 
 
+#-----------------------------------
+# In Ruby on Rails, there are two common ways to render JSON responses: using a serializer or directly rendering the JSON object.
 
+# 1. Using a serializer:
+#    - When you use a serializer like `UserSerializer`, it allows you to customize the JSON representation of the `user` object.
+#    - The `UserSerializer.new(user)` call creates a serializer instance for the `user` object.
+#    - By calling `.to_json` on the serializer instance, you get a JSON string representation of the serialized `user` object.
+#    - This approach is useful when you need to include additional attributes or customize the JSON output, such as including associations, excluding certain attributes, or adding computed properties.
+#    - Example usage: `render json: UserSerializer.new(user).to_json`
 
-# In Ruby on Rails, instance variables (`@variable_name`) are typically used when you need to share data between different parts of the controller, such as between controller actions and views. Instance variables are accessible within the controller and can be accessed in the corresponding view templates.
+# 2. Directly rendering the JSON object:
+#    - When you directly render the JSON object, Rails converts the `user` object into JSON format without using a serializer.
+#    - The `render json: user` call serializes the `user` object into JSON format and sends it as the response.
+#    - This approach is simpler and suitable when you don't need to customize the JSON output and want to use the default serialization behavior provided by Rails.
+#    - Example usage: `render json: user`
 
-# On the other hand, local variables (without the `@` symbol) are used when you only need to store and use data within a specific method or block of code. Local variables have a limited scope and are not accessible outside of that particular context.
+# In summary, use a serializer like `UserSerializer` when you need to customize the JSON representation of the object, and use the direct rendering of the JSON object (`render json: user`) when the default serialization behavior provided by Rails is sufficient.
 
-# Here are some common scenarios where you might use instance variables:
+# # In Ruby on Rails, instance variables (`@variable_name`) are typically used when you need to share data between different parts of the controller, such as between controller actions and views. Instance variables are accessible within the controller and can be accessed in the corresponding view templates.
 
-# 1. Passing data to views: Instance variables set in controller actions can be accessed in the corresponding view templates, allowing you to share data between the controller and the view.
+# # On the other hand, local variables (without the `@` symbol) are used when you only need to store and use data within a specific method or block of code. Local variables have a limited scope and are not accessible outside of that particular context.
 
-# 2. Sharing data between controller actions: Instance variables set in one action can be accessed in another action within the same controller. This can be useful when you need to pass data between different actions, such as when redirecting from one action to another.
+# # Here are some common scenarios where you might use instance variables:
 
-# 3. Sharing data with before/after filters: Instance variables can be set in `before_action` or `after_action` filters and then accessed in the corresponding controller actions. This allows you to share common data or perform preprocessing before executing specific actions.
+# # 1. Passing data to views: Instance variables set in controller actions can be accessed in the corresponding view templates, allowing you to share data between the controller and the view.
 
-# On the other hand, local variables are typically used when you only need to store and use data within a specific method or block of code, and there is no need to access that data in other parts of the controller or views.
+# # 2. Sharing data between controller actions: Instance variables set in one action can be accessed in another action within the same controller. This can be useful when you need to pass data between different actions, such as when redirecting from one action to another.
+
+# # 3. Sharing data with before/after filters: Instance variables can be set in `before_action` or `after_action` filters and then accessed in the corresponding controller actions. This allows you to share common data or perform preprocessing before executing specific actions.
+
+# # On the other hand, local variables are typically used when you only need to store and use data within a specific method or block of code, and there is no need to access that data in other parts of the controller or views.
 
 # It's important to note that the choice between using an instance variable or a local variable depends on the specific requirements of your application and the scope of the data you are working with. Always consider the context and scope in which the data needs to be accessed when deciding whether to use an instance variable or a local variable.
 
