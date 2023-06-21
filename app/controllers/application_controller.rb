@@ -2,22 +2,21 @@ class ApplicationController < ActionController::API
   before_action :authenticate_user, only: [:create]
   include ActionController::Cookies
 
-  def current_user
-    @current_user ||= User.find_by_id(session[:user_id]) #memoization
+  def current_user #memoization
+    @current_user ||= User.find_by_id(session[:user_id])
   end 
 
   private 
   
   def authenticate_user #checking if a user is logged in only
-    render json: { error: {User: "Unauthorized" }}, status: :unauthorized unless current_user
-    # session.include? :user_id
+    return render json: { error: {User: "Unauthorized" }}, status: :unauthorized unless @current_user
   end 
 
-  # admin status 
-  def is_authorized?
-    permitted = current_user.admin? 
-    render json: { errors: {User: "Does not have admin permissions"}}, status: :forbidden unless permitted 
-  end 
+  ## Admin status 
+  # def is_authorized?
+  #   permitted = current_user.admin? 
+  #   render json: { errors: {User: "Does not have admin permissions"}}, status: :forbidden unless permitted 
+  # end 
 
 end
 

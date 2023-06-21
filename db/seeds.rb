@@ -49,7 +49,7 @@ patients = Patient.all
   Appointment.create(
     user: users.sample,
     patient: patients.sample,
-    type: ['immunization', 'mtm', 'msc'].sample,
+    category: ['immunization', 'mtm', 'msc'].sample,
     name: Faker::Lorem.words(number: rand(2..4)).join(' '),
     location: Faker::Address.full_address,
     description: Faker::Lorem.paragraph(sentence_count: rand(2..6))

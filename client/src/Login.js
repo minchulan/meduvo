@@ -50,7 +50,7 @@ const Login = () => {
 
   return (
     <div className="login">
-      <h2>Login</h2>
+      <h2>Log in</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">Email:</label>
@@ -58,6 +58,8 @@ const Login = () => {
             required
             onChange={handleChange}
             value={formData.email}
+            autoComplete="email"
+            id="email"
             type="text"
             name="email"
             placeholder="Email"
@@ -70,20 +72,23 @@ const Login = () => {
             required
             onChange={handleChange}
             value={formData.password}
+            autoComplete="password"
+            id="password"
             type="password"
             name="password"
             placeholder="Password"
             className="input-text"
           />
         </div>
-        <button type="submit">Login</button>
+        <input type="submit" value="Login" />
       </form>
       <br />
       <>
-        <small>Don't have an account? <NavLink to="/signup">Sign up</NavLink></small>
+        <small>
+          Don't have an account? <NavLink to="/signup">Sign up</NavLink>
+        </small>
       </>
     </div>
-    
   );
 };
 
