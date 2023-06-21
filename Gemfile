@@ -41,6 +41,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 group :development, :test do
   gem 'rspec-rails', '~> 5.0.0'
+  gem 'faker'
 end
 
 group :test do
@@ -51,5 +52,4 @@ end
 gem "active_model_serializers", "~> 0.10.12"
 
 gem 'bullet', group: 'development'
-
-gem 'faker'
+gem 'bullet', group: 'test'

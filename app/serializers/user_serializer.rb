@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :email, :username
+  attributes :id, :email 
 end
 
 # The password_digest attribute is typically not serialized in a serializer for security reasons. The purpose of the password_digest attribute in a Rails application is to securely store the hashed version of the user's password using a cryptographic algorithm like bcrypt.

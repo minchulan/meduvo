@@ -1,5 +1,4 @@
 class AppointmentsController < ApplicationController 
-    before_action :authenticate_user
 
     # GET '/appointments'
     def index
@@ -9,8 +8,8 @@ class AppointmentsController < ApplicationController
 
     # POST '/appointments'
     def create 
-        appointment = @current_user.appointments.create(appointment_params)
-        if appointment.valid?
+        appointment = @current_user.appointments.new(appointment_params)
+        if appointment.save
             render json: appointment, status: :created 
         else  
             render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity
@@ -19,12 +18,7 @@ class AppointmentsController < ApplicationController
 
     # GET '/appointments/:id'
     def show 
-        appointment = @current_user.appointments.find_by_id(params[:id])
-        if appointment
-            render json: appointment 
-        else  
-            render json: { error: "Not Found" }, status: :unauthorized
-        end 
+        render json: appointment, status: :ok 
     end 
 
     # PATCH '/appointments/:id'
@@ -45,7 +39,7 @@ class AppointmentsController < ApplicationController
     private 
 
     def appointment_params
-        params.require(:appointment).permit(:patient_id, :user_id, :name, :location, :description, :category)
+        params.require(:appointment).permit(:patient_id, :user_id, :name, :location, :description, )
     end 
 end
 

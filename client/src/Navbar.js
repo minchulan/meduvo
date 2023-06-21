@@ -2,21 +2,19 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
 import { NavLink, useNavigate } from "react-router-dom";
 
-// in navbar, bring in user, logout and loggedin
 const Navbar = () => {
   const [menu, setMenu] = useState(false);
   const { user, logout, loggedIn } = useContext(UserContext);
   const navigate = useNavigate();
 
-  // hits logout route to take them out of session hash
   const logoutUser = () => {
     // DELETE '/logout'
     fetch("/logout", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     }).then(() => {
-      logout(); //call logout over in context to setloggedIn false
-      navigate("/"); //then, navigate to home
+      logout();
+      navigate("/");
     });
   };
 
@@ -29,6 +27,9 @@ const Navbar = () => {
         </>
       ) : (
         <div className="nav-links">
+          <NavLink to="/contact">
+            <h5>Contact Us</h5>
+          </NavLink>
           <NavLink to="/login">
             <h5>Log In</h5>
           </NavLink>

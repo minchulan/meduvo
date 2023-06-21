@@ -2,7 +2,7 @@ class Appointment < ApplicationRecord
     belongs_to :user 
     belongs_to :patient 
 
-    validates :category, presence: true 
+    validates :type, presence: true 
     validates :name, presence: true 
     validates :description, length: {in: (10..500)}
 

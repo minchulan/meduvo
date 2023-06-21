@@ -6,11 +6,10 @@ import Home from './Home';
 import { UserProvider } from "./context/user";
 import Login from './Login';
 import Signup from './Signup';
-
+import Contact from './Contact';
 
 const App = () => {
   const [patients, setPatients] = useState([]);
-  const [appointments, setAppointments] = useState([]);
   const [errors, setErrors] = useState(false);
 
   return (
@@ -21,6 +20,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </UserProvider>
     </main>

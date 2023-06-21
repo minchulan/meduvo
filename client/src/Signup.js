@@ -7,7 +7,8 @@ const Signup = () => {
     username: "",
     email: "",
     password: "",
-  })
+  });
+
   const [errors, setErrors] = useState([]);
   const { signup } = useContext(UserContext);
   const navigate = useNavigate();
@@ -39,11 +40,6 @@ const Signup = () => {
           signup(data)
           navigate('/')
         } else {
-          setFormData({
-            username: "",
-            email: "",
-            password: "",
-          })
           setErrors(data.errors)
         }
       })
@@ -55,7 +51,7 @@ const Signup = () => {
 
   return (
     <div className="signup">
-      <h2>Sign up</h2>
+      <h2>Signup</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">Email:</label>
@@ -63,8 +59,6 @@ const Signup = () => {
             required
             onChange={handleChange}
             value={formData.email}
-            autoComplete="email"
-            id="email"
             type="text"
             name="email"
             placeholder="Email"
@@ -77,15 +71,13 @@ const Signup = () => {
             required
             onChange={handleChange}
             value={formData.password}
-            autoComplete="password"
-            id="password"
             type="password"
             name="password"
             placeholder="Password"
             className="input-text"
           />
         </div>
-        <input type="submit" value="Signup" />
+        <button type="submit">Signup</button>
       </form>
     </div>
   );
