@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
 import { NavLink, useNavigate } from "react-router-dom";
+import logo from "./asset/logo.png";
 
 const Navbar = () => {
   const [menu, setMenu] = useState(false);
@@ -20,6 +21,12 @@ const Navbar = () => {
 
   return (
     <div className="navbar">
+      <header className="logo-container">
+        <NavLink to="/">
+          <img src={logo} alt="Meduvo Logo" />
+        </NavLink>
+
+      </header>
       {loggedIn ? (
         <>
           <h3>Hello, {user.username}</h3>
@@ -27,9 +34,7 @@ const Navbar = () => {
         </>
       ) : (
         <div className="nav-links">
-          <NavLink to="/contact">
-            <h5>Contact Us</h5>
-          </NavLink>
+
           <NavLink to="/login">
             <h5>Log In</h5>
           </NavLink>
