@@ -34,13 +34,13 @@ const Signup = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user),
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (!data.errors) {
-          signup(data)
-          navigate('/')
+          signup(data);
+          navigate("/");
         } else {
-          setErrors(data.errors)
+          setErrors(data.errors);
         }
       })
       .catch((error) => {
@@ -79,6 +79,12 @@ const Signup = () => {
         </div>
         <button type="submit">Signup</button>
       </form>
+      <br />
+      <div className="error">
+        {errors.map((error, index) => (
+          <p key={index}>{error}</p>
+        ))}
+      </div>
     </div>
   );
 };
@@ -89,7 +95,7 @@ export default Signup;
 
 // line 33: inform backend of new user, then check to see if any errors. if no errors, call signup(user) back over in context, which puts that user into context and sets the loggedIn user to true, then navigates to home page.
 // const signup = (user) => {
-    //setUser(user)
-   //setLoggedIn(true)
+//setUser(user)
+//setLoggedIn(true)
 // }
-// Else, it clears the page, shows the errors and sets the errors into the errorsList so that it shows on the page 
+// Else, it clears the page, shows the errors and sets the errors into the errorsList so that it shows on the page

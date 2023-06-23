@@ -88,3 +88,11 @@ const Login = () => {
 };
 
 export default Login;
+
+/*
+The Login component:
+It imports the necessary dependencies and resources, including React, the NavLink component from React Router, and a logo image.
+Inside the component function, it declares the Login component and initializes the necessary state variables using the useState hook.
+The component renders a login form with input fields for username and password, and login button.
+The Login component is exported as the default export.
+*/

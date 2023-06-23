@@ -6,37 +6,48 @@ const UserContext = createContext();
 // Create a provider component 
 function UserProvider({ children }) {
     const [user, setUser] = useState(null);
-    const [loggedIn, setLoggedIn] = useState(false); 
+    const [error, setError] = useState(null);
+    const [loggedIn, setLoggedIn] = useState(false);
 
     useEffect(() => {
-        fetch('/me')
-            .then(res => res.json())
-            .then((data) => {
-                setUser(data) 
-                // setLoggedIn(!data.error);
-                // data.error ? setLoggedIn(false) : setLoggedIn(true)
-            });
-    }, [])
+        fetch("/me")
+        .then((res) => res.json())
+        .then((data) => {
+            setUser(data);
+            setLoggedIn(!!data);
+        })
+        .catch((error) => {
+            setError(error);
+            setLoggedIn(false);
+        });
+    }, []);
 
+        // useEffect(() => {
+        //   fetch("/me")
+        //     .then((res) => res.json())
+        //     .then((data) => console.log(data))
+        // }, []);
+
+
+    
     const login = (user) => {
-        setUser(user)
-        setLoggedIn(true)
+        setUser(user);
+        setLoggedIn(true);
     };
 
     const logout = () => {
-        setUser(null)
-        setLoggedIn(false)
+        setUser(null);
+        setLoggedIn(false);
     };
 
     const signup = (user) => {
-        setUser(user)
-        setLoggedIn(true)
+        setUser(user);
+        setLoggedIn(true);
     };
 
-    
     return (
-        <UserContext.Provider value={{user, login, logout, signup, loggedIn}}>
-            {children}
+        <UserContext.Provider value={{ user, login, logout, signup, loggedIn }}>
+        {error ? <h2>{error}</h2> : children}
         </UserContext.Provider>
     );
 }
@@ -44,6 +55,43 @@ function UserProvider({ children }) {
 // Export 
 export { UserContext, UserProvider };
 
+/*
+
+  // const addPatient = (patient) => {};
+  // const updatePatient = () => {};
+  // const deletePatient = () => {};
+
+
+This code defines a React context called `UserContext` and a provider component called `UserProvider`. Here's a breakdown of what the code does:
+
+1. It imports necessary dependencies from the `react` package: `useState`, `useEffect`, and `createContext`.
+2. It creates a context using `createContext()`. This context will be used to share data and functions related to user authentication and login/logout functionality.
+3. The `UserProvider` component is declared. It receives a `children` prop which represents the child components that will be wrapped by this provider.
+4. Inside the `UserProvider`, several state variables are declared using the `useState` hook: `user`, `error`, and `loggedIn`. The `user` state variable will store information about the logged-in user, `error` will store any error that occurs during authentication, and `loggedIn` will keep track of whether a user is logged in or not.
+5. The `useEffect` hook is used to perform a side effect, specifically to fetch the current user data from the server when the component mounts. It sends a GET request to `/me` endpoint, expecting a JSON response. The fetched data is then used to update the `user` state variable and set the `loggedIn` state based on the presence of the user data. If an error occurs during the fetch, it is stored in the `error` state variable, and `loggedIn` is set to `false`.
+6. Several functions are defined within the `UserProvider` component: `login`, `logout`, and `signup`. These functions are responsible for updating the `user` and `loggedIn` state variables based on the user's authentication actions.
+7. The `UserContext.Provider` component is rendered, wrapping the `children` components. It provides the `UserContext` with a value object containing the `user`, `login`, `logout`, `signup`, and `loggedIn` state variables and functions as the context value.
+8. If an `error` exists, it renders an `<h2>` element displaying the error message.
+9. Finally, the `UserContext` and `UserProvider` are exported to be used in other parts of the application.
+
+This code sets up a context and provider for managing user authentication and login/logout functionality within a React application. Other components can consume the `UserContext` using the `useContext` hook to access the `user`, `login`, `logout`, `signup`, and `loggedIn` values and perform actions accordingly.
+
+*/
+    
+    
+// UserProvider wraps the Home, Login, and Signup components in App.js. When we refresh page, it makes a call to the '/me' route in our Users#show in the backend. Users#show will look for the user in sessions. It's going to look at the session hash to see if the user_id exists. If does exist, it goes ahead and sends user back to login page. 
+// line 25: 
+        // ^ checks to see if our user is in sessions. if not in sessions, it will not set our user to state. 
+
+    // useEffect(() => {
+    //     fetch('/me')
+    //         .then(res => res.json())
+    //         .then((data) => {
+    //             setUser(data) 
+    //             // setLoggedIn(!data.error);
+    //             // data.error ? setLoggedIn(false) : setLoggedIn(true)
+    //         });
+    // }, [])
     
 //--------------------------------------
     // '/me' => makes a fetch to the backend to check the session hash. it checks to see if the user_id exists in sessions. if user is in sessions, continue to load app. If not, meaning no user is in session, load login.

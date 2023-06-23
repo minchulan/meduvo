@@ -38,6 +38,7 @@
   }
 }
 
+
 /* Navbar  */
 .navbar {
   display: flex;
@@ -65,3 +66,6 @@
   font-size: 12px; /* Adjust the font size to make the button smaller */
   padding: 6px 10px; /* Adjust the padding to make the button smaller */
 }
+
+
+/* Home  */
