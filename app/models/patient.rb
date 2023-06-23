@@ -9,4 +9,10 @@ class Patient < ApplicationRecord
     validates :phone, presence: true 
     validates :email, presence: true
     validates :allergies, presence: true 
+
+    def full_name
+        "#{first_name} #{last_name}"
+    end 
 end 
+
+# By using the full_name method, you can conveniently display the full name attribute without modifying the existing first_name and last_name attributes.
