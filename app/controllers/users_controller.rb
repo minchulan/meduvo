@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+wrap_parameters format: []
     skip_before_action :authenticate_user, only: [:create]
 
     # POST '/signup'
@@ -6,7 +7,7 @@ class UsersController < ApplicationController
         @user = User.create(user_params)
         if @user.valid?
             session[:user_id] = @user.id 
-            render json: UserSerializer.new(user).to_json, status: :created
+            render json: @user, status: :created
         else 
             render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity 
         end
@@ -30,7 +31,7 @@ class UsersController < ApplicationController
     private 
 
     def user_params
-        params.require(:user).permit(:email, :password)
+        params.require(:user).permit(:username, :email, :password, :admin)
     end 
 
 end

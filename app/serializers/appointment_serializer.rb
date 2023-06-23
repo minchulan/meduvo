@@ -1,5 +1,8 @@
 class AppointmentSerializer < ActiveModel::Serializer
-  attributes :id, :user_id, :patient_id, :type, :name, :location, :description 
+  attributes :id, :user_id, :patient_id, :category, :name, :location, :description
+  
+  belongs_to :user
+  belongs_to :patient
 end
           
 # Serializers in Rails are typically run during the rendering of a response. When you call `render` in your controller action, Rails automatically determines the appropriate serializer based on the object you're rendering and applies it.

@@ -9,13 +9,13 @@ class ApplicationController < ActionController::API
   private 
   
   def authenticate_user #checking if a user is logged in only
-    render json: { error: {User: "Unauthorized" }}, status: :unauthorized unless current_user
+    render json: { error: {User: "Unauthorized" }}, status: :unauthorized unless @current_user
     # session.include? :user_id
   end 
 
   # admin status 
   def is_authorized?
-    permitted = current_user.admin? 
+    permitted = @current_user.admin? 
     render json: { errors: {User: "Does not have admin permissions"}}, status: :forbidden unless permitted 
   end 
 

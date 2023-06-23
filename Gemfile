@@ -50,6 +50,3 @@ group :test do
 end
 
 gem "active_model_serializers", "~> 0.10.12"
-
-gem 'bullet', group: 'development'
-gem 'bullet', group: 'test'

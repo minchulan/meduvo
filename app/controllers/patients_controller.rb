@@ -4,7 +4,7 @@ class PatientsController < ApplicationController
     # GET '/patients'
     def index
         patients = Patient.all
-        render json: patients 
+        render json: patients, each_serializer: PatientSerializer
         # render json: PatientSerializer.new(current_user.patients).serializable_hash <--not for all the patients out there but only the patients that belong to the user. 
     end 
 
@@ -47,6 +47,8 @@ class PatientsController < ApplicationController
 end
 
 #----------------------------
+# each_serializer method used to pass each instance to the serializer. to serialize a collection. 
+
 # Let's walk through the code:
 
 # 1. `PatientsController` is a controller responsible for handling CRUD operations related to patients.

@@ -1,6 +1,9 @@
 class PatientSerializer < ActiveModel::Serializer
   attributes :id, :first_name, :last_name, :guardian, :gender, :dob, :address, :email, :phone, :language_preferences, :allergies, :viewed_notice_of_privacy_practices
-
+  
+  has_many :users 
+  has_many :appointments
+  
   # def full_name
   #   "#{object.first_name} #{object.last_name}"
   # end 
