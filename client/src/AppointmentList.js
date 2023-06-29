@@ -1,9 +1,9 @@
 import React from 'react';
 
-const Appointment = () => {
+const AppointmentList = () => {
     return (
         <div>Appointment</div>
     )
 }
 
-export default Appointment
+export default AppointmentList

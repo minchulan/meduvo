@@ -1,12 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { UserContext } from "./context/user";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import logo from "./asset/logo.png";
 
 const Navbar = () => {
-  const [menu, setMenu] = useState(false);
   const { user, logout, loggedIn } = useContext(UserContext);
-  const navigate = useNavigate();
+
 
   const logoutUser = () => {
     // DELETE '/logout'
@@ -15,26 +14,24 @@ const Navbar = () => {
       headers: { "Content-Type": "application/json" },
     }).then(() => {
       logout();
-      navigate("/");
+
     });
   };
 
   return (
     <div className="navbar">
-      <header className="logo-container">
+      <nav className="logo">
         <NavLink to="/">
           <img src={logo} alt="Meduvo Logo" />
         </NavLink>
 
-      </header>
+      </nav>
       {loggedIn ? (
         <>
-          <h3>Hello, {user.username}</h3>
           <button onClick={logoutUser}>Logout</button>
         </>
       ) : (
         <div className="nav-links">
-
           <NavLink to="/login">
             <h5>Log In</h5>
           </NavLink>

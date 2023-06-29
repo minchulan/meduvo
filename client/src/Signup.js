@@ -51,7 +51,7 @@ const Signup = () => {
 
   return (
     <div className="signup">
-      <h2>Signup</h2>
+      <h2>You're one click away from less busywork</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">Email:</label>
@@ -61,8 +61,10 @@ const Signup = () => {
             value={formData.email}
             type="text"
             name="email"
+            id="email"
             placeholder="Email"
             className="input-text"
+            autoComplete="on"
           />
         </div>
         <div>
@@ -73,11 +75,13 @@ const Signup = () => {
             value={formData.password}
             type="password"
             name="password"
+            id="password"
             placeholder="Password"
             className="input-text"
+            autoComplete="on"
           />
         </div>
-        <button type="submit">Signup</button>
+        <button type="submit">Sign up</button>
       </form>
       <br />
       <div className="error">

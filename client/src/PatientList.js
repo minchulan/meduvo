@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const Patient = () => {
+const PatientList = () => {
   const [patients, setPatients] = useState([]);
 
   useEffect(() => {
@@ -25,4 +25,4 @@ const Patient = () => {
   );
 };
 
-export default Patient;
+export default PatientList;

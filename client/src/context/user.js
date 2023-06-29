@@ -9,6 +9,7 @@ function UserProvider({ children }) {
     const [error, setError] = useState(null);
     const [loggedIn, setLoggedIn] = useState(false);
 
+    // Protip: include fetch calls in same component as your top level state.
     useEffect(() => {
         fetch("/me")
         .then((res) => res.json())
@@ -22,14 +23,6 @@ function UserProvider({ children }) {
         });
     }, []);
 
-        // useEffect(() => {
-        //   fetch("/me")
-        //     .then((res) => res.json())
-        //     .then((data) => console.log(data))
-        // }, []);
-
-
-    
     const login = (user) => {
         setUser(user);
         setLoggedIn(true);
@@ -46,7 +39,7 @@ function UserProvider({ children }) {
     };
 
     return (
-        <UserContext.Provider value={{ user, login, logout, signup, loggedIn }}>
+        <UserContext.Provider value={{ user, setUser, login, logout, signup, loggedIn }}>
         {error ? <h2>{error}</h2> : children}
         </UserContext.Provider>
     );

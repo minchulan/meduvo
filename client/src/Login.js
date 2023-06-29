@@ -50,7 +50,7 @@ const Login = () => {
 
   return (
     <div className="login">
-      <h2>Login</h2>
+      <h2>Welcome to Meduvo</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">Email:</label>
@@ -60,8 +60,10 @@ const Login = () => {
             value={formData.email}
             type="text"
             name="email"
+            id="email"
             placeholder="Email"
             className="input-text"
+            autoComplete="on"
           />
         </div>
         <div>
@@ -72,18 +74,21 @@ const Login = () => {
             value={formData.password}
             type="password"
             name="password"
+            id="password"
             placeholder="Password"
             className="input-text"
+            autoComplete="on"
           />
         </div>
         <button type="submit">Login</button>
       </form>
       <br />
       <>
-        <small>Don't have an account? <NavLink to="/signup">Sign up</NavLink></small>
+        <small>
+          Don't have an account? <NavLink to="/signup">Sign up</NavLink>
+        </small>
       </>
     </div>
-    
   );
 };
 
