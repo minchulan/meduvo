@@ -3,15 +3,14 @@ class PatientsController < ApplicationController
 
     # GET '/patients'
     def index
-        patients = Patient.all
+        patients = @current_user.patients
         render json: patients, each_serializer: PatientSerializer
-        # render json: PatientSerializer.new(current_user.patients).serializable_hash <--not for all the patients out there but only the patients that belong to the user. 
     end 
 
     # POST '/patients'
     def create 
-        patient = Patient.new(patient_params)
-        if patient.save
+        patient = @current_user.patients.create(patient_params)
+        if patient.valid?
             render json: patient, status: :created 
         else  
             render json: { errors: patient.errors.full_messages }, status: :unprocessable_entity
@@ -20,21 +19,27 @@ class PatientsController < ApplicationController
 
     # GET '/patients/:id'
     def show 
-        render json: @patient 
+        patient = @current_user.patients.find_by_id(params[:id])
+        if patient
+            render json: patient 
+        else  
+            render json: { error: "Not Found"}, status: :unauthorized
+        end 
     end 
 
-    # PATCH '/patiens/:id'
+    # PATCH '/patients/:id'
     def update 
-        if @patient.update(patient_params)
-            render json: @patient 
+        patient = @current_user.patients.find_by_id(params[:id])
+        if patient.update(patient_params)
+            render json: patient 
         else  
-            render json: { errors: @patient.errors.full_messages }, status: :unprocessable_entity 
+            render json: { errors: patient.errors.full_messages }, status: :unprocessable_entity 
         end 
     end 
 
     # DELETE '/patients/:id'
     def destroy 
-        @patient.destroy 
+        patient.destroy 
         head :no_content 
     end 
     

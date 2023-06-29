@@ -140,7 +140,7 @@ a:hover {
 }
 
 .navbar .logo-container img {
-  height: 120px; /* Adjust the height for a larger logo */
+  height: 200px; /* Adjust the height for a larger logo */
 }
 
 .nav-links {
@@ -154,7 +154,7 @@ a:hover {
 }
 
 .navbar img {
-  height: 100px;
+  height: 200px;
 }
 
 .navbar .nav-links {
@@ -233,4 +233,177 @@ h2 {
   font-size: 30px;
   font-weight: bold;
   margin-bottom: 16px;
+}
+
+.App {
+  background-color: #f1f1f1;
+  padding: 20px;
+}
+
+.home {
+  background-color: #f1f1f1;
+  padding: 20px;
+}
+
+.home-buttons {
+  justify-content: space-between;
+  margin-right: 20px;
+}
+
+.home-button {
+  margin-right: 10px;
+}
+
+.landing-page button {
+  margin-right: 5px;
+}
+
+.landing-page {
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.login {
+  margin: 0 auto;
+  width: 300px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.login h2 {
+  text-align: center;
+}
+
+.login form {
+  margin-top: 20px;
+}
+
+.login form div {
+  margin-bottom: 10px;
+}
+
+.login label {
+  display: block;
+  font-weight: bold;
+}
+
+.login input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.login button {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  background-color: #4160fb;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login button:hover {
+  background-color: #555;
+}
+
+.login small {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.home-section {
+  background-color: #f9f9f9;
+  padding: 40px;
+  text-align: center;
+}
+
+.home-section h1 {
+  margin-bottom: 20px;
+}
+
+.large-button {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 18px;
+  background-color: #4160fb;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.large-button:hover {
+  background-color: #555;
+}
+
+.small-button {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #4160fb;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.small-button:hover {
+  background-color: #555;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 20px;
+}
+
+.container h1 {
+  margin-bottom: 20px;
+}
+
+.container p {
+  margin-bottom: 20px;
+}
+
+.container button {
+  margin-bottom: 10px;
+  padding: 8px 16px;
+  font-size: 16px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.container button:hover {
+  background-color: #555;
+}
+
+.container select {
+  margin-bottom: 10px;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.fun-heading {
+  font-size: 42px;
+  color: #0b0b0b;
+  letter-spacing: 1px;
+}
+
+.bigger-font {
+  font-size: 20px;
 }

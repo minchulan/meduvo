@@ -1,26 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
+import { UserContext } from "./context/user";
+import { Link, useParams } from "react-router-dom";
 
 const PatientList = () => {
-  const [patients, setPatients] = useState([]);
-
-  useEffect(() => {
-    fetch("/patients")
-      .then((res) => res.json())
-      .then((data) => setPatients(data))
-      .catch((error) => console.error("Error fetching patients:", error));
-  }, []);
+  const { user } = useContext(UserContext);
+  const { id } = useParams();
+  console.log({user})
 
   return (
-    <div>
-      <h2>Patients</h2>
-      {patients.map((patient) => (
-        <div key={patient.id}>
-          <h3>{patient.name}</h3>
-          <p>Age: {patient.age}</p>
-          <p>Gender: {patient.gender}</p>
-          <hr />
-        </div>
-      ))}
+    <div className="patient-list">
+      <h2>
+        <u>
+          {user.username.charAt(0).toUpperCase() + user.username.slice(1)}</u>
+        's
+        Patients:
+      </h2>
+      <ul>
+        {user.patients.map((patient) => (
+          <li key={patient.id}>
+            <Link to={`/patients/${patient.id}`}>
+              {patient.first_name} {patient.last_name}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

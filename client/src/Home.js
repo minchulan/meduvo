@@ -8,14 +8,18 @@ const Home = () => {
   if (loggedIn) {
     return (
       <div className="home">
-        <h1>Welcome back, {user.username}</h1>
+        <h1>
+          {" "}
+          Welcome,{" "}
+          {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
+        </h1>
         <p>Optimize your scheduling and get the most out of Meduvo</p>
         <div className="home-buttons">
-          <Link to="/account">
-            <button>My account</button>
+          <Link to="/patients">
+            <button className="home-button">My account</button>
           </Link>
           <Link to="/appointments">
-            <button>Create new event type</button>
+            <button className="home-button">Create new event type</button>
           </Link>
         </div>
       </div>
@@ -23,16 +27,64 @@ const Home = () => {
   } else {
     return (
       <div className="home-section">
-        <h1>The ideal platform for patient care scheduling</h1>
-        <p>
-          Want to deliver patient care excellence? Meduvo is flexible and easy
-          for all healthcare professionals to use, so you can stay organized
-          throughout your patient's care.
+        <h1 className="fun-heading">
+          Easy <span style={{ color: "#0000ff" }}>patient-care</span> scheduling
+          ahead
+        </h1>
+        <p style={{ fontSize: "20px" }}>
+          Meduvo is your scheduling management platform for patient care
+          excellence — and so much more.
         </p>
         <Link to="/signup">
           <button className="large-button">Get Started</button>
         </Link>
         <hr />
+        <>
+          <h2>How it works</h2>
+          <img src="" alt="ADD DEMO SCREENSHOTS" />
+          <br />
+          <br />
+          <p>
+            Meduvo is easy for all healthcare professionals to use, so you can
+            keep your patients on track to better health.
+          </p>
+          <p>
+            “Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Namhendrerit nisi sed sollicitudin pellentesque. Nunc posuere purus
+            rhoncus pulvinar aliquam. Ut aliquet tristique nisl vitae
+            volutpat.Nulla aliquet porttitor venenatis. Donec a dui et dui
+            fringilla consectetur id nec massa. Aliquam erat volutpat. Sed ut
+            dui ut lacus dictum fermentum vel tincidunt neque. Sed sed lacinia
+            lectus. Duis sit amet sodales felis. Duis nunc eros, mattis at dui
+            ac, convallis semper risus. In adipiscing ultrices tellus, in
+            suscipit massa vehicula eu.”
+          </p>
+          <button>Learn more</button>
+          <br />
+          <br />
+          <br />
+          <hr />
+        </>
+        <div className="landing-page">
+          <h2>Get started in seconds</h2>
+          <Link to="/signup">
+            <button>Sign up for free</button>
+          </Link>
+          <br />
+          <br />
+          <br />
+        </div>
+        <>
+          <hr />
+          <h1>
+            <b>
+              Easy <span style={{ color: "#0000ff" }}>Ahead</span>
+            </b>
+          </h1>
+          <p style={{ fontSize: "20px" }}>
+            We take the admin work out so you can accomplish more.
+          </p>
+        </>
       </div>
     );
   }

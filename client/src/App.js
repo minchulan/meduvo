@@ -1,14 +1,12 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import './App.css';
-import Navbar from './Navbar';
-import Home from './Home';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./Navbar";
+import Home from "./Home";
 import { UserProvider } from "./context/user";
-import Login from './Login';
-import Signup from './Signup';
-import PatientList from './PatientList';
-import AppointmentList from './AppointmentList';
-import AccountPage from './AccountPage';
+import Login from "./Login";
+import Signup from "./Signup";
+import AppointmentList from "./AppointmentList";
+import PatientList from "./PatientList";
 
 const App = () => {
   // const [patients, setPatients] = useState([]);
@@ -22,17 +20,15 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/patients" element={<PatientList />} />
           <Route path="/appointments" element={<AppointmentList />} />
-          <Route path="/account" element={<AccountPage />} />
+          <Route path="/patients" element={<PatientList />} />
         </Routes>
       </UserProvider>
     </main>
   );
-}
+};
 
 export default App;
-
 
 //----------------------------------
 // <h1>Meduvo</h1>

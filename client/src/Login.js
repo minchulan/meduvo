@@ -50,7 +50,7 @@ const Login = () => {
 
   return (
     <div className="login">
-      <h2>Welcome to Meduvo</h2>
+      <h2>Welcome back</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">Email:</label>
