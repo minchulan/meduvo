@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-wrap_parameters format: []
     skip_before_action :authenticate_user, only: [:create]
 
     # POST '/signup'
@@ -11,13 +10,18 @@ wrap_parameters format: []
         else 
             render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity 
         end
-
     end 
 
     # GET '/me'
     def show
-        # user = User.find(session[:user_id]) 
-        render json: @current_user, status: :ok
+        # Get current user 
+        # current_user = User.find(session[:user_id]) 
+        if @current_user
+            render json: @current_user, status: :ok
+        else  
+            render json: { error: "Not authorized" }, status: :unauthorized
+            
+        end 
     end 
 
 
@@ -31,7 +35,7 @@ wrap_parameters format: []
     private 
 
     def user_params
-        params.permit(:username, :email, :password, :admin)
+        params.require(:user).permit(:username, :email, :password, :admin)
     end 
 
 end
@@ -40,6 +44,7 @@ end
 # Let's walk through the code:
 
 # 1. `UsersController` is a controller responsible for handling CRUD operations related to users.
+
 
 # 2. The `skip_before_action` skips the `authenticate_user` filter for the `create` action. This means that authentication is not required for the user creation endpoint.
 
@@ -148,3 +153,15 @@ end
 # Instance variables are used here to share data across different parts of the controller, such as the conditional statements and response rendering. They allow you to access and manipulate the user object within the entire method scope and ensure consistency in the data used throughout the action.
 
 # Therefore, in this case, using instance variables (`@user`) is necessary for the code to function correctly.
+
+
+# In a Rails controller, the wrap_parameters method is used to control the behavior of parameter wrapping for incoming request data. By default, Rails automatically wraps the parameters of a JSON or XML request in a nested hash based on the controller's name.
+
+# The wrap_parameters format: [] configuration in your controller is specifying that parameter wrapping should be disabled for all request formats. It means that the incoming request data will be treated as a flat hash, rather than automatically wrapped in a nested hash.
+
+# Disabling parameter wrapping can be useful when you want to directly access the incoming request data without the additional nested hash layer. It can simplify the handling of request parameters, especially if the data structure is simple and does not require the nested wrapping.
+
+## user_params 
+    # To fix the "Unpermitted parameter: :user" issue, you need to update the user_params method in the UsersController to permit the :user parameter. Currently, it is only permitting :username, :email, :password, and :admin.
+
+    # By using params.require(:user), you specify that the :user parameter is expected to be present in the request parameters and permit its attributes. This change ensures that the :user parameter is permitted and avoids the "Unpermitted parameter: :user" error.

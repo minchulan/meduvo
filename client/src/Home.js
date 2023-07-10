@@ -5,86 +5,94 @@ import { Link } from "react-router-dom";
 const Home = () => {
   const { user, loggedIn } = useContext(UserContext);
 
+  console.log({ user });
+
+  const capitalizeUsername =
+    user && user.username
+      ? user.username.charAt(0).toUpperCase() + user.username.slice(1)
+      : user && user.email;
+
   if (loggedIn) {
     return (
       <div className="home">
-        <h1>
-          {" "}
-          Welcome,{" "}
-          {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
-        </h1>
-        <p>Optimize your scheduling and get the most out of Meduvo</p>
+        <h1>Welcome, {capitalizeUsername}</h1>
+        <p>Optimize your patient schedules and get the most out of Meduvo</p>
         <div className="home-buttons">
           <Link to="/patients">
-            <button className="home-button">My account</button>
+            <button className="home-button">My Account</button>
           </Link>
           <Link to="/appointments">
-            <button className="home-button">Create new event type</button>
+            <button className="home-button">Create New Event Type</button>
           </Link>
         </div>
+        <hr />
       </div>
     );
   } else {
     return (
       <div className="home-section">
         <h1 className="fun-heading">
-          Easy <span style={{ color: "#0000ff" }}>patient-care</span> scheduling
+          Easy <span className="accent-color">patient-care</span> scheduling
           ahead
         </h1>
-        <p style={{ fontSize: "20px" }}>
+        <h2>
           Meduvo is your scheduling management platform for patient care
           excellence — and so much more.
-        </p>
+        </h2>
         <Link to="/signup">
-          <button className="large-button">Get Started</button>
+          <button className="large-button">Start now</button>
         </Link>
+        <br />
+        <br />
+        <br />
         <hr />
-        <>
-          <h2>How it works</h2>
-          <img src="" alt="ADD DEMO SCREENSHOTS" />
-          <br />
-          <br />
+        <div className="features-section">
+          <h1>Make the most of your Meduvo experience</h1>
+          <div className="clickable-boxes">
+            <Link to="/feature1" className="box-link">
+              <div className="box">
+                <h3>Feature 1</h3>
+                <p>Explore Feature 1</p>
+              </div>
+            </Link>
+            <Link to="/feature2" className="box-link">
+              <div className="box">
+                <h3>Feature 2</h3>
+                <p>Discover Feature 2</p>
+              </div>
+            </Link>
+            <Link to="/feature3" className="box-link">
+              <div className="box">
+                <h3>Feature 3</h3>
+                <p>Experience Feature 3</p>
+              </div>
+            </Link>
+          </div>
+        </div>
+        <div className="landing-page">
+          <h2>Get started in seconds</h2>
           <p>
             Meduvo is easy for all healthcare professionals to use, so you can
             keep your patients on track to better health.
           </p>
-          <p>
-            “Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Namhendrerit nisi sed sollicitudin pellentesque. Nunc posuere purus
-            rhoncus pulvinar aliquam. Ut aliquet tristique nisl vitae
-            volutpat.Nulla aliquet porttitor venenatis. Donec a dui et dui
-            fringilla consectetur id nec massa. Aliquam erat volutpat. Sed ut
-            dui ut lacus dictum fermentum vel tincidunt neque. Sed sed lacinia
-            lectus. Duis sit amet sodales felis. Duis nunc eros, mattis at dui
-            ac, convallis semper risus. In adipiscing ultrices tellus, in
-            suscipit massa vehicula eu.”
-          </p>
-          <button>Learn more</button>
-          <br />
-          <br />
-          <br />
-          <hr />
-        </>
-        <div className="landing-page">
-          <h2>Get started in seconds</h2>
           <Link to="/signup">
-            <button>Sign up for free</button>
+            <button className="button">Sign up for free</button>
           </Link>
-          <br />
-          <br />
-          <br />
         </div>
-        <>
-          <hr />
+        <br />
+        <hr />
+        <div className="easy-ahead-section">
           <h1>
-            <b>
-              Easy <span style={{ color: "#0000ff" }}>Ahead</span>
-            </b>
+            Easy <span className="accent-color">Ahead</span>
           </h1>
-          <p style={{ fontSize: "20px" }}>
-            We take the admin work out so you can accomplish more.
-          </p>
-        </>
+          <p>We take the admin work out so you can accomplish more.</p>
+          <br />
+          <Link to="/login">
+            <button className="small-button">Set up my access</button>
+          </Link>
+        </div>
+        <br />
+        <br />
       </div>
     );
   }

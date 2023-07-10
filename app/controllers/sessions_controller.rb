@@ -1,28 +1,42 @@
 class SessionsController < ApplicationController
-    skip_before_action :authenticate_user, only: [:create]
+  skip_before_action :authenticate_user, only: [:create]
 
-    # POST '/login' - user submits login form
-    def create 
-        # find the user
-        user = User.find_by_email(params[:email])
+  # POST '/login' - user submits login form
+  def create 
+    # find the user
+    user = User.find_by_email(params[:email])
 
-        # authenticate the user
-        if user&.authenticate(params[:password]) 
-            # save user to session 
-            session[:user_id] = user.id 
-            render json: user, status: :accepted 
-        else 
-            render json: { errors: 'Incorrect Username or Password' }, status: :unauthorized 
-        end 
-    end 
+    if user
+      # authenticate the user
+      if user.authenticate(params[:password]) 
+        # save user to session 
+        session[:user_id] = user.id 
+        render json: user, status: :accepted 
+      else 
+        render json: { errors: 'Incorrect Username or Password' }, status: :unauthorized 
+      end 
+    else
+      render json: { errors: 'User not found' }, status: :not_found
+    end
+  end 
+    # def create
+    #     user = User.find_by_id(params[:id])
 
-    # DELETE '/logout'
-    def destroy 
-        session.delete :user_id
-        head :no_content 
-    end 
+    #     if user&.authenticate(params[:password])
+    #         session[:user_id] = user.id # Update session key
+    #         render json: user, status: :accepted
+    #     else
+    #         render json: { errors: 'Incorrect Username or Password' }, status: :unauthorized
+    #     end
+    # end
 
+  # DELETE '/logout'
+  def destroy 
+    session.delete :user_id
+    head :no_content 
+  end 
 end
+
 
 #---------------------------
 # Let's walk through the code:

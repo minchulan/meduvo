@@ -1,5 +1,5 @@
 class AppointmentsController < ApplicationController 
-
+    
     # GET '/appointments'
     def index
         appointments = @current_user.appointments

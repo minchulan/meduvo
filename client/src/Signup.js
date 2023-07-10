@@ -49,12 +49,28 @@ const Signup = () => {
       });
   };
 
+
   return (
     <div className="signup">
       <h2>You're one click away from less busywork</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
+        <div className="form-group">
+          <label htmlFor="username">Username:</label>
+          <input
+            onChange={handleChange}
+            value={formData.username}
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Username"
+            className="form-control"
+            autoComplete="on"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">
+            Email: <span className="required-field">*</span>
+          </label>
           <input
             required
             onChange={handleChange}
@@ -63,12 +79,14 @@ const Signup = () => {
             name="email"
             id="email"
             placeholder="Email"
-            className="input-text"
+            className="form-control"
             autoComplete="on"
           />
         </div>
-        <div>
-          <label htmlFor="password">Password:</label>
+        <div className="form-group">
+          <label htmlFor="password">
+            Password: <span className="required-field">*</span>
+          </label>
           <input
             required
             onChange={handleChange}
@@ -77,29 +95,55 @@ const Signup = () => {
             name="password"
             id="password"
             placeholder="Password"
-            className="input-text"
+            className="form-control"
             autoComplete="on"
           />
         </div>
-        <button type="submit">Sign up</button>
+        <button className="btn" type="submit">
+          Sign up
+        </button>
       </form>
-      <br />
       <div className="error">
         {errors.map((error, index) => (
           <p key={index}>{error}</p>
         ))}
       </div>
+      <hr />
     </div>
   );
 };
 
 export default Signup;
 
-// sign user in and redirect to their show page
+/*
+This code defines the Signup component, which represents the signup form for the application. It handles the rendering and submission of the signup form. It manages the form state, performs form validation, and communicates with the server to handle the signup process.
 
-// line 33: inform backend of new user, then check to see if any errors. if no errors, call signup(user) back over in context, which puts that user into context and sets the loggedIn user to true, then navigates to home page.
-// const signup = (user) => {
-//setUser(user)
-//setLoggedIn(true)
-// }
-// Else, it clears the page, shows the errors and sets the errors into the errorsList so that it shows on the page
+1] Import the necessary dependencies
+2] Define the `Signup` component
+3] Within the Signup component, do the following:
+  [] Use the useState hook to define the form state (formData) with initial values for username, email, and password.
+  [] Use the useState hook to define the state for errors (errors).
+  [] Use the useContext hook to access the UserContext and retrieve the signup function from it.
+  [] Use the useNavigate hook to get the navigation function for redirecting after successful signup.
+  [] Destructure email and password from the formData state.
+  [] Define the handleChange function, which updates the form state (formData) when input values change.
+  [] Define the handleSubmit function, which is called when the signup form is submitted:
+        [] It prevents the default formsubmission behavior using e.preventDefault().
+        [] It creates a user object with the email and password values from the form state.
+        [] It sends a POST request to /signup with the user data in the request body.
+        [] It handles the response by checking if there are any errors:
+                [] If there are no errors (!data.errors), it calls the signup function from the UserContext and passes the data response.
+                [] It then navigates the user to the home page (navigate("/")).
+                [] If there are errors, it sets the errors state to the received errors.
+        [] If an error occurs during the request, it logs the error and sets a generic error message in the errors state.
+4] Render the HTML structure for the signup form:
+    [] Display a heading indicating the purpose of the form.
+    [] Render a form element with an onSubmit event handler set to handleSubmit.
+    [] Inside the form, create two form groups for the email and password fields:
+                []Each form group contains a label, an input field, and appropriate attributes and styles.
+                [] The input fields are bound to the formData state and update the state using the handleChange function.
+    [] Display a "Sign up" button to submit the form.
+    [] Render any errors in a separate div element.
+    [] Add a horizontal line (<hr />) as a visual separator.
+5] Export the `Signup` component so that it can be used in other parts of the app. 
+*/

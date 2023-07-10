@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: appointments
+#
+#  id          :bigint           not null, primary key
+#  category    :string
+#  description :text
+#  location    :string
+#  name        :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  patient_id  :integer
+#  user_id     :integer
+#
 class AppointmentSerializer < ActiveModel::Serializer
   attributes :id, :user_id, :patient_id, :category, :name, :location, :description
   

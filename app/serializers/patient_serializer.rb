@@ -1,13 +1,33 @@
+# == Schema Information
+#
+# Table name: patients
+#
+#  id                                 :bigint           not null, primary key
+#  address                            :string
+#  allergies                          :string
+#  dob                                :string
+#  email                              :string
+#  first_name                         :string
+#  gender                             :string
+#  guardian                           :string
+#  language_preferences               :string
+#  last_name                          :string
+#  notes                              :text
+#  phone                              :string
+#  viewed_notice_of_privacy_practices :string
+#  created_at                         :datetime         not null
+#  updated_at                         :datetime         not null
+#
 class PatientSerializer < ActiveModel::Serializer
-  attributes :id, :first_name, :last_name, :guardian, :gender, :dob, :address, :email, :phone, :language_preferences, :allergies, :viewed_notice_of_privacy_practices
+  attributes :id, :first_name, :last_name, :full_name, :guardian, :gender, :dob, :address, :email, :phone, :language_preferences, :allergies, :viewed_notice_of_privacy_practices, :created_at, :updated_at
   
   has_many :users 
   has_many :appointments
-  
+end
+
   # def full_name
   #   "#{object.first_name} #{object.last_name}"
   # end 
-end
 
 
 # The object refers to the instance of the Patient model that is being serialized. When the serializer is invoked, it will have access to an instance of the model, and object represents that instance.

@@ -1,5 +1,17 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id              :bigint           not null, primary key
+#  admin           :boolean
+#  email           :string
+#  password_digest :string
+#  username        :string
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :username, :email, :admin 
+  attributes :id, :username, :email, :admin, :created_at, :updated_at
   has_many :patients
   has_many :appointments
 end

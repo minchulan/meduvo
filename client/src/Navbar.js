@@ -1,20 +1,20 @@
 import React, { useContext } from "react";
 import { UserContext } from "./context/user";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "./asset/logo.png";
 
 const Navbar = () => {
-  const { user, logout, loggedIn } = useContext(UserContext);
+  const { logout, loggedIn } = useContext(UserContext);
+  const navigate = useNavigate();
 
 
   const logoutUser = () => {
     // DELETE '/logout'
     fetch("/logout", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+      method: "DELETE"
     }).then(() => {
       logout();
-
+      navigate('/');
     });
   };
 
@@ -24,7 +24,6 @@ const Navbar = () => {
         <NavLink to="/">
           <img src={logo} alt="Meduvo Logo" />
         </NavLink>
-
       </nav>
       {loggedIn ? (
         <>
@@ -32,6 +31,9 @@ const Navbar = () => {
         </>
       ) : (
         <div className="nav-links">
+          <NavLink to="/contact">
+            <h5>Contact Us</h5>
+          </NavLink>
           <NavLink to="/login">
             <h5>Log In</h5>
           </NavLink>
@@ -46,66 +48,23 @@ const Navbar = () => {
 
 export default Navbar;
 
+
 // //-----------------
 
 /*
-The Navbar component:
-It imports the necessary dependencies and resources, including React, the NavLink component from React Router, and a logo image.
-Inside the component function, it declares the Navbar component and initializes the necessary state variables using the useState hook. These variables include menu for managing the navigation menu state, and user, logout, and loggedIn obtained from the UserContext using the useContext hook.
-The logoutUser function is defined to handle the user logout functionality. It sends a DELETE request to /logout endpoint and, upon success, updates the user state using the logout function obtained from the UserContext and navigates the user to the home page.
-The component renders a navigation bar with a logo, user greeting, and logout button if the user is logged in. Otherwise, it renders login and signup links/buttons.
-The Navbar component is exported as the default export.
-*/
+This code defines the Navbar component, which is responsible for rendering the navigation bar of the application.
 
-
-// In the Navbar, I bring in user, logout, and loggedIn from context.
-// I set logoutUser to hit my '/logout' route -> this takes them out of the session hash
-// Then, I call logout over in context -> this sets loggedIn to false
-// Finally, navigate to home.
-
-/*
-import React, { useState, useContext } from "react";
-import { UserContext } from "./context/user";
-import { NavLink, useNavigate } from "react-router-dom";
-
-
-const Navbar = () => {
-  const [menu, setMenu] = useState(false);
-  const { user, logout, loggedIn } = useContext(UserContext);
-  const navigate = useNavigate();
-
-  const logoutUser = () => {
-    // DELETE '/logout'
-    fetch("/logout", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(() => {
-        logout();
-        navigate("/");
-      })
-  };
-
-  return (
-    <div className="highlight">
-      {loggedIn ? (
-        <>
-          <h3>Hello, {user.username}</h3>
-          <button onClick={logoutUser}>Logout</button>
-        </>
-      ) : (
-        <>
-          <NavLink to="/login">
-              <button>Login</button>
-          </NavLink>
-          <NavLink to="/signup">
-            <button>Signup</button>
-          </NavLink>
-          </>
-      )}
-    </div>
-  );
-};
-
-export default Navbar;
+1] Import the necessary dependencies - useContext, UserContext, NavLink. 
+2] Define the `Navbar` component
+3] Within the Navbar component:
+  [] the useContext hook accesses the UserContext and retrieves the logout and loggedIn functions/values from it.
+  [] the logoutUser function is defined, which sends a DELETE request to `/logout` and calls the logout function when the request is successful.
+4] Render the HTML structure for the navigation bar:
+  [] the NavLink component is used to create a link to the home page with the Meduvo logo as the navigation logo.
+  [] Conditionally rendering the content based on whether the user is logged in or not:
+      [] If loggedIn is true, render a logout button that calls the logoutUser function when clicked.
+      [] If loggedIn is false, render the navigation links:
+      [] Links to the "Contact Us" page and the "Log In" page are provided using NavLink.
+      [] A link to the "Signup" page is provided with a "Get Started" button.
+5] Exported `Navbar` component so that it can be used in other parts of the app. 
 */

@@ -1,23 +1,28 @@
 class ApplicationController < ActionController::API
-  before_action :authenticate_user, only: [:create]
   include ActionController::Cookies
+  before_action :authenticate_user
+  # include CurrentUserConcern
+  # before_action :set_current_user, only: [:index, :create, :show, :update, :destroy]
 
   def current_user
-    @current_user ||= User.find_by_id(session[:user_id]) #memoization
+    @current_user ||= User.find_by_id(session[:user_id]) 
   end 
+
+  # def current_user
+  #   @current_user ||= User.find_by(email: session[:user_email]) if session[:user_email]
+  # end
+
 
   private 
   
   def authenticate_user #checking if a user is logged in only
-    render json: { error: {User: "Unauthorized" }}, status: :unauthorized unless @current_user
-    # session.include? :user_id
+    return render json: { error: {User: "Unauthorized" }}, status: :unauthorized unless session.include? :user_id
   end 
 
-  # admin status 
-  def is_authorized?
-    permitted = @current_user.admin? 
-    render json: { errors: {User: "Does not have admin permissions"}}, status: :forbidden unless permitted 
-  end 
+  # def set_current_user
+  #   authenticate_user
+  #   @current_user = current_user
+  # end
 
 end
 
@@ -69,3 +74,18 @@ end
 # before_action is used to define filters that run before specific actions, while skip_before_action is used to exclude specific actions from the execution of a defined filter. These methods allow you to control the execution order and selectively apply filters to actions in your controller.
 
 # We want to restrict all routes except for our sessions login, and user signup. 
+
+
+  # admin status 
+  # def is_authorized?
+  #   permitted = @current_user.admin? 
+  #   render json: { errors: {User: "Does not have admin permissions"}}, status: :forbidden unless permitted 
+  # end 
+
+  #   def invalid_record(invalid)
+  #   render json: { error: invalid.record.errors.full_messages.to_sentence }, status: :not_found 
+  # end 
+
+  # def no_route
+  #   render json: { error: "Not authorized" }, status: :unauthorized unless session.include? :user_id 
+  # end 

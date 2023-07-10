@@ -1,3 +1,6 @@
+# == Route Map
+#
+
 Rails.application.routes.draw do
   
   # Patients
@@ -14,10 +17,19 @@ Rails.application.routes.draw do
   # Sessions
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
-  
+
   # Routing logic: fallback requests for React Router.
   # Leave this here to help deploy your app later!
   get "*path", to: "fallback#index", constraints: ->(req) { !req.xhr? && req.format.html? }
 end
 
-# line 7: we use a POST request because we're sending user data, sending information to create a new session. Created endpoint '/login' 
+
+# ----------------------------------------------
+
+## nested routes 
+# resources :patients do 
+  #   # resources :appointments, only: [:index, :create]
+  #   resources :appointments, shallow: true 
+  # end 
+
+# line 15: we use a POST request because we're sending user data, sending information to create a new session. Created endpoint '/login' 
