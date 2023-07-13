@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Contact = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -14,6 +17,10 @@ const Contact = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   const { first_name, last_name, dob, address, phone, email, notes } = formData;
+
+  const goBack = () => {
+    navigate(-1);
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -42,8 +49,21 @@ const Contact = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        setSuccessMessage("Form successfully sent.");
-        setFormData("");
+        setSuccessMessage("Form successfully sent! A healthcare provider will reach out to you within 24-48 hours.");
+        setFormData({
+          first_name: "",
+          last_name: "",
+          dob: "",
+          phone: "",
+          email: "",
+          address: "",
+          notes: "",
+        });
+        // navigate("/"); // Navigate back to the home page after successful form submission
+      })
+      .catch((error) => {
+        console.error(error);
+        setSuccessMessage("An error occurred. Please try again.");
       });
   };
 
@@ -57,7 +77,7 @@ const Contact = () => {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="first_name">
-            First Name: <span className="required-field">*</span>
+            First Name:
           </label>
           <input
             required
@@ -73,7 +93,7 @@ const Contact = () => {
         </div>
         <div className="form-group">
           <label htmlFor="last_name">
-            Last Name: <span className="required-field">*</span>
+            Last Name:
           </label>
           <input
             required
@@ -89,7 +109,7 @@ const Contact = () => {
         </div>
         <div className="form-group">
           <label htmlFor="dob">
-            Date of birth: <span className="required-field">*</span>
+            Date of birth:
           </label>
           <input
             required
@@ -104,7 +124,7 @@ const Contact = () => {
         </div>
         <div className="form-group">
           <label htmlFor="email">
-            Email: <span className="required-field">*</span>
+            Email:
           </label>
           <input
             onChange={handleChange}
@@ -119,7 +139,7 @@ const Contact = () => {
         </div>
         <div className="form-group">
           <label htmlFor="phone">
-            Phone Number: <span className="required-field">*</span>
+            Phone Number:
           </label>
           <input
             required
@@ -160,11 +180,37 @@ const Contact = () => {
             className="form-control"
           ></textarea>
         </div>
+
         <button type="submit" className="btn btn-primary">
           Submit
         </button>
       </form>
+      <br />
+      {successMessage && (
+        <p className="success-message" style={{ color: "red" }}>
+          {successMessage}
+        </p>
+      )}
       <hr />
+      <button
+        className="go-back-button"
+        onClick={goBack}
+        style={{
+          backgroundColor: "#ffffff",
+          color: "#333333",
+          border: "1px solid #cccccc",
+          borderRadius: "5px",
+          padding: "10px 20px",
+          fontSize: "16px",
+          fontWeight: "bold",
+          cursor: "pointer",
+        }}
+      >
+        ◁ Go Back
+      </button>
+      <br />
+      <br />
+      <br />
     </div>
   );
 };

@@ -5,8 +5,6 @@ import { Link } from "react-router-dom";
 const Home = () => {
   const { user, loggedIn } = useContext(UserContext);
 
-  console.log({ user });
-
   const capitalizeUsername =
     user && user.username
       ? user.username.charAt(0).toUpperCase() + user.username.slice(1)

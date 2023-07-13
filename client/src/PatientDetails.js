@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const PatientDetails = () => {
   const { id } = useParams();
   const [patient, setPatient] = useState(null);
+
+  const navigate = useNavigate();
+
+  const goBack = () => {
+    navigate(-1);
+  };
 
   useEffect(() => {
     fetch(`/patients/${id}`)
@@ -60,7 +66,27 @@ const PatientDetails = () => {
           <strong>Viewed Notice of Privacy Practices: </strong>
           {patient.viewed_notice_of_privacy_practices}
         </div>
-        {/* Render additional patient details */}
+        {/* Render additional patient details if applicable */}
+        <hr />
+        <button
+          className="go-back-button"
+          onClick={goBack}
+          style={{
+            backgroundColor: "#ffffff",
+            color: "#333333",
+            border: "1px solid #cccccc",
+            borderRadius: "5px",
+            padding: "10px 20px",
+            fontSize: "16px",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          ◁ Go Back
+        </button>
+        <br />
+        <br />
+        <br />
       </div>
     );
   }

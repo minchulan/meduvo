@@ -6,6 +6,7 @@ import PatientCard from "./PatientCard";
 const PatientList = ({ patients, onAddPatient }) => {
   const { user } = useContext(UserContext);
   const [showForm, setShowForm] = useState(false);
+  const [errors, setErrors] = useState(null);
   const [patient, setPatient] = useState({
     first_name: "",
     last_name: "",
@@ -17,32 +18,6 @@ const PatientList = ({ patients, onAddPatient }) => {
 
   const navigate = useNavigate();
 
-  // const patientsToDisplay =
-  //   user && user.patients ? (
-  //     user.patients.map((patient) => (
-  //       <Link key={patient.id} to={`/patients/${String(patient.id)}`}>
-  //         <PatientCard patient={patient} />
-  //       </Link>
-  //     ))
-  //   ) : (
-  //     <div>Loading patients...</div>
-  //   );
-
-    // const patientsToDisplay =
-    //   user && user.patients ? (
-    //     user.patients.map((patient) => (
-    //       <Link key={patient.id} to={`/patients/${String(patient.id)}`}>
-    //         <ul>
-    //           <li>
-    //             {patient.first_name} {patient.last_name}
-    //           </li>
-    //         </ul>
-    //       </Link>
-    //     ))
-    //   ) : (
-    //     <div>Loading patients...</div>
-    //   );
-  
   const patientsToDisplay =
     user && user.patients ? (
       user.patients.map((patient) => (
@@ -54,14 +29,12 @@ const PatientList = ({ patients, onAddPatient }) => {
       <div>Loading patients...</div>
     );
 
-
   const goBack = () => {
     navigate(-1);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const newPatient = {
       first_name: patient.first_name,
       last_name: patient.last_name,
@@ -80,6 +53,13 @@ const PatientList = ({ patients, onAddPatient }) => {
       },
       body: JSON.stringify(newPatient),
     })
+      // .then(res => {
+      //   if (res.ok) {
+      //     res.json().then(console.log)
+      //   } else {
+      //     res.json().then(e => setErrors((e.errors)))
+      //   }
+      // })
       .then((res) => res.json())
       .then((data) => {
         // Add the new patient to the list
@@ -150,6 +130,21 @@ const PatientList = ({ patients, onAddPatient }) => {
             }
             className="form-input"
           />
+          <label htmlFor="gender" className="form-label">
+            Gender:
+          </label>
+          <input
+            type="text"
+            id="gender"
+            name="gender"
+            placeholder="Gender at birth"
+            autoComplete="on"
+            value={patient.gender}
+            onChange={(e) =>
+              setPatient({ ...patient, gender: e.target.value })
+            }
+            className="form-input"
+          />
           <label htmlFor="dob" className="form-label">
             Date of Birth:
           </label>
@@ -160,6 +155,21 @@ const PatientList = ({ patients, onAddPatient }) => {
             placeholder="Date of Birth"
             value={patient.dob}
             onChange={(e) => setPatient({ ...patient, dob: e.target.value })}
+            className="form-input"
+          />
+          <label htmlFor="allergies" className="form-label">
+            Allergies:
+          </label>
+          <input
+            type="text"
+            id="allergies"
+            name="allergies"
+            placeholder="E.g., Rash with penicillin"
+            autoComplete="on"
+            value={patient.allergies}
+            onChange={(e) =>
+              setPatient({ ...patient, allergies: e.target.value })
+            }
             className="form-input"
           />
           <label htmlFor="phone" className="form-label">
@@ -254,6 +264,9 @@ export default PatientList;
 
 //-----------------
 /*
+
+Controlled form and onSubmit, I have all of my attributes going to the user's patient object. 
+Make a POST request, start with fetch "/patients" route. Add in a config object (attributes - method, headers, body) to tell our request-response cycle what data to expect. Body takes the actual patient. Stringify patient to be able to send it in the request. onSubmit, hits our patients route, which hits our create action and byebug in our create action. if you take a look at patient_params you can see the stuff from the form. 
 
 When the NewPatient form is submitted, make a POST request to /patients, with an object in the body:
 

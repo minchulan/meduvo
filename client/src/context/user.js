@@ -1,20 +1,22 @@
+// UserProvider.js
 import React, { useState, useEffect, createContext } from "react";
 
-// Create Context
 const UserContext = createContext();
 
-// Create a provider component
 function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    fetch("/me")
-      .then((res) => res.json())
-        .then((data) => {
+    fetch("/me", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
         setUser(data);
-        setLoggedIn(!!data);
+        setLoggedIn(true);
       })
       .catch((error) => {
         setError(error);
@@ -28,8 +30,18 @@ function UserProvider({ children }) {
   };
 
   const logout = () => {
-    setUser(null);
-    setLoggedIn(false);
+    fetch("/logout", {
+      method: "DELETE",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then(() => {
+        setUser(null);
+        setLoggedIn(false);
+      })
+      .catch((error) => {
+        setError(error);
+      });
   };
 
   const signup = (user) => {
@@ -38,21 +50,12 @@ function UserProvider({ children }) {
   };
 
   return (
-    <UserContext.Provider
-      value={{
-        user,
-        login,
-        logout,
-        signup,
-        loggedIn,
-      }}
-    >
-      {error ? <h2>{error}</h2> : children}
+    <UserContext.Provider value={{ user, login, logout, signup, loggedIn }}>
+      {error ? <h2>{error.message}</h2> : children}
     </UserContext.Provider>
   );
 }
 
-// Export
 export { UserContext, UserProvider };
 
 /*
