@@ -1,28 +1,16 @@
 class ApplicationController < ActionController::API
   include ActionController::Cookies
-  before_action :authenticate_user
-  # include CurrentUserConcern
-  # before_action :set_current_user, only: [:index, :create, :show, :update, :destroy]
+  before_action :authenticate_user 
 
   def current_user
     @current_user ||= User.find_by_id(session[:user_id]) 
   end 
 
-  # def current_user
-  #   @current_user ||= User.find_by(email: session[:user_email]) if session[:user_email]
-  # end
-
-
   private 
   
   def authenticate_user #checking if a user is logged in only
-    return render json: { error: {User: "Unauthorized" }}, status: :unauthorized unless session.include? :user_id
+    return render json: { error: {User: "Unauthorized" }}, status: :unauthorized unless current_user
   end 
-
-  # def set_current_user
-  #   authenticate_user
-  #   @current_user = current_user
-  # end
 
 end
 

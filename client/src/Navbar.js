@@ -7,15 +7,9 @@ const Navbar = () => {
   const { logout, loggedIn } = useContext(UserContext);
   const navigate = useNavigate();
 
-
-  const logoutUser = () => {
-    // DELETE '/logout'
-    fetch("/logout", {
-      method: "DELETE"
-    }).then(() => {
-      logout();
-      navigate('/');
-    });
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
 
   return (
@@ -27,7 +21,7 @@ const Navbar = () => {
       </nav>
       {loggedIn ? (
         <>
-          <button onClick={logoutUser}>Logout</button>
+          <button onClick={handleLogout}>Logout</button>
         </>
       ) : (
         <div className="nav-links">

@@ -1,16 +1,14 @@
 class PatientsController < ApplicationController
-
     # GET '/patients'
     def index
-        if @current_user.nil?
-            render json: { error: 'User not authenticated' }, status: :unauthorized
-            return
-        end
+        patient = current_user.patients.build(patient_params)
 
-        patients = @current_user.patients
-        render json: patients, status: :ok
+        if patient.save
+            render json: patient, status: :created 
+        else  
+            render json: { errors: patient.errors.full_messages }, status: :unprocessable_entity
+        end 
     end
-
 
     # POST '/patients'
     def create 
@@ -66,7 +64,7 @@ class PatientsController < ApplicationController
     private 
 
     def patient_params
-        params.require(:patient).permit(:first_name, :last_name, :guardian, :gender, :dob, :address, :phone, :email, :language_preferences, :allergies, :viewed_notice_of_privacy_practices)
+        params.require(:patient).permit(:first_name, :last_name, :guardian, :gender, :dob, :address, :phone, :email, :allergies, :notes)
     end 
 
 end

@@ -3,18 +3,13 @@ import { UserContext } from "./context/user";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  const { user, loggedIn } = useContext(UserContext);
-
-  const capitalizeUsername =
-    user && user.username
-      ? user.username.charAt(0).toUpperCase() + user.username.slice(1)
-      : user && user.email;
+  const { loggedIn } = useContext(UserContext);
 
   if (loggedIn) {
     return (
       <div className="home">
-        <h1>Welcome, {capitalizeUsername}</h1>
-        <p>Optimize your patient schedules and get the most out of Meduvo</p>
+        <h2>Meduvo Hub</h2>
+        <br />
         <div className="home-buttons">
           <Link to="/patients">
             <button className="home-button">My Account</button>

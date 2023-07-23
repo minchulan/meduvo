@@ -1,19 +1,16 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
-import { useNavigate, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+
+const initialFormDataState = {
+  email: "",
+  password: "",
+};
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    username: "",
-    password: "",
-  });
-
-  const [errors, setErrors] = useState([]);
+  const [formData, setFormData] = useState(initialFormDataState);
   const { login } = useContext(UserContext);
-  const navigate = useNavigate();
-
-  const { email, username, password } = formData;
+  const { email, password } = formData;
 
   const handleChange = (e) => {
     setFormData({
@@ -26,48 +23,15 @@ const Login = () => {
     e.preventDefault();
     const user = {
       email,
-      username,
       password,
     };
-
-    fetch(`/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.errors) {
-          console.log(data)
-          login(data);
-          navigate("/");
-        } else {
-          setErrors(data.errors);
-        }
-      })
-      .catch((error) => {
-        console.error("Login error:", error);
-        setErrors(["An error occurred during login. Please try again."]);
-      });
+    login(user);
   };
 
   return (
     <div className="login">
       <h2>Welcome back</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
-          <input
-            onChange={handleChange}
-            value={formData.username}
-            type="text"
-            name="username"
-            id="username"
-            placeholder="Username"
-            className="input-text"
-            autoComplete="on"
-          />
-        </div>
         <div>
           <label htmlFor="email">
             Email: <span className="required-field">*</span>
@@ -109,12 +73,7 @@ const Login = () => {
         </small>
       </>
       <hr />
-      <p style={{ fontSize: "14px", color: "red" }}>{errors}</p>
-      {/* <div className="error">
-        {errors.map((error, index) => (
-          <p key={index}>{error}</p>
-        ))}
-      </div> */}
+      {/* <p style={{ fontSize: "14px", color: "red" }}>{errors}</p> */}
     </div>
   );
 };
@@ -122,6 +81,7 @@ const Login = () => {
 export default Login;
 
 /*
+For signup and login, threw fetches in the components rather than user context. some would argue to throw it in user context to really clean up the code. 
 This code defines the Login component, which represents the login form for the application. It handles the rendering and submission of the login form. It manages the form state, performs form validation, and communicates with the server to handle the login process: 
 
 1] Import the necessary dependencies

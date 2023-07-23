@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Routes, Route } from "react-router-dom";
+import { UserContext } from "./context/user";
+
+// Components
 import Navbar from "./Navbar";
 import Home from "./Home";
-import { UserProvider } from "./context/user";
 import Login from "./Login";
 import Signup from "./Signup";
 import AppointmentList from "./AppointmentList";
+import AppointmentDetails from "./AppointmentDetails";
+import NewAppointment from "./NewAppointment";
 import PatientList from "./PatientList";
 import PatientDetails from "./PatientDetails";
+import EditPatient from "./EditPatient";
+import NewPatient from "./NewPatient";
 import Footer from "./Footer";
 import About from "./About";
 import Contact from "./Contact";
@@ -17,49 +23,64 @@ import Feature2 from "./Feature2";
 import Feature3 from "./Feature3";
 
 const App = () => {
-  const [patients, setPatients] = useState([]); // Initialize patients as an empty array
-  const [appointments, setAppointments] = useState([]);
+  const { patients, setPatients, addPatient } = useContext(UserContext);
 
-  const addPatient = (patientObj) => {
-    console.log({ patients });
-    const updatedPatients = [...patients, patientObj];
+  // Handler for deleting a patient
+  const handleDeletePatient = (id) => {
+    const updatedPatients = patients.filter((patient) => patient.id !== id);
     setPatients(updatedPatients);
   };
 
-  const addAppointment = (appointmentObj) => {
-    setAppointments([...appointments, appointmentObj]);
+  // Handler for updating a patient
+  // const handleUpdatePatient = (id) => {};
+
+  // Handler for adding a new patient 
+  const handleAddPatient = (patient) => {
+    addPatient(patient); // Call the addPatient function from the UserContext
   };
 
   return (
     <main className="App">
-      <UserProvider>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/appointments" element={<AppointmentList />} />
-          <Route
-            exact
-            path="/patients"
-            element={
-              <PatientList patients={patients} onAddPatient={addPatient} />
-            }
-          />
-          <Route
-            exact
-            path="/patients/:id"
-            element={<PatientDetails patients={patients} />}
-          />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/faqs" element={<Faqs />} />
-          <Route exact path="/feature1" element={<Feature1 />} />
-          <Route exact path="/feature2" element={<Feature2 />} />
-          <Route exact path="/feature3" element={<Feature3 />} />
-        </Routes>
-        <Footer />
-      </UserProvider>
+      <Navbar />
+      <Routes>
+        {/* Public Routes */}
+        <Route exact path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
+        {/* Patients Routes */}
+        <Route
+          exact
+          path="/patients"
+          element={<PatientList onAddPatient={handleAddPatient} onDeletePatient={handleDeletePatient} />}
+        />
+        <Route exact path="/patients/:id" element={<PatientDetails />} />
+        <Route exact path="/patients/new" element={<NewPatient />} />
+        <Route exact path="/patients/:id/edit" element={<EditPatient />} />
+
+        {/* Appointments Routes */}
+        <Route exact path="/appointments" element={<AppointmentList />} />
+        <Route
+          exact
+          path="/appointments/:id"
+          element={<AppointmentDetails />}
+        />
+        <Route
+          path="/patients/:patientId/appointments/new"
+          element={<NewAppointment />}
+        />
+
+        {/* Other Public Routes */}
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/faqs" element={<Faqs />} />
+
+        {/* Feature Routes */}
+        <Route path="/feature1" element={<Feature1 />} />
+        <Route path="/feature2" element={<Feature2 />} />
+        <Route path="/feature3" element={<Feature3 />} />
+      </Routes>
+      <Footer />
     </main>
   );
 };

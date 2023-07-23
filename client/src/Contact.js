@@ -187,7 +187,7 @@ const Contact = () => {
       </form>
       <br />
       {successMessage && (
-        <p className="success-message" style={{ color: "red" }}>
+        <p className="success-message" style={{ color: "blue" }}>
           {successMessage}
         </p>
       )}

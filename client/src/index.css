@@ -1,4 +1,4 @@
-/* For testing purposes only  */
+For testing purposes only 
 .highlight {
   border: 6px solid red;
 }
@@ -962,7 +962,16 @@ textarea.form-control {
 }
 
 .form-submit {
-  background-color: #333;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.form-cancel {
+  background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 4px;

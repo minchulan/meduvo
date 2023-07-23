@@ -1,29 +1,39 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PatientCard from "./PatientCard";
 
-const PatientList = ({ patients, onAddPatient }) => {
-  const { user } = useContext(UserContext);
-  const [showForm, setShowForm] = useState(false);
-  const [errors, setErrors] = useState(null);
-  const [patient, setPatient] = useState({
-    first_name: "",
-    last_name: "",
-    dob: "",
-    phone: "",
-    email: "",
-    address: "",
-  });
+// set up form as an object, rather than having state for each input field:
+const initialPatientState = {
+  first_name: "",
+  last_name: "",
+  dob: "",
+  phone: "",
+  email: "",
+  address: "",
+};
 
+const PatientList = ({ onAddPatient, onDeletePatient }) => {
+  const { patients, user, addPatient } = useContext(UserContext);
+  const [showForm, setShowForm] = useState(false);
+  const [patientFormData, setPatientFormData] = useState(initialPatientState);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const navigate = useNavigate();
 
-  const patientsToDisplay =
-    user && user.patients ? (
-      user.patients.map((patient) => (
-        <Link key={patient.id} to={`/patients/${patient.id}`}>
-          <PatientCard patient={patient} />
-        </Link>
+  // useEffect(() => {
+  //   // Fetch patients from the server and update the state 
+  //   fetchPatients();
+
+  // }, []);
+
+  const patientCards =
+    patients.length > 0 ? (
+      patients.map((patient) => (
+        <PatientCard
+          key={patient.id}
+          patient={patient}
+          onDeletePatient={onDeletePatient}
+        />
       ))
     ) : (
       <div>Loading patients...</div>
@@ -35,56 +45,38 @@ const PatientList = ({ patients, onAddPatient }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newPatient = {
-      first_name: patient.first_name,
-      last_name: patient.last_name,
-      dob: patient.dob,
-      address: patient.address,
-      email: patient.email,
-      phone: patient.phone,
-      notes: patient.notes,
-    };
-
-    // Make a POST request to add the new patient 
-    fetch("/patients", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newPatient),
-    })
-      // .then(res => {
-      //   if (res.ok) {
-      //     res.json().then(console.log)
-      //   } else {
-      //     res.json().then(e => setErrors((e.errors)))
-      //   }
-      // })
-      .then((res) => res.json())
-      .then((data) => {
-        // Add the new patient to the list
-        // Call the onAddPatient function passed as a prop to add the new patient
-        console.log(data);
-        onAddPatient(data);
-
-        // Navigate to the newly created patient's details page
-        navigate(`/patients/${patient.id}`);
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error("Error adding patient:", error);
-      });
-    
-    // Reset the form fields and hide the form
-    setPatient({
-      first_name: "",
-      last_name: "",
-      dob: "",
-      phone: "",
-      email: "",
-      address: "",
+    // handing the patient from this form to global state (the addPatient in context) which is where the patients lives.
+    addPatient({
+      first_name: patientFormData.first_name,
+      last_name: patientFormData.last_name,
+      dob: patientFormData.dob,
+      address: patientFormData.address,
+      email: patientFormData.email,
+      phone: patientFormData.phone,
+      notes: patientFormData.notes,
     });
-    setShowForm(false);
+
+    setShowConfirmation(true); // Show the confirmation message
+    setPatientFormData(initialPatientState); // Clear the form fields
+    setShowForm(false); // Close the form after adding a patient
+
+    // Reset the confirmation message after 3 seconds
+
+    setTimeout(() => {
+      setShowConfirmation(false);
+    }, 3000); // 3 seconds (adjust as needed)
+  };
+
+  const handleChange = (e) => {
+    const key = e.target.id; //corresponds to which key in state we're trying to update!
+    setPatientFormData({
+      ...patientFormData,
+      [key]: e.target.value, // dynamically evaluates key based on whatever this variable holds
+    });
+  };
+
+  const handleCancel = () => {
+    setShowForm(false); // Hide the form
   };
 
   return (
@@ -96,8 +88,6 @@ const PatientList = ({ patients, onAddPatient }) => {
       )}
       <br />
       <h2>My Patients</h2>
-      <ul>{patientsToDisplay}</ul>
-      <br />
       {showForm ? (
         <form onSubmit={handleSubmit} className="form-container">
           <label htmlFor="first_name" className="form-label">
@@ -109,10 +99,8 @@ const PatientList = ({ patients, onAddPatient }) => {
             name="first_name"
             placeholder="e.g., John"
             autoComplete="on"
-            value={patient.first_name}
-            onChange={(e) =>
-              setPatient({ ...patient, first_name: e.target.value })
-            }
+            value={patientFormData.first_name}
+            onChange={handleChange}
             className="form-input"
           />
           <label htmlFor="last_name" className="form-label">
@@ -124,27 +112,24 @@ const PatientList = ({ patients, onAddPatient }) => {
             name="last_name"
             placeholder="Smith"
             autoComplete="on"
-            value={patient.last_name}
-            onChange={(e) =>
-              setPatient({ ...patient, last_name: e.target.value })
-            }
+            value={patientFormData.last_name}
+            onChange={handleChange} // handleChange works as long as id matches key we're trying to update in patientForm object
             className="form-input"
           />
           <label htmlFor="gender" className="form-label">
-            Gender:
+            Gender at Birth:
           </label>
-          <input
-            type="text"
+          <select
             id="gender"
             name="gender"
-            placeholder="Gender at birth"
-            autoComplete="on"
-            value={patient.gender}
-            onChange={(e) =>
-              setPatient({ ...patient, gender: e.target.value })
-            }
+            value={patientFormData.gender}
+            onChange={handleChange}
             className="form-input"
-          />
+          >
+            <option value=""> - </option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
           <label htmlFor="dob" className="form-label">
             Date of Birth:
           </label>
@@ -153,8 +138,8 @@ const PatientList = ({ patients, onAddPatient }) => {
             id="dob"
             name="dob"
             placeholder="Date of Birth"
-            value={patient.dob}
-            onChange={(e) => setPatient({ ...patient, dob: e.target.value })}
+            value={patientFormData.dob}
+            onChange={handleChange}
             className="form-input"
           />
           <label htmlFor="allergies" className="form-label">
@@ -166,10 +151,8 @@ const PatientList = ({ patients, onAddPatient }) => {
             name="allergies"
             placeholder="E.g., Rash with penicillin"
             autoComplete="on"
-            value={patient.allergies}
-            onChange={(e) =>
-              setPatient({ ...patient, allergies: e.target.value })
-            }
+            value={patientFormData.allergies}
+            onChange={handleChange}
             className="form-input"
           />
           <label htmlFor="phone" className="form-label">
@@ -181,8 +164,8 @@ const PatientList = ({ patients, onAddPatient }) => {
             name="phone"
             placeholder="+1 555 655 5656"
             autoComplete="on"
-            value={patient.phone}
-            onChange={(e) => setPatient({ ...patient, phone: e.target.value })}
+            value={patientFormData.phone}
+            onChange={handleChange}
             className="form-input"
           />
           <label htmlFor="email" className="form-label">
@@ -194,8 +177,8 @@ const PatientList = ({ patients, onAddPatient }) => {
             name="email"
             placeholder="name@email.com"
             autoComplete="on"
-            value={patient.email}
-            onChange={(e) => setPatient({ ...patient, email: e.target.value })}
+            value={patientFormData.email}
+            onChange={handleChange}
             className="form-input"
           />
           <label htmlFor="address" className="form-label">
@@ -207,10 +190,8 @@ const PatientList = ({ patients, onAddPatient }) => {
             name="address"
             placeholder="Enter patient's home address"
             autoComplete="on"
-            value={patient.address}
-            onChange={(e) =>
-              setPatient({ ...patient, address: e.target.value })
-            }
+            value={patientFormData.address}
+            onChange={handleChange}
             className="form-input"
           />
           <label htmlFor="notes" className="form-label">
@@ -221,14 +202,26 @@ const PatientList = ({ patients, onAddPatient }) => {
             name="notes"
             placeholder="Add any pertinent patient information..."
             autoComplete="on"
-            value={patient.notes}
-            onChange={(e) => setPatient({ ...patient, notes: e.target.value })}
+            value={patientFormData.notes}
+            onChange={handleChange}
             className="form-input"
           />
           <br />
           <br />
-          <button type="submit" className="form-submit">
+          <button
+            type="submit"
+            className="form-submit"
+            style={{ marginRight: "10px" }}
+          >
             Add
+          </button>
+          <button
+            type="submit"
+            className="form-cancel"
+            onClick={handleCancel}
+            style={{ marginLeft: "10px" }}
+          >
+            Cancel
           </button>
         </form>
       ) : (
@@ -236,6 +229,15 @@ const PatientList = ({ patients, onAddPatient }) => {
           Add patient
         </button>
       )}
+
+      {showConfirmation && (
+        <div className="confirmation-message">
+          New patient added successfully!
+        </div>
+      )}
+
+      <ul>{patientCards}</ul>
+      <br />
       <hr />
       <button
         className="go-back-button"
@@ -265,6 +267,61 @@ export default PatientList;
 //-----------------
 /*
 
+Make sure that the patientForm state in your component has a gender property that is being updated correctly by the handleChange function. The value attribute of the select element should be set to the gender property of the patientForm state. When a user selects an option from the dropdown, the handleChange function should update the patientForm.gender value accordingly.
+
+By ensuring that the value attribute of the select element corresponds to the state value and that the handleChange function updates the state correctly, the select input field should work as expected. It will display the currently selected option and update the state when the user selects a different option from the dropdown.
+
+
+    controlled form - keeping our state object in sync with what is displayed in the DOM. 
+
+  # edge case with checkbox type => value is e.target.checked not e.target.value 
+  # code below gives you a more flexible interface so now anytime you want to add a new input field to form, just add a new key in state, and add a new input field with a correct id that matches that key in state, and reuse that handleChange rather than making a new handleChange function every time! 
+  # set up your form as an object 
+
+  function handleChange(event) {
+    const key = event.target.id
+    const value = event.target.type === "checkbox" ? event.target.checked : event.target.value
+    console.log(event.target)
+    setFormData({ 
+      ...formData, 
+      [key]: value
+    })
+  }
+
+    // // Make a POST request to add the new patient 
+    // fetch("/patients", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(newPatient),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     // Add the new patient to the list
+    //     // Call the onAddPatient function passed as a prop to add the new patient
+    //     console.log(data);
+    //     onAddPatient(data);
+
+    //     // Navigate to the newly created patient's details page
+    //     navigate(`/patients/${patient.id}`);
+    //   })
+    //   .catch((error) => {
+    //     // Handle any errors
+    //     console.error("Error adding patient:", error);
+    //   });
+    
+    // // Reset the form fields and hide the form
+    // setPatient({
+    //   first_name: "",
+    //   last_name: "",
+    //   dob: "",
+    //   phone: "",
+    //   email: "",
+    //   address: "",
+    // });
+    // setShowForm(false);
+
 Controlled form and onSubmit, I have all of my attributes going to the user's patient object. 
 Make a POST request, start with fetch "/patients" route. Add in a config object (attributes - method, headers, body) to tell our request-response cycle what data to expect. Body takes the actual patient. Stringify patient to be able to send it in the request. onSubmit, hits our patients route, which hits our create action and byebug in our create action. if you take a look at patient_params you can see the stuff from the form. 
 
@@ -289,7 +346,7 @@ For each feature, think about:
 - How can I pass data to the components that need it?
 */
 
-// { 
+// {
 //   user: {
 //     appointments: [],
 //     patients: [],

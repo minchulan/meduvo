@@ -1,19 +1,13 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
-import { useNavigate } from "react-router-dom";
 
+const initialFormDataSignUp = {
+  email: "",
+  password: ""
+};
 const Signup = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-
-  const [errors, setErrors] = useState([]);
+  const [formData, setFormData] = useState(initialFormDataSignUp);
   const { signup } = useContext(UserContext);
-  const navigate = useNavigate();
-
-  const { email, password } = formData;
 
   const handleChange = (e) => {
     setFormData({
@@ -24,49 +18,18 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(formData.password);
     const user = {
-      email,
-      password,
-    };
-
-    fetch(`/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.errors) {
-          signup(data);
-          navigate("/");
-        } else {
-          setErrors(data.errors);
-        }
-      })
-      .catch((error) => {
-        console.error("Signup error:", error);
-        setErrors(["An error occurred during signup. Please try again."]);
-      });
+      email: formData.email,
+      password: formData.password,
+    }
+    signup(user);
   };
-
 
   return (
     <div className="signup">
       <h2>You're one click away from less busywork</h2>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Username:</label>
-          <input
-            onChange={handleChange}
-            value={formData.username}
-            type="text"
-            id="username"
-            name="username"
-            placeholder="Username"
-            className="form-control"
-            autoComplete="on"
-          />
-        </div>
         <div className="form-group">
           <label htmlFor="email">
             Email: <span className="required-field">*</span>
@@ -80,7 +43,6 @@ const Signup = () => {
             id="email"
             placeholder="Email"
             className="form-control"
-            autoComplete="on"
           />
         </div>
         <div className="form-group">
@@ -103,19 +65,25 @@ const Signup = () => {
           Sign up
         </button>
       </form>
-      <div className="error">
-        {errors.map((error, index) => (
-          <p key={index}>{error}</p>
-        ))}
-      </div>
       <hr />
     </div>
   );
 };
 
-export default Signup;
+export default Signup; 
 
+
+
+//-----------------------------------
 /*
+
+handleSubmit:
+    user fills out the form and submits, signup() method is called (over in user context), which makes a fetch POST request to our server there. if everything goes good, we get our user back. Then we're going to update our user in state [user] with the setter callback function [setUser] and pass in the user (setUser(data)). Our user (aka current user) keeps track of the newly created user. We have access now the current user in the backend and mimicking that in the frontend. 
+
+   
+  // informed the backend of the new user, then checks to see if any errors. If no errors, calls signup user over in context which setsLoggedIn(true), navigates to homepage; else setErrors(data.errors)
+
+
 This code defines the Signup component, which represents the signup form for the application. It handles the rendering and submission of the signup form. It manages the form state, performs form validation, and communicates with the server to handle the signup process.
 
 1] Import the necessary dependencies

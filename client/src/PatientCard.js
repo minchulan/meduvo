@@ -1,38 +1,57 @@
-import React, { useContext } from "react";
-import { UserContext } from "./context/user";
-import { Link } from "react-router-dom";
+import React from "react";
+import { NavLink } from "react-router-dom";
 
-const PatientCard = ({ patient }) => {
-  const { user } = useContext(UserContext);
+const PatientCard = ({ patient, onDeletePatient }) => {
+  const { id, full_name } = patient;
 
-  const deletePatient = (id) => {
+  const deletePatient = () => {
     // Persist changes on server
-    // Then use OnDeletePatient to remove patient from state
+    fetch(`/patients/${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => {
+        if (res.ok) {
+          console.log(res)
+          onDeletePatient(id);
+        } else {
+          res.json().then((error) => {
+            console.error("Error deleting patient:", error);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting patient:", error);
+      });
   };
 
   const updatePatient = () => {
     // Persist changes on server
+    fetch(`/patients/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify( )
+    })
     // Then use onUpdatePatient to update patient in state
   };
 
   if (patient) {
     return (
       <div className="patient-card">
-        <Link to={`/patients/${patient.id}`} className="patient-link">
+        <NavLink to={`/patients/${id}`} className="patient-link">
           <h3 className="patient-name">
-            {patient.first_name} {patient.last_name}
+            {full_name}
           </h3>
-        </Link>
+        </NavLink>
         <div className="patient-actions">
           <button
             className="update-button"
-            onClick={() => updatePatient(patient.id)}
+            onClick={updatePatient}
           >
             ✏️ Update
           </button>
           <button
             className="delete-button"
-            onClick={() => deletePatient(patient.id)}
+            onClick={deletePatient}
           >
             🗑️ Delete
           </button>
@@ -49,4 +68,5 @@ export default PatientCard;
 //-----------
 /*
 PatientCard is where we will handle updates and deletes to our patients.
+
 */

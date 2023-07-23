@@ -11,7 +11,7 @@
 #  updated_at      :datetime         not null
 #
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :username, :email, :admin, :created_at, :updated_at
+  attributes :id, :username, :password, :email, :admin, :created_at, :updated_at
   has_many :patients
   has_many :appointments
 end
