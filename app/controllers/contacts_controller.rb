@@ -1,12 +1,13 @@
 class ContactsController < ApplicationController
   skip_before_action :authenticate_user, only: [:create]
 
+  # contact -- POST '/contact', to: "contacts#create"
   def create
     contact = Contact.new(contact_params)
     if contact.save
       render json: contact, status: :created
     else
-      render json: { error: contact.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: contact.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

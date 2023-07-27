@@ -13,24 +13,79 @@
 #  user_id     :integer
 #
 class Appointment < ApplicationRecord
-    belongs_to :user 
-    belongs_to :patient 
+  belongs_to :user 
+  belongs_to :patient 
 
-    validates :category, presence: true 
-    validates :name, presence: true 
-    validates :description, length: {in: (10..500)}
+  # validates :category, :name, presence: true 
+  # validates :description, length: { in: 10..500 }
+  # # validates :category, inclusion: { in: %w[category1 category2 category3] }
+  # validates :name, length: { minimum: 2, maximum: 50 }
 
-    before_save :format_name 
+  before_save :format_name 
 
-    scope :sort_desc_by_name, -> {self.order(name: :desc)}
+  scope :sort_desc_by_name, -> { order(name: :desc) }
 
-    def format_name
-        if self.name[0] != self.name[0].upcase 
-            self.name = self.name.capitalize 
-        end 
-    end 
+  def format_name
+    self.name = name.capitalize if name.present? && name[0] != name[0].upcase 
+  end 
 end
 
+
+# --------------------
+
+# Let's go through the code line by line:
+
+# ```ruby
+# class Appointment < ApplicationRecord
+# ```
+# - This line defines a new class named `Appointment` that inherits from `ApplicationRecord`. It signifies that `Appointment` is an ActiveRecord model.
+
+# ```ruby
+#   belongs_to :user 
+#   belongs_to :patient 
+# ```
+# - These lines establish associations between the `Appointment` model and the `User` and `Patient` models. It indicates that an appointment belongs to a user and a patient.
+
+# ```ruby
+#   validates :category, :name, presence: true 
+# ```
+# - These lines define validations for the `category` and `name` attributes. They ensure that both `category` and `name` must be present (not blank) for an appointment to be considered valid.
+
+# ```ruby
+#   validates :description, length: { in: 10..500 }
+# ```
+# - This line sets a validation for the `description` attribute. It checks that the length of the description is within the range of 10 to 500 characters.
+
+# ```ruby
+#   validates :category, inclusion: { in: %w[category1 category2 category3] }
+# ```
+# - This line validates that the `category` attribute can only have values that are included in the provided array (`category1`, `category2`, or `category3`).
+
+# ```ruby
+#   validates :name, length: { minimum: 2, maximum: 50 }
+# ```
+# - This line sets a validation for the `name` attribute. It specifies that the length of the name should be between 2 and 50 characters.
+
+# ```ruby
+#   before_save :format_name 
+# ```
+# - This line sets a callback to be executed before saving an appointment. It invokes the `format_name` method.
+
+# ```ruby
+#   scope :sort_desc_by_name, -> { order(name: :desc) }
+# ```
+# - This line defines a scope named `sort_desc_by_name` for the `Appointment` model. It sorts appointments in descending order based on the `name` attribute.
+
+# ```ruby
+#   def format_name
+#     self.name = name.capitalize if name.present? && name[0] != name[0].upcase 
+#   end 
+# ```
+# - This is a custom method defined within the `Appointment` model. It formats the `name` attribute by capitalizing the first letter if it's not already capitalized. It is called before saving an appointment.
+
+# --------------------------------
+
+# By combining the presence validations for category and name, you avoid repeating the presence: true validation. Additionally, the format validation is moved to a separate method format_name, which is called in the before_save callback. This makes the code more modular and DRY.
 
 # A scope in Rails allows you to define a specific subset of records in your model based on certain conditions. Scopes are used to encapsulate commonly used queries, making them reusable and providing a clean and readable way to define query conditions.
 

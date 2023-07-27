@@ -11,13 +11,41 @@
 #  updated_at      :datetime         not null
 #
 class User < ApplicationRecord
-    has_secure_password
-    has_many :appointments, dependent: :destroy 
-    has_many :patients, through: :appointments
+  has_secure_password
 
-    # validates :email, presence: true, uniqueness: true, format: {with: /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i}
-    # validates :password, length: {in: 6..25}
+  has_many :appointments, dependent: :destroy
+  has_many :patients, through: :appointments
+
+  validates :email, presence: true, uniqueness: { case_sensitive: false }
+
+  validates :password, presence: true, length: { minimum: 6 }
+
+
+
 end
+
+
+
+# -----------------------------
+
+  # validates :email, presence: true, uniqueness: { case_sensitive: false },
+  #                   format: { with: /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i,
+  #                             message: "must be a valid email address" }
+
+  # validates :username, presence: true, uniqueness: { case_sensitive: false },
+  #                      format: { with: /\A[a-zA-Z0-9_]+\z/,
+  #                                message: "can only contain letters, numbers, and underscores" },
+  #                      length: { minimum: 3, maximum: 25 }
+
+  # validates :password, length: { in: 6..25 },
+  #                      format: { with: /\A(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}\z/,
+  #                                message: "must be at least 6 characters long and include both letters and numbers" }
+
+
+# The uniqueness validation for email and username now includes case_sensitive: false to make the uniqueness checks case-insensitive.
+# Custom error messages have been added to provide more specific feedback to users. For example, the email validation now has a custom message that indicates the requirement for a valid email address.
+# A validation for password complexity has been added using a regular expression pattern. The pattern requires at least 6 characters and includes both letters and numbers.
+
 
 # has_secure_password already validates for presence of password. 
 

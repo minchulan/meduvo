@@ -1,12 +1,12 @@
 class AppointmentsController < ApplicationController 
     
-    # GET '/appointments'
+    # patient_appointments -- GET '/patients/:patient_id/appointments', to: "appoointments#index"
     def index
         appointments = @current_user.appointments
         render json: appointments, status: :ok 
     end 
 
-    # POST '/appointments'
+    # patient_appointments -- POST '/patients/:patient_id/appointments', to: "appointments#create"
     def create 
         appointment = @current_user.appointments.new(appointment_params)
         if appointment.save
@@ -16,12 +16,12 @@ class AppointmentsController < ApplicationController
         end 
     end 
 
-    # GET '/appointments/:id'
+    # appointment -- GET '/appointments/:id', to: "appointments#show"
     def show 
         render json: appointment, status: :ok 
     end 
 
-    # PATCH '/appointments/:id'
+    # appointment -- PATCH '/appointments/:id', to: "appointments#update"
     def update 
         if appointment.update(appointment_params)
             render json: appointment, status: :ok 
@@ -30,7 +30,7 @@ class AppointmentsController < ApplicationController
         end 
     end 
 
-    # DELETE '/appointments/:id'
+    # appointment -- DELETE '/appointments/:id', to: "appointments#destroy"
     def destroy 
         appointment.destroy 
         head :no_content

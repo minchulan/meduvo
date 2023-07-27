@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Routes, Route } from "react-router-dom";
-import { UserContext } from "./context/user";
 
 // Components
 import Navbar from "./Navbar";
@@ -23,22 +22,6 @@ import Feature2 from "./Feature2";
 import Feature3 from "./Feature3";
 
 const App = () => {
-  const { patients, setPatients, addPatient } = useContext(UserContext);
-
-  // Handler for deleting a patient
-  const handleDeletePatient = (id) => {
-    const updatedPatients = patients.filter((patient) => patient.id !== id);
-    setPatients(updatedPatients);
-  };
-
-  // Handler for updating a patient
-  // const handleUpdatePatient = (id) => {};
-
-  // Handler for adding a new patient 
-  const handleAddPatient = (patient) => {
-    addPatient(patient); // Call the addPatient function from the UserContext
-  };
-
   return (
     <main className="App">
       <Navbar />
@@ -52,11 +35,14 @@ const App = () => {
         <Route
           exact
           path="/patients"
-          element={<PatientList onAddPatient={handleAddPatient} onDeletePatient={handleDeletePatient} />}
+          element={
+            <PatientList
+            />
+          }
         />
         <Route exact path="/patients/:id" element={<PatientDetails />} />
         <Route exact path="/patients/new" element={<NewPatient />} />
-        <Route exact path="/patients/:id/edit" element={<EditPatient />} />
+        <Route exact path="/patients/:id" element={<EditPatient />} />
 
         {/* Appointments Routes */}
         <Route exact path="/appointments" element={<AppointmentList />} />

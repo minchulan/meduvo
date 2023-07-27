@@ -8,75 +8,91 @@ const initialPatientState = {
   first_name: "",
   last_name: "",
   dob: "",
+  gender: "",
+  allergies: "",
   phone: "",
   email: "",
   address: "",
+  guardian: "",
+  viewed_notice_of_privacy_practices: "",
 };
 
-const PatientList = ({ onAddPatient, onDeletePatient }) => {
-  const { patients, user, addPatient } = useContext(UserContext);
+const PatientList = () => {
+  const { patients, user, addPatient, updatePatient } = useContext(UserContext);
   const [showForm, setShowForm] = useState(false);
   const [patientFormData, setPatientFormData] = useState(initialPatientState);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   // Fetch patients from the server and update the state 
-  //   fetchPatients();
-
-  // }, []);
-
+  // we gets the patients array from context. map over patients to get individual patient cards.
   const patientCards =
     patients.length > 0 ? (
       patients.map((patient) => (
-        <PatientCard
-          key={patient.id}
-          patient={patient}
-          onDeletePatient={onDeletePatient}
-        />
+        <PatientCard key={patient.id} patient={patient} />
       ))
     ) : (
       <div>Loading patients...</div>
     );
 
   const goBack = () => {
-    navigate(-1);
+    navigate(`/`);
   };
 
+  // add new patient form
   const handleSubmit = (e) => {
     e.preventDefault();
+
     // handing the patient from this form to global state (the addPatient in context) which is where the patients lives.
     addPatient({
       first_name: patientFormData.first_name,
       last_name: patientFormData.last_name,
       dob: patientFormData.dob,
+      allergies: patientFormData.allergies,
       address: patientFormData.address,
       email: patientFormData.email,
       phone: patientFormData.phone,
       notes: patientFormData.notes,
+      guardian: patientFormData.guardian,
+      viewed_notice_of_privacy_practices:
+        patientFormData.viewed_notice_of_privacy_practices,
     });
 
     setShowConfirmation(true); // Show the confirmation message
     setPatientFormData(initialPatientState); // Clear the form fields
     setShowForm(false); // Close the form after adding a patient
 
-    // Reset the confirmation message after 3 seconds
-
+    // Reset the confirmation message after 5 seconds
     setTimeout(() => {
       setShowConfirmation(false);
-    }, 3000); // 3 seconds (adjust as needed)
+    }, 5000); // 5 seconds
   };
 
   const handleChange = (e) => {
-    const key = e.target.id; //corresponds to which key in state we're trying to update!
+    const key = e.target.id;
+    const value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
+
     setPatientFormData({
       ...patientFormData,
-      [key]: e.target.value, // dynamically evaluates key based on whatever this variable holds
+      [key]: value,
     });
   };
 
   const handleCancel = () => {
     setShowForm(false); // Hide the form
+  };
+
+  // Add the handlePatientUpdate function to handle patient updates
+  const handlePatientUpdate = (updatedPatient) => {
+    // Call the updatePatient function from the context to update the patient
+    updatePatient(updatedPatient.id, updatedPatient)
+      .then(() => {
+        // Handle the update success (if needed)
+      })
+      .catch((error) => {
+        console.error("Error updating patient:", error);
+        // Handle any errors that occurred during the update
+      });
   };
 
   return (
@@ -91,9 +107,10 @@ const PatientList = ({ onAddPatient, onDeletePatient }) => {
       {showForm ? (
         <form onSubmit={handleSubmit} className="form-container">
           <label htmlFor="first_name" className="form-label">
-            First Name:
+            First Name: *
           </label>
           <input
+            required
             type="text"
             id="first_name"
             name="first_name"
@@ -104,9 +121,10 @@ const PatientList = ({ onAddPatient, onDeletePatient }) => {
             className="form-input"
           />
           <label htmlFor="last_name" className="form-label">
-            Last Name:
+            Last Name: *
           </label>
           <input
+            required
             type="text"
             id="last_name"
             name="last_name"
@@ -116,24 +134,24 @@ const PatientList = ({ onAddPatient, onDeletePatient }) => {
             onChange={handleChange} // handleChange works as long as id matches key we're trying to update in patientForm object
             className="form-input"
           />
-          <label htmlFor="gender" className="form-label">
-            Gender at Birth:
-          </label>
-          <select
-            id="gender"
-            name="gender"
-            value={patientFormData.gender}
-            onChange={handleChange}
-            className="form-input"
-          >
-            <option value=""> - </option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-          <label htmlFor="dob" className="form-label">
-            Date of Birth:
+          <label htmlFor="guardian" className="form-label">
+            Guardian's name (if applicable):
           </label>
           <input
+            type="text"
+            id="guardian"
+            name="guardian"
+            placeholder="E.g., John Smith"
+            autoComplete="on"
+            value={patientFormData.guardian}
+            onChange={handleChange}
+            className="form-input"
+          />
+          <label htmlFor="dob" className="form-label">
+            Date of Birth: *
+          </label>
+          <input
+            required
             type="date"
             id="dob"
             name="dob"
@@ -142,22 +160,10 @@ const PatientList = ({ onAddPatient, onDeletePatient }) => {
             onChange={handleChange}
             className="form-input"
           />
-          <label htmlFor="allergies" className="form-label">
-            Allergies:
-          </label>
-          <input
-            type="text"
-            id="allergies"
-            name="allergies"
-            placeholder="E.g., Rash with penicillin"
-            autoComplete="on"
-            value={patientFormData.allergies}
-            onChange={handleChange}
-            className="form-input"
-          />
           <label htmlFor="phone" className="form-label">
-            Phone Number:
+            Phone Number: *
           </label>
+          required
           <input
             type="tel"
             id="phone"
@@ -169,9 +175,10 @@ const PatientList = ({ onAddPatient, onDeletePatient }) => {
             className="form-input"
           />
           <label htmlFor="email" className="form-label">
-            Email:
+            Email: *
           </label>
           <input
+            required
             type="email"
             id="email"
             name="email"
@@ -194,6 +201,19 @@ const PatientList = ({ onAddPatient, onDeletePatient }) => {
             onChange={handleChange}
             className="form-input"
           />
+          <label htmlFor="allergies" className="form-label">
+            Allergies:
+          </label>
+          <input
+            type="text"
+            id="allergies"
+            name="allergies"
+            placeholder="E.g., Rash with penicillin"
+            autoComplete="on"
+            value={patientFormData.allergies}
+            onChange={handleChange}
+            className="form-input"
+          />
           <label htmlFor="notes" className="form-label">
             Quick notes:
           </label>
@@ -206,6 +226,15 @@ const PatientList = ({ onAddPatient, onDeletePatient }) => {
             onChange={handleChange}
             className="form-input"
           />
+          <label>
+            Viewed Notice of Privacy Protection:
+            <input
+              type="checkbox"
+              id="viewed_notice_of_privacy_practices"
+              checked={patientFormData.viewed_notice_of_privacy_practices}
+              onChange={handleChange}
+            />
+          </label>
           <br />
           <br />
           <button
@@ -229,15 +258,16 @@ const PatientList = ({ onAddPatient, onDeletePatient }) => {
           Add patient
         </button>
       )}
-
+      <hr />
       {showConfirmation && (
         <div className="confirmation-message">
           New patient added successfully!
         </div>
       )}
 
+      {/* Renders PatientCards  */}
+
       <ul>{patientCards}</ul>
-      <br />
       <hr />
       <button
         className="go-back-button"
@@ -263,6 +293,8 @@ const PatientList = ({ onAddPatient, onDeletePatient }) => {
 };
 
 export default PatientList;
+
+
 
 //-----------------
 /*

@@ -23,42 +23,79 @@ function UserProvider({ children }) {
           setLoggedIn(false);
         } else {
           setLoggedIn(true);
-          fetchPatients()
+          fetchPatients();
           // setPatients(data.patients)
         }
       });
-  }, [setPatients]);
+  }, []);
 
-  // GET '/patients', to: 'patients#index' 
+  // GET '/patients', to: 'patients#index'
   const fetchPatients = () => {
-    fetch('/patients')
-      .then(res => {
-        if (res.ok) {
-          res.json().then(setPatients)
-        } else {
-          res.json().then(data => setErrors(data.error))
+    fetch("/patients").then((res) => {
+      if (res.ok) {
+        res.json().then(setPatients);
+      } else {
+        res.json().then((data) => setErrors(data.error));
       }
-    })
-  }
+    });
+  };
 
-  // ADD PATIENT 
+  // ADD PATIENT
   const addPatient = (patient) => {
+    // 1. persist on server
     fetch("/patients", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patient),
     })
       .then((res) => res.json())
+      // 2. add patient to state
       .then((data) => {
-        console.log(data);
-        setPatients([...patients, data])
+        setPatients([...patients, data]);
       })
       .catch((error) => {
         setErrors(error);
       });
   };
 
-  // LOGIN 
+  // DELETE PATIENT
+  const deletePatient = (id) => {
+    // persist changes on server
+    fetch(`/patients/${id}`, {
+      method: "DELETE",
+    }).then(() => {
+      // shorten the list of patients - remove patient from state
+      setPatients((patients) =>
+        patients.filter((patient) => patient.id !== id)
+      );
+    });
+  };
+
+  // UPDATE PATIENT
+  // Ensure that the updatePatient function returns a promise
+  const updatePatient = (id, formData) => {
+    return fetch(`/patients/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+      .then((res) => res.json())
+      .then((updatedPatient) => {
+        console.log(updatedPatient)
+        setPatients((patients) =>
+          patients.map((patient) =>
+            patient.id === id ? { ...patient, ...updatedPatient } : patient
+          )
+        );
+        return updatedPatient; // Return the updated patient data
+      })
+      .catch((error) => {
+        setErrors(error.message);
+        throw error; // Re-throw the error to handle it in the component
+      });
+  };
+
+  // LOGIN
   const login = (user) => {
     fetch(`/login`, {
       method: "POST",
@@ -84,12 +121,11 @@ function UserProvider({ children }) {
   // LOGOUT
   const logout = () => {
     fetch(`/logout`, {
-      method: "DELETE"
-    })
-      .then(() => {
-        setUser(null)
-        setLoggedIn(false)
-      });
+      method: "DELETE",
+    }).then(() => {
+      setUser(null);
+      setLoggedIn(false);
+    });
   };
 
   // SIGNUP
@@ -117,7 +153,20 @@ function UserProvider({ children }) {
 
   return (
     <UserContext.Provider
-      value={{ user, login, logout, signup, loggedIn, patients, setPatients, addPatient, errors, setErrors }}
+      value={{
+        user,
+        login,
+        logout,
+        signup,
+        loggedIn,
+        patients,
+        setPatients,
+        addPatient,
+        deletePatient,
+        updatePatient,
+        errors,
+        setErrors,
+      }}
     >
       {errors ? <h2>{errors.message}</h2> : children}
     </UserContext.Provider>
@@ -131,6 +180,48 @@ export { UserContext, UserProvider };
   
 //-----------------------------------------
 /*
+
+updatePatient function: The provided code for updating a patient's data is already quite concise and efficient. However, if you want to simplify it further, you can use `async/await` syntax to handle the asynchronous operations more cleanly. Additionally, you can use the `try/catch` block to handle errors in a more readable way. Here's the simplified version using `async/await`:
+
+```jsx
+const updatePatient = async (id, patientEdits) => {
+  try {
+    // 1. Persist changes on server
+    const response = await fetch(`/patients/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patientEdits),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update patient data.");
+    }
+
+    // 2. Update patient in state
+    const updatedPatient = await response.json();
+    setPatients((patients) =>
+      patients.map((patient) =>
+        patient.id === id ? { ...patient, ...updatedPatient } : patient
+      )
+    );
+  } catch (error) {
+    setErrors(error.message);
+  }
+};
+```
+
+In this version, we use `async/await` to make the code more readable and handle the promise-based asynchronous operations. The `await` keyword is used to wait for the fetch operation to complete and receive the response. We then check if the response is successful (status code 200-299), and if not, we throw an error to be caught in the `catch` block.
+
+Keep in mind that error handling and status checking are essential in real-world applications, so always include proper error handling in your code to handle various scenarios effectively.
+
+
+
+general logic to UPDATE an array - use map function
+  - iterate over the elements in our todo array
+  - check if the ID matches
+  - if it does, return an updated todo object
+  - otherwise, return the original todo
+
 
  // `nfn` shortcut =->>  const first = (second) => { third }
 

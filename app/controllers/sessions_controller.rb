@@ -1,44 +1,42 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_user, only: [:create]
+  skip_before_action :authenticate_user, only: [:create, :destroy]
 
-  # POST '/login' - user submits login form
-  def create 
-    # find the user
+  # login -- POST '/login', to: "sessions#create"
+  def create
     user = User.find_by_email(params[:email])
-
-    if user
-      # authenticate the user
-      if user.authenticate(params[:password]) 
-        # save user to session 
-        session[:user_id] = user.id 
-        render json: user, status: :accepted 
-      else 
-        render json: { errors: 'Incorrect Username or Password' }, status: :unauthorized 
-      end 
+    if user&.authenticate(params[:password])
+      session[:user_id] = user.id
+      render json: user, status: :ok
     else
-      render json: { errors: 'User not found' }, status: :not_found
+      render json: "Invalid Credentials", status: :unauthorized 
     end
-  end 
-    # def create
-    #     user = User.find_by_id(params[:id])
 
-    #     if user&.authenticate(params[:password])
-    #         session[:user_id] = user.id # Update session key
-    #         render json: user, status: :accepted
-    #     else
-    #         render json: { errors: 'Incorrect Username or Password' }, status: :unauthorized
-    #     end
-    # end
+  end
 
-  # DELETE '/logout'
-  def destroy 
-    session.delete :user_id
-    head :no_content 
-  end 
+  # logout -- DELETE '/logout', to: "sessions#destroy"
+  def destroy
+    session.delete(:user_id)
+    head :no_content
+  end
+
+  private
+
+  def render_unauthorized
+    render json: { errors: 'Incorrect Username or Password' }, status: :unauthorized
+  end
+
+  def render_not_found
+    render json: { errors: 'User not found' }, status: :not_found
+  end
 end
 
 
+
+
+
 #---------------------------
+# in the `SessionsController`, you handle user authentication and session management effectively, returning proper responses for successful and unsuccessful login attempts.
+
 # Let's walk through the code:
 # 1. `SessionsController` is a controller responsible for handling user sessions, specifically user login and logout.
 

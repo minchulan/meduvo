@@ -934,7 +934,7 @@ textarea.form-control {
 }
 
 .btn:active {
-  background-color: #428ddd;
+  background-color: #badbff;
 }
 
 /* add patient form styling */
@@ -986,9 +986,50 @@ textarea.form-control {
   margin-bottom: 10px;
 }
 
+.patient-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  position: relative; /* To position the update button inside the card */
+}
 
+.patient-name {
+  margin: 0;
+}
 
+.actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+}
 
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #b7b7b7;
+  margin-left: 5px;
+}
 
+.update-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #b7b7b7;
+  margin-left: 5px;
+}
+
+.edit-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #b7b7b7;
+  margin-left: 5px;
+}
 
 

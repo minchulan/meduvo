@@ -1,46 +1,52 @@
 class UsersController < ApplicationController
-    skip_before_action :authenticate_user, only: [:create]
+  skip_before_action :authenticate_user, only: [:create]
 
-    # POST '/signup'
-    def create 
-        @user = User.create(user_params)
-        if @user.valid?
-            session[:user_id] = @user.id 
-            render json: @user, status: :created
-        else 
-            render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity 
-        end
-    end 
-
-    # GET '/me'
+    # me -- GET '/me', to: "users#show"
     def show
-        # Get current user 
-        # current_user = User.find(session[:user_id]) 
-        if @current_user
-            render json: @current_user, status: :ok
-        else  
-            render json: { error: "Not authorized" }, status: :unauthorized
-            
-        end 
-    end 
+      render json: current_user, status: :ok 
+    end
 
+    # signup -- POST '/signup', to: "users#create"
+    def create
+      user = User.create!(user_params)
+      if user.valid?
+        session[:user_id] = user.id
+        render json: user, status: :created
+      else
+        render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
 
+    # user -- PATCH '/users/:id', to: "users#update"
     def update
-    end 
+      if current_user.update(user_params)
+          render json: current_user, status: :ok 
+      else  
+          render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
+      end 
+    end
 
-
+    # user -- DELETE '/users/:id', to: "users#destroy"
     def destroy
-    end 
+      current_user.destroy 
+      session.delete(:user_id)
+      head :no_content
+    end
 
-    private 
+    private
 
     def user_params
-        params.require(:user).permit(:username, :email, :password, :admin)
-    end 
-
+      params.require(:user).permit(:email, :password)
+    end
+  
 end
 
+
+
+
 #------------------------------------------
+# In the `UsersController`, you handle the create, show, update, and destroy actions efficiently, returning appropriate responses based on the user's authentication status and the success or failure of the operations.
+
 # Let's walk through the code:
 
 # 1. `UsersController` is a controller responsible for handling CRUD operations related to users.

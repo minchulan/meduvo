@@ -1,97 +1,116 @@
 class PatientsController < ApplicationController
-    # GET '/patients'
-    def index
-        patient = current_user.patients.build(patient_params)
 
-        if patient.save
-            render json: patient, status: :created 
-        else  
-            render json: { errors: patient.errors.full_messages }, status: :unprocessable_entity
-        end 
-    end
+  # patients -- GET '/patients', to: "patients#index"
+  def index
+    patients = current_user.patients
+    render json: patients
+  end
 
-    # POST '/patients'
-    def create 
-        if @current_user.nil?
-        render json: { error: 'User not authenticated' }, status: :unauthorized
-        return
-        end
-
-        patient = @current_user.patients.build(patient_params)
-
-        if patient.save
-        render json: patient, status: :created 
-        else  
-        render json: { errors: patient.errors.full_messages }, status: :unprocessable_entity
-        end 
-    end
-
-    # GET '/patients/:id'
-    def show 
-        patient = @current_user.patients.find_by_id(params[:id])
-        if patient
-            render json: patient, status: :ok 
-        else  
-            render json: { error: "Not Found"}, status: :unauthorized
-        end 
+  # patients -- POST '/patients', to: "patients#create"
+  def create #post "/patients/new"
+    patient = current_user.patients.create(patient_params)
+    if patient.valid?
+      render json: patient 
+    else  
+      render json: { errors: patient.errors.full_messages }, status: :unprocessable_entity
     end 
+  end 
 
-    # PATCH '/patients/:id'
-    def update
-        patient = @current_user.patients.find_by_id(params[:id])
-        if patient  
-            if patient.update(patient_params)
-                render json: patients, status: :ok 
-            else  
-                render json: { error: "Faled to update the patient "}, status: :unprocessable_entity
-            end 
-        else  
-            render json: { error: "Patient not found" }, status: :not_found
-        end 
+  # patient -- GET '/patients/:id', to: "patients#show"
+  def show
+    patient = current_user.patients.find_by_id(params[:id])
+    if patient 
+      render json: patient, status: :ok 
+    else  
+      render json: { error: "Not Found" }, status: :unauthorized
     end 
+  end
 
-    # DELETE '/patients/:id'
-    def destroy 
-        patient = @current_user.patients.find_by_id(params[:id])
-        if patient 
-            patient.destroy
-            head :no_content
-        else 
-            render json: { error: "Patient not found" }, status: :not_found
-        end 
-    end 
+  # patient -- PATCH '/patients/:id', to: "patients#update"
+  def update
+    patient = current_user.patients.find_by_id(params[:id])
+    patient.update(patient_params)
+    render json: patient, status: :accepted
+  end
 
-    private 
+  # patient -- DELETE '/patients/:id', to: "patients#destroy" 
+  def destroy
+    patient = current_user.patients.find_by_id(params[:id])
+    patient.destroy
+    head :no_content
+  end
 
-    def patient_params
-        params.require(:patient).permit(:first_name, :last_name, :guardian, :gender, :dob, :address, :phone, :email, :allergies, :notes)
-    end 
+  private
+
+  def patient_params
+    params.require(:patient).permit(:first_name, :last_name, :guardian, :gender, :dob, :address, :phone, :email, :allergies, :notes)
+  end
 
 end
 
 
+
+
+
+
 #----------------------------
 
-    # before_action :is_authorized?, only: [:create]
+  # before_action :find_patient, only: [:show, :update, :destroy]
+  # before_action :is_owner?, only: [:update, :destroy]
 
-        # def create 
-    #     patient = @current_user.patients.create(patient_params)
-    #     if patient.valid?
-    #         render json: patient, status: :created 
-    #     else  
-    #         render json: { errors: patient.errors.full_messages }, status: :unprocessable_entity
-    #     end 
+  # def find_patient
+  #   @patient = Patient.find(params[:id])
+  # end 
+
+  # def is_owner?
+  #   permitted = @patient.user_id == current_user.id 
+  #   render json: {errors: {User: "does not own this"}}, status: :forbidden unless permitted 
+  # end 
+
+  
+# For patients#show: 
+  # When searching for a specific patient, we want to look through the current_user's patients only. Why would we look through the Patient model? params[:id] is in the URL, user_id is in the session hash.
+  # Look through this user's patients and find the one that has that ID. 
+  # find_by returns nil 
+  # status is unauthorized because if it's not in mine and somehow i was trying to get it, i wasnt authorized to see it..it's someone else's. If you had done Patient.find_by()...you might have found it. However, we only want to look inside the current user's patients b/c that's all they have access to!
+
+    # def show
+    #   patient = current_user.patients.find_by_id(params[:id])
+    #   if patient 
+    #     render json: patient 
+    #   else 
+    #     render json: { error: "Not Found" }, status: :unauthorized
+    #   end 
     # end 
 
-    # update action: 
-        # error handling for the case when the patient is not found or the update fails
 
-# The error is likely occurring because `@current_user` is `nil`, and you are attempting to call the `patients` method on a `nil` object. 
-# In the `create` action of the `PatientsController`, you are using `@current_user.patients.create(patient_params)` to create a new patient associated with the current user. However, if `@current_user` is `nil`, it means that there is no authenticated user, and therefore calling `patients` on `nil` will result in the `NoMethodError` you encountered.
+# For patients#create:
+  # def create 
+  #   patient = current_user.patients.create(patient_params)
 
-# To fix this error, you need to ensure that `@current_user` is properly set before calling the `create` method. Make sure that the user is authenticated and that `@current_user` is assigned the appropriate user object. You can check if `@current_user` is `nil` before attempting to create the patient and handle the case where there is no authenticated user accordingly, such as returning an error response or redirecting to a login page.
+  #   if patient.valid?
+  #     render json: patient 
+  #   else  
+  #     render json: { errors: patient.errors.full_messages }, status: :unprocessable_entity
+  #   end 
+  # end 
 
+# To optimize your controllers and minimize hitting the database multiple times, you can make use of eager loading and ActiveRecord query optimizations. Here's an example of how you can optimize your PatientsController:
 
+# # line 16: In the provided code, the return statement is used after rendering an unauthorized response when the @current_user is nil.
+
+# In the index and show actions, we use includes(:appointments) to eager load the associated appointments for each patient. This avoids the N+1 query problem when fetching patients and their appointments separately.
+
+# Additionally, in the find_patient method, we use includes(:appointments).find_by_id(params[:id]) to fetch the patient with associated appointments in a single query.
+
+# These optimizations help minimize the number of database queries and improve the performance of your controllers. Remember to adjust the associations and includes according to your actual model relationships.
+
+# It first checks if @current_user is nil to determine if the user is authenticated. If the user is not authenticated, it renders a JSON response with an error message of "User not authenticated" and a status of :unauthorized (401).
+# After rendering the unauthorized response, the return statement is used to exit the create action early. This prevents the execution of the rest of the code in the create action if the user is not authenticated.
+# If the user is authenticated, the code proceeds to create a new patient object belonging to the current user (@current_user.patients.build(patient_params)).
+# If the patient is successfully saved, it renders a JSON response with the newly created patient object and a status of :created (201).
+# If there are validation errors and the patient cannot be saved, it renders a JSON response with the errors in the patient.errors.full_messages array and a status of :unprocessable_entity (422).
+# The return statement is used here to control the flow of execution and prevent further processing if the user is not authenticated.
 
 # each_serializer method used to pass each instance to the serializer. to serialize a collection. 
 
@@ -136,3 +155,41 @@ end
 # 5. If no patient is found (i.e., `patient` is `nil`), it renders a JSON response with an error message. The `render` method is called with the `json` option, passing a hash with an `error` key and the corresponding error message. The response status is set to `:unauthorized` (401) using the `status` option.
 
 # That's an overview of the code in your Patients controller's `show` action. It fetches a specific patient belonging to the current user and returns the patient's information in JSON format if found, or an error message if not found.
+
+# `.build` and `.save` versus `.create` and `.valid?` are different methods used to create and save records in ActiveRecord.
+
+# ------------------------------------
+# VALIDATIONS: 
+# 1. `.build` and `.save`:
+#    - `.build`: The `.build` method is used to instantiate a new object in memory (a new record) without persisting it to the database. It sets up the object with the given attributes but doesn't save it yet. For example: `patient = current_user.patients.build(patient_params)`.
+#    - `.save`: The `.save` method is used to save a new or existing object to the database. It attempts to save the record, and if the validations pass, the record will be saved successfully. For example: `patient.save`.
+
+#    Example:
+#    ```
+#    patient = current_user.patients.build(patient_params)
+#    if patient.save
+#      # Record saved successfully
+#    else
+#      # Validation failed, handle the errors
+#    end
+#    ```
+
+# 2. `.create` and `.valid?`:
+#    - `.create`: The `.create` method creates a new record in the database and saves it immediately without the need for a separate `.save` call. It initializes the object and then saves it to the database in one step. For example: `patient = current_user.patients.create(patient_params)`.
+#    - `.valid?`: The `.valid?` method is used to check if the object's attributes are valid according to the model's validation rules. It returns `true` if the record passes all validations and `false` if any validation fails. However, it does not save the record to the database.
+
+#    Example:
+#    ```
+#    patient = current_user.patients.create(patient_params)
+#    if patient.valid?
+#      # Record is valid, it was saved successfully
+#    else
+#      # Validation failed, handle the errors
+#    end
+#    ```
+
+# When to use `.build` and `.save`:
+# - Use `.build` and `.save` when you want more control over the record creation process. This is useful when you need to perform additional operations on the record before saving it to the database or when you want to handle potential validation errors manually.
+
+# When to use `.create` and `.valid?`:
+# - Use `.create` and `.valid?` when you want a more concise way to create and save records without explicitly calling `.save`. This is convenient when you don't need to perform additional operations before saving the record and want a one-liner to create and save it. Additionally, using `.valid?` allows you to check if the record is valid before saving it to the database.

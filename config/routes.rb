@@ -2,14 +2,16 @@
 #
 
 Rails.application.routes.draw do
-  
+
   # Patients
-  resources :patients, only: [:index, :show, :create, :update, :destroy]
+  resources :patients, only: [:index, :show, :create, :update, :destroy] do
+    resources :appointments, only: [:index, :create], shallow: true
+  end
 
   # Appointments
-  resources :appointments, only: [:index, :show, :create, :update, :destroy]
+  resources :appointments, only: [:show, :update, :destroy]
 
-  # Users 
+  # Users
   resources :users, only: [:update, :destroy]
   post '/signup', to: 'users#create'
   get '/me', to: 'users#show'
@@ -21,11 +23,12 @@ Rails.application.routes.draw do
   # Contact form
   post '/contact', to: 'contacts#create'
 
-
   # Routing logic: fallback requests for React Router.
   # Leave this here to help deploy your app later!
   get "*path", to: "fallback#index", constraints: ->(req) { !req.xhr? && req.format.html? }
+  
 end
+
 
 
 # ----------------------------------------------
