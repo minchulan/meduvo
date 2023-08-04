@@ -15,7 +15,7 @@ const Home = () => {
             <button className="home-button">My Patients</button>
           </Link>
           <Link to="/appointments">
-            <button className="home-button">Create Event Type</button>
+            <button className="home-button">Event Types</button>
           </Link>
         </div>
         <hr />

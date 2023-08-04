@@ -9,7 +9,7 @@ const initialFormDataSignUp = {
 const Signup = () => {
   const [formData, setFormData] = useState(initialFormDataSignUp);
   const { signup } = useContext(UserContext);
-  const [errors, setErrors] = useState([])
+  const [errors, setErrors] = useState([]);
 
   const handleChange = (e) => {
     setFormData({
@@ -24,12 +24,8 @@ const Signup = () => {
     const user = {
       email: formData.email,
       password: formData.password,
-    }
+    };
     signup(user);
-  };
-
-  if (errors) {
-    setErrors(errors)
   };
 
   return (
@@ -72,11 +68,12 @@ const Signup = () => {
         </button>
       </form>
       <small>
-        <p>
+        <b>
           By clicking on sign-up, you agree to Meduvo's{" "}
-          <NavLink>Terms and Conditions of Use</NavLink>.
-        </p>
+          <NavLink to="/terms">Terms and Conditions of Use</NavLink>.
+        </b>
       </small>
+      <br />
       <br />
       <>
         <small>
@@ -87,12 +84,21 @@ const Signup = () => {
         </small>
       </>
       <hr />
-      {errors}
+      {/* Display errors */}
+      {errors.length > 0 && (
+        <div className="error-container">
+          {errors.map((error, index) => (
+            <p key={index} className="error-message">
+              {error}
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
-export default Signup; 
+export default Signup;
 
 
 

@@ -60,6 +60,10 @@ end
 
 #----------------------------
 
+    # render only the patients that belong to the current user
+
+    # @patient = current_user.patients.find_by_id(params[:id])
+    # if current_user.patients.include?(@patient)
 # The `PatientsController` is a Rails controller responsible for handling requests related to patients. Here's a breakdown of each action and what it does:
 
 # 1. `index`: This action handles a GET request to '/patients', which is used to retrieve a list of patients belonging to the current user. It fetches the patients associated with the current user and renders them as JSON in the response.

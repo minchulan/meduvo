@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { UserContext } from "./context/user";
+import EditAppointment from "./EditAppointment";
 
 const AppointmentDetails = () => {
-  const navigate = useNavigate();
+  const { updateAppointment } = useContext(UserContext);
   const { appointmentId, patientId } = useParams();
   const [appointment, setAppointment] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch the specific appointment using the correct URL format for nested routes
@@ -44,12 +47,35 @@ const AppointmentDetails = () => {
           <b>Date:</b> {formatDate(appointment.created_at)}
         </p>
         <p>
-          <b>Description: </b> {appointment.description}
+          <b>Description:</b> {appointment.description}
         </p>
         <p>
           <b>Location:</b> {appointment.location}
         </p>
-        <button onClick={goBack}>◁ Go Back</button>
+        <button>Update</button>
+        <button>Delete</button>
+        <br />
+        <br />
+        <hr />
+        <button
+          className="go-back-button"
+          onClick={goBack}
+          style={{
+            backgroundColor: "#ffffff",
+            color: "#333333",
+            border: "1px solid #cccccc",
+            borderRadius: "5px",
+            padding: "10px 20px",
+            fontSize: "16px",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          ◁ Go Back
+        </button>
+        <br />
+        <br />
+        <br />
       </div>
     </div>
   );

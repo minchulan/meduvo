@@ -5,6 +5,7 @@ import { useParams, useNavigate, NavLink } from "react-router-dom";
 const PatientAppointments = () => {
   const [categorySearchQuery, setCategorySearchQuery] = useState("");
   const [showAddForm, setShowAddForm] = useState(false); // Flag to control form visibility
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [newAppointmentFormData, setNewAppointmentFormData] = useState({
     name: "",
     date: "",
@@ -35,6 +36,9 @@ const PatientAppointments = () => {
       description: newAppointmentFormData.description,
     });
 
+    setShowConfirmation(true);
+    setShowAddForm(false);
+
     // Reset the form data after submission
     setNewAppointmentFormData({
       name: "",
@@ -43,6 +47,11 @@ const PatientAppointments = () => {
       category: "",
       description: "",
     });
+
+    // Reset the confirmation message after 5 seconds
+    setTimeout(() => {
+      setShowConfirmation(false);
+    }, 5000); // 5 seconds
   };
 
   const filteredAppointments = categorySearchQuery
@@ -167,9 +176,10 @@ const PatientAppointments = () => {
         </form>
       ) : (
         <button className="add-appointment-button" onClick={toggleAddForm}>
-          + Add Appointment
+          + New Appointment
         </button>
       )}
+      {showConfirmation && <p>Appointment added successfully!</p>}
       <hr />
       <button
         className="go-back-button"

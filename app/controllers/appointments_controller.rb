@@ -2,13 +2,13 @@ class AppointmentsController < ApplicationController
     
     # patient_appointments -- GET '/patients/:patient_id/appointments', to: "appoointments#index"
     def index
-        appointments = @current_user.appointments
+        appointments = current_user.appointments
         render json: appointments, status: :ok 
     end 
 
     # patient_appointments -- POST '/patients/:patient_id/appointments', to: "appointments#create"
     def create 
-        appointment = @current_user.appointments.new(appointment_params)
+        appointment = current_user.appointments.new(appointment_params)
         if appointment.save
             render json: appointment, status: :created 
         else  
@@ -18,8 +18,10 @@ class AppointmentsController < ApplicationController
 
     # appointment -- GET '/appointments/:id', to: "appointments#show"
     def show 
+        appointment = current_user.appointments.find(params[:id])
         render json: appointment, status: :ok 
     end 
+
 
     # appointment -- PATCH '/appointments/:id', to: "appointments#update"
     def update 
@@ -39,12 +41,21 @@ class AppointmentsController < ApplicationController
     private 
 
     def appointment_params
-        params.require(:appointment).permit(:patient_id, :user_id, :category, :name, :location, :description)
+        params.require(:appointment).permit(:patient_id, :user_id, :category, :name, :location, :description, :created_at, :updated_at)
     end 
 end
 
 
 #------------------------------
+
+## SHOW ACTION: 
+# @current_user.appointments: This line uses the has_many association between User and Appointment models. It fetches appointments associated with the currently logged-in user.
+
+# .find(params[:id]): Once we have the appointments associated with the user, we use the find method to retrieve the specific appointment with the given id. This ensures that the appointment belongs to the current user and has the specified id.
+
+# By using Active Record associations, you ensure that the appointment you're fetching belongs to the current user, and you retrieve it directly through the association without querying the Appointment model directly.
+
+
 # Let's walk through the code:
 
 # 1. `AppointmentsController` is a controller responsible for handling CRUD operations related to appointments.

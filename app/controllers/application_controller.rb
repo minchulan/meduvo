@@ -18,6 +18,7 @@ end
 
 
 # --------------------------------------------------
+# In both UsersController and SessionsController, you can use current_user without the @ symbol. The @current_user instance variable is accessible from these controller actions because they are subclasses of ApplicationController and thus share the same instance variable context.
 
 # only admins can update patients? 
 # def is_authorized?

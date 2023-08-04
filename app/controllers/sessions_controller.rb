@@ -4,6 +4,7 @@ class SessionsController < ApplicationController
   # login -- POST '/login', to: "sessions#create"
   def create
     user = User.find_by_email(params[:email])
+    # if user && user.authenticate
     if user&.authenticate(params[:password])
       session[:user_id] = user.id
       render json: user, status: :ok
@@ -17,6 +18,8 @@ class SessionsController < ApplicationController
   def destroy
     session.delete(:user_id)
     head :no_content
+    # Clear the memoized current user 
+    current_user = nil 
   end
 
   private
@@ -35,9 +38,10 @@ end
 
 
 #---------------------------
-# in the `SessionsController`, you handle user authentication and session management effectively, returning proper responses for successful and unsuccessful login attempts.
+#  when you call current_user in other controllers (e.g., UsersController or SessionsController), you are just accessing the memoized @current_user variable, and you don't need to use the @ symbol.
+# # in the `SessionsController`, you handle user authentication and session management effectively, returning proper responses for successful and unsuccessful login attempts.
 
-# Let's walk through the code:
+# # Let's walk through the code:
 # 1. `SessionsController` is a controller responsible for handling user sessions, specifically user login and logout.
 
 # 2. `skip_before_action :authenticate_user, only: :create` skips the authentication check for the `create` action, allowing unauthenticated users to access the login route.

@@ -36,8 +36,6 @@ function UserProvider({ children }) {
   // GET '/patients/:patient_id/appointments', to: 'appointments#index'
   // POST '/patients/:patient_id/appointments', to: 'appointments#create'
 
-  console.log({ appointments });
-
   const fetchAppointments = () => {
     fetch("/appointments").then((res) => {
       if (res.ok) {
@@ -68,13 +66,14 @@ function UserProvider({ children }) {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         setAppointments([...appointments, data]);
       })
       .catch((error) => {
         setErrors(error);
       });
   };
-  
+
   // ADD PATIENT
   const addPatient = (patient) => {
     // 1. persist on server
@@ -134,6 +133,11 @@ function UserProvider({ children }) {
         setErrors(error.message);
         throw error; // Re-throw the error to handle it in the component
       });
+  };
+
+  // UPDATE APPOINTMENT
+  const updateAppointment = () => {
+
   };
 
   // LOGIN
@@ -207,6 +211,7 @@ function UserProvider({ children }) {
         addPatient,
         deletePatient,
         updatePatient,
+        updateAppointment,
         errors,
         setErrors,
       }}

@@ -20,6 +20,7 @@ import Feature1 from "./Feature1";
 import Feature2 from "./Feature2";
 import Feature3 from "./Feature3";
 import PatientAppointments from "./PatientAppointments";
+import Terms from "./Terms";
 
 const App = () => {
   return (
@@ -46,6 +47,7 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/faqs" element={<Faqs />} />
+        <Route path="/terms" element={<Terms />} />
 
         {/* Feature Routes */}
         <Route path="/feature1" element={<Feature1 />} />

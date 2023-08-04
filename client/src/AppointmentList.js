@@ -1,21 +1,9 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
 import AppointmentCard from "./AppointmentCard";
-import { useNavigate, Link } from "react-router-dom";
-
-const initialAppointmentState = {
-  name: "",
-  category: "",
-  location: "",
-  description: "",
-  created_at: "",
-  updated_at: "",
-};
+import { useNavigate } from "react-router-dom";
 
 const AppointmentList = () => {
-  const [appointmentFormData, setAppointmentFormData] = useState(
-    initialAppointmentState
-  );
   const { appointments } = useContext(UserContext);
   const [categoryFilter, setCategoryFilter] = useState("");
   const navigate = useNavigate();
@@ -54,11 +42,9 @@ const AppointmentList = () => {
       ) : (
         <p>No appointments available.</p>
       )}
+      <br />
       <hr />
-      <Link to="/patients" className="link-button">
-        View Patients
-      </Link>
-      <hr />
+      <br />
       <button className="go-back-button" onClick={goBack}>
         ◁ Go Back
       </button>
