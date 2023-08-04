@@ -1,715 +1,22 @@
-For testing purposes only 
+/* For testing purposes only  */
 .highlight {
-  border: 6px solid red;
+  border: 6px solid rgb(232, 225, 12);
 }
+
+.highlight2 {
+  border: 6px solid rgba(116, 19, 227, 0.614);
+}
+
+.highlight3 {
+  border: 6px solid rgba(25, 240, 29, 0.684);
+}
+
+.highlight4 {
+  border: 6px solid rgba(255, 7, 127, 0.731);
+}
+
 
 /* Global styles */
-html,
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Roboto', Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-  color: #333;
-  background-color: #f7f7f7;
-}
-
-.container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
-  padding: 0;
-  font-weight: bold;
-}
-
-p {
-  margin: 0 0 16px;
-}
-
-ul {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-}
-
-a {
-  color: #428ddd;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-hr {
-  border: none;
-  border-top: 1px solid #ccc;
-  margin: 24px 0;
-}
-
-/* Apply a border-box sizing to all elements */
-* {
-  box-sizing: border-box;
-}
-
-/* Set box-sizing for all elements */
-input,
-textarea,
-select {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 16px;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: #428ddd;
-}
-
-/* Remove default button styles and apply a common style */
-button {
-  border: none;
-  border-radius: 4px;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #428ddd;
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-/* Set styles for headings */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
-  padding: 0;
-  font-weight: bold;
-}
-
-/* Add spacing between elements */
-h2 {
-  margin-bottom: 24px;
-}
-
-p {
-  margin: 0 0 16px;
-}
-
-ul {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-}
-
-/* Style links */
-a {
-  color: #428ddd;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* Center content horizontally */
-.container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-/* Add some spacing between sections */
-.section {
-  margin-bottom: 48px;
-}
-
-/* Responsive layout for smaller screens */
-@media (max-width: 768px) {
-  .container {
-    padding: 16px;
-  }
-}
-
-/* About page  */
-.about-container {
-  margin: 20px;
-}
-
-.about-heading {
-  font-size: 32px;
-  margin-bottom: 10px;
-}
-
-.about-description {
-  font-size: 18px;
-  margin-bottom: 20px;
-}
-
-.features-heading {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.features-list {
-  list-style-type: disc;
-  margin-left: 20px;
-  font-size: 16px;
-  margin-bottom: 20px;
-}
-
-.about-benefits {
-  font-size: 18px;
-}
-
-
-/* Navbar styles */
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.navbar .logo-container {
-  display: flex;
-  align-items: center;
-  margin-right: auto;
-}
-
-.navbar .logo-container img {
-  height: 200px; /* Adjust the height for a larger logo */
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-}
-
-.navbar header {
-  display: flex;
-  align-items: center;
-}
-
-.navbar img {
-  height: 200px;
-}
-
-.navbar .nav-links {
-  display: flex;
-  align-items: center;
-}
-
-.navbar .nav-links h5 {
-  margin-right: 16px; /* Adjust the spacing between links */
-}
-
-.navbar .nav-links button.small-button {
-  padding: 8px 16px; /* Adjust the padding as needed */
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    padding: 12px;
-  }
-
-  .navbar .nav-links {
-    margin-top: 16px;
-  }
-}
-
-/* Home page styles */
-.accent-color {
-  color: #428ddd;
-}
-
-.home {
-  text-align: center;
-}
-
-.home h1 {
-  font-size: 32px;
-  margin-bottom: 10px;
-}
-
-.home p {
-  font-size: 18px;
-  margin-bottom: 20px;
-}
-
-.home-buttons {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 40px;
-}
-
-.home-button {
-  background-color: #428ddd;
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  padding: 12px 20px;
-  margin: 0 10px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.home-button:hover {
-  background-color: #337ab7;
-}
-
-
-/* Features section styles */
-.features-section {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.features-section h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.clickable-boxes {
-  display: flex;
-  justify-content: center;
-}
-
-.box-link {
-  text-decoration: none;
-  margin: 0 10px;
-}
-
-.box {
-  background-color: #f7f7f7;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 20px;
-  width: 200px;
-  text-align: center;
-}
-
-.box h3 {
-  font-size: 20px;
-  margin-bottom: 10px;
-}
-
-.box p {
-  font-size: 16px;
-  margin-bottom: 0;
-}
-
-/* Landing page styles */
-.landing-page {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.landing-page h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.large-button {
-  background-color: #428ddd;
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  padding: 16px 30px;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.large-button:hover {
-  background-color: #337ab7;
-}
-
-
-/* Easy Ahead section styles */
-.easy-ahead-section {
-  text-align: center;
-}
-
-.easy-ahead-section h1 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.easy-ahead-section p {
-  font-size: 16px;
-  margin-bottom: 0;
-}
-
-.container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-h1 {
-  font-size: 36px;
-  font-weight: bold;
-  margin-bottom: 16px;
-}
-
-p {
-  font-size: 18px;
-  margin-bottom: 24px;
-}
-
-.large-button {
-  padding: 12px 24px;
-  font-size: 20px;
-  font-weight: bold;
-  background-color: #428ddd;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.large-button:hover {
-  background-color: #428ddd;
-}
-
-hr {
-  border: none;
-  border-top: 1px solid #ccc;
-  margin: 24px 0;
-}
-
-.feature-section {
-  margin-bottom: 48px;
-}
-
-.feature-section p {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-h2 {
-  font-size: 30px;
-  font-weight: bold;
-  margin-bottom: 16px;
-}
-
-.App {
-  background-color: #f1f1f1;
-  padding: 20px;
-}
-
-.home {
-  background-color: #f1f1f1;
-  padding: 20px;
-}
-
-.home-buttons {
-  justify-content: space-between;
-  margin-right: 20px;
-}
-
-.home-button {
-  margin-right: 10px;
-}
-
-.landing-page button {
-  margin-right: 5px;
-}
-
-.landing-page {
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
-/* Login page styles */
-.login {
-  margin: 0 auto;
-  width: 300px;
-  padding: 20px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.login h2 {
-  text-align: center;
-}
-
-.login form {
-  margin-top: 20px;
-}
-
-.login form div {
-  margin-bottom: 10px;
-}
-
-.login label {
-  display: block;
-  font-weight: bold;
-}
-
-.login input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.login button {
-  display: block;
-  width: 100%;
-  padding: 8px;
-  background-color: #428ddd;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.login button:hover {
-  background-color: #555;
-}
-
-.login small {
-  display: block;
-  margin-top: 10px;
-  text-align: center;
-}
-
-/* Signup page styles */
-.signup {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.signup h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.signup .form-group {
-  margin-bottom: 15px;
-}
-
-.signup label {
-  display: block;
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-.signup .form-control {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.signup button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  background-color: #428ddd;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.signup button:hover {
-  background-color: #428ddd;
-}
-
-.signup .error {
-  margin-top: 15px;
-  color: rgb(218, 56, 56);
-}
-
-
-
-/* home  */
-.home-section {
-  background-color: #f9f9f9;
-  padding: 40px;
-  text-align: center;
-}
-
-.home-section h1 {
-  margin-bottom: 20px;
-}
-
-.large-button {
-  display: inline-block;
-  padding: 12px 24px;
-  font-size: 18px;
-  background-color: #428ddd;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.large-button:hover {
-  background-color: #555;
-}
-
-.small-button {
-  display: inline-block;
-  padding: 8px 16px;
-  font-size: 14px;
-  background-color: #428ddd;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.small-button:hover {
-  background-color: #555;
-}
-
-.container {
-  margin: 0 auto;
-  max-width: 800px;
-  padding: 20px;
-}
-
-.container h1 {
-  margin-bottom: 20px;
-}
-
-.container p {
-  margin-bottom: 20px;
-}
-
-.container button {
-  margin-bottom: 10px;
-  padding: 8px 16px;
-  font-size: 16px;
-  background-color: #333;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.container button:hover {
-  background-color: #555;
-}
-
-.container select {
-  margin-bottom: 10px;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.fun-heading {
-  font-size: 42px;
-  color: #0b0b0b;
-  letter-spacing: 1px;
-}
-
-.bigger-font {
-  font-size: 20px;
-}
-
-.patient-card {
-  background-color: #ffffff;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-.patient-name {
-  margin-bottom: 5px;
-}
-
-.patient-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.delete-button,
-.update-button {
-  background-color: #428ddd;
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  padding: 7px 14px;
-  font-size: 16px;
-  margin-left: 5px;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-}
-
-.delete-button:hover,
-.update-button:hover {
-  background-color: #428ddd;
-}
-
-.box-link {
-  text-decoration: none;
-}
-
-.box {
-  background-color: #f2f2f2;
-  padding: 20px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.box:hover {
-  background-color: #e0e0e0;
-}
-
-.box h3 {
-  margin-top: 0;
-}
-
-.box p {
-  margin-bottom: 0;
-}
-
-/* footer styles */
-
 html,
 body {
   margin: 0;
@@ -798,6 +105,166 @@ a:hover {
   text-decoration: underline;
 }
 
+/* home  */
+.home-section {
+  background-color: #f9f9f9;
+  padding: 40px;
+  text-align: center;
+}
+
+.home-section h1 {
+  margin-bottom: 20px;
+}
+
+.large-button {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 18px;
+  background-color: #428ddd;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.large-button:hover {
+  background-color: #555;
+}
+
+.small-button {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #428ddd;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.small-button:hover {
+  background-color: #555;
+}
+
+
+/* Signup page styles */
+.signup {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.signup h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.signup .form-group {
+  margin-bottom: 15px;
+}
+
+.signup label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.signup .form-control {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.signup button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #428ddd;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.signup button:hover {
+  background-color: #428ddd;
+}
+
+.signup .error {
+  margin-top: 15px;
+  color: rgb(218, 56, 56);
+}
+
+
+/* Login page styles */
+.login {
+  margin: 0 auto;
+  width: 300px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.login h2 {
+  text-align: center;
+}
+
+.login form {
+  margin-top: 20px;
+}
+
+.login form div {
+  margin-bottom: 10px;
+}
+
+.login label {
+  display: block;
+  font-weight: bold;
+}
+
+.login input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.login button {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  background-color: #428ddd;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login button:hover {
+  background-color: #555;
+}
+
+.login small {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+}
+
+
+
+
 /* Center content horizontally */
 .container {
   max-width: 960px;
@@ -809,8 +276,6 @@ a:hover {
 .section {
   margin-bottom: 48px;
 }
-
-
 
 /* Footer */
 .footer {
@@ -859,8 +324,6 @@ a:hover {
   text-decoration: underline;
 }
 
-
-
 /* Set the footer to stay at the bottom of the page */
 html,
 body,
@@ -874,9 +337,318 @@ body,
   min-height: 100vh;
 }
 
+/* Add patient form styling */
+.form-container {
+  margin-top: 20px;
+}
 
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+}
 
-/* contact form  */
+.form-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical; /* Allow vertical resizing */
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.form-submit,
+.form-cancel {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.form-submit:hover,
+.form-cancel:hover {
+  background-color: #0056b3;
+}
+
+/* Signed-in user h5 styling in PatientList component */
+.signed-in-user {
+  font-size: 14px;
+  color: #888888;
+  margin-bottom: 10px;
+}
+
+/* Patient card styling */
+.patient-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  position: relative;
+}
+
+.patient-name {
+  margin: 0;
+}
+
+.actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.delete-button,
+.update-button,
+.edit-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #b7b7b7;
+  margin-left: 5px;
+}
+
+.appointment-button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #428ddd;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Style for the search input field */
+.search-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+/* Style for the search input container */
+.search-container {
+  margin-bottom: 20px;
+}
+
+/* Home page styles */
+.accent-color {
+  color: #428ddd;
+}
+
+.home {
+  text-align: center;
+}
+
+.home h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.home p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.home-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.home-button {
+  background-color: #428ddd;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 20px;
+  margin: 0 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.home-button:hover {
+  background-color: #337ab7;
+}
+
+/* Features section styles */
+.features-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.features-section h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.clickable-boxes {
+  display: flex;
+  justify-content: center;
+}
+
+.box-link {
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.box {
+  background-color: #f2f2f2;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.box:hover {
+  background-color: #e0e0e0;
+}
+
+.box h3 {
+  margin-top: 0;
+}
+
+.box p {
+  margin-bottom: 0;
+}
+
+/* Landing page styles */
+.landing-page {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.landing-page h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.large-button {
+  background-color: #428ddd;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 16px 30px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.large-button:hover {
+  background-color: #337ab7;
+}
+
+/* Easy Ahead section styles */
+.easy-ahead-section {
+  text-align: center;
+}
+
+.easy-ahead-section h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.easy-ahead-section p {
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+/* About page  */
+.about-container {
+  margin: 20px;
+}
+
+.about-heading {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.about-description {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.features-heading {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.features-list {
+  list-style-type: disc;
+  margin-left: 20px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.about-benefits {
+  font-size: 18px;
+}
+
+/* Navbar styles */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar .logo-container {
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+
+.navbar .logo-container img {
+  height: 200px; /* Adjust the height for a larger logo */
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.navbar header {
+  display: flex;
+  align-items: center;
+}
+
+.navbar img {
+  height: 200px;
+}
+
+.navbar .nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .nav-links h5 {
+  margin-right: 16px; /* Adjust the spacing between links */
+}
+
+.navbar .nav-links button.small-button {
+  padding: 8px 16px; /* Adjust the padding as needed */
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 12px;
+  }
+
+  .navbar .nav-links {
+    margin-top: 16px;
+  }
+}
+
+/* Contact form styles */
 .contact-form {
   max-width: 400px;
   margin: 0 auto;
@@ -937,99 +709,118 @@ textarea.form-control {
   background-color: #badbff;
 }
 
-/* add patient form styling */
-.form-container {
+/* Appointment List  */
+/* AppointmentList.css */
+
+.appointment-list {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.filter-container {
+  margin-bottom: 20px;
+}
+
+label {
+  margin-right: 10px;
+}
+
+select {
+  padding: 8px;
+  font-size: 16px;
+}
+
+p {
+  font-size: 18px;
+}
+
+.form-buttons {
   margin-top: 20px;
 }
 
-.form-label {
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.add-appointment-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+}
+
+.confirmation-message {
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.link-button {
+  text-decoration: none;
+  color: #007bff;
+  margin-right: 10px;
+}
+
+.go-back-button {
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.go-back-button:hover {
+  background-color: #f5f5f5;
+}
+
+/* Patient Appointments   */
+
+.patient-appointments-container {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-form label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
-.form-input {
+.appointment-form input,
+.appointment-form select,
+.appointment-form textarea {
   width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical; /* Allow vertical resizing */
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #007bff;
-}
-
-.form-submit {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 16px;
-  cursor: pointer;
-}
-
-.form-cancel {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 16px;
-  cursor: pointer;
-}
-
-/* signed in user h5 styling in PatientList component  */
-.signed-in-user {
-  font-size: 14px;
-  color: #888888;
+  padding: 8px;
   margin-bottom: 10px;
-}
-
-.patient-card {
   border: 1px solid #ccc;
-  padding: 10px;
-  margin: 10px;
-  position: relative; /* To position the update button inside the card */
+  border-radius: 3px;
+  font-size: 14px;
 }
 
-.patient-name {
-  margin: 0;
-}
-
-.actions {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  align-items: center;
-}
-
-.delete-button {
-  background: none;
+.submit-button {
+  background-color: #007bff;
+  color: #ffffff;
   border: none;
-  cursor: pointer;
+  border-radius: 3px;
+  padding: 10px 20px;
   font-size: 16px;
-  color: #b7b7b7;
-  margin-left: 5px;
+  cursor: pointer;
 }
 
-.update-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  color: #b7b7b7;
-  margin-left: 5px;
-}
-
-.edit-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  color: #b7b7b7;
-  margin-left: 5px;
-}
 
 

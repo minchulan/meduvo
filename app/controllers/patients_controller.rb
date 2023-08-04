@@ -36,14 +36,19 @@ class PatientsController < ApplicationController
   # patient -- DELETE '/patients/:id', to: "patients#destroy" 
   def destroy
     patient = current_user.patients.find_by_id(params[:id])
-    patient.destroy
-    head :no_content
+    if patient
+      patient.destroy
+      head :no_content
+    else
+      render json: { error: 'Patient not found' }, status: :not_found
+    end
   end
+
 
   private
 
   def patient_params
-    params.require(:patient).permit(:first_name, :last_name, :guardian, :gender, :dob, :address, :phone, :email, :allergies, :notes)
+    params.require(:patient).permit(:first_name, :last_name, :guardian, :gender, :dob, :address, :phone, :email, :allergies, :notes, :id, :language_preferences, :viewed_notice_of_privacy_practices, :created_at, :updated_at)
   end
 
 end
@@ -54,6 +59,20 @@ end
 
 
 #----------------------------
+
+# The `PatientsController` is a Rails controller responsible for handling requests related to patients. Here's a breakdown of each action and what it does:
+
+# 1. `index`: This action handles a GET request to '/patients', which is used to retrieve a list of patients belonging to the current user. It fetches the patients associated with the current user and renders them as JSON in the response.
+
+# 2. `create`: This action handles a POST request to '/patients', which is used to create a new patient for the current user. It creates a new patient record in the database using the `patient_params` (strong parameters) extracted from the request payload. If the patient is successfully saved to the database, it is rendered as JSON in the response with a status of 200 (OK). If there are validation errors, the controller returns a JSON object containing the error messages with a status of 422 (unprocessable entity).
+
+# 3. `show`: This action handles a GET request to '/patients/:id', where `:id` is the ID of the patient to retrieve. It finds the patient with the given ID and checks if it belongs to the current user. If the patient is found and belongs to the user, it is rendered as JSON in the response with a status of 200 (OK). If the patient is not found or does not belong to the user, the controller returns a JSON object with an error message and a status of 401 (unauthorized).
+
+# 4. `update`: This action handles a PATCH request to '/patients/:id', where `:id` is the ID of the patient to update. It finds the patient with the given ID and checks if it belongs to the current user. If the patient is found and belongs to the user, it updates the patient record with the new information from the request payload. The updated patient is then rendered as JSON in the response with a status of 202 (accepted).
+
+# 5. `destroy`: This action handles a DELETE request to '/patients/:id', where `:id` is the ID of the patient to delete. It finds the patient with the given ID and checks if it belongs to the current user. If the patient is found and belongs to the user, it is deleted from the database, and the response has a status of 204 (no content) to indicate successful deletion. If the patient is not found or does not belong to the user, the controller returns a JSON object with an error message and a status of 404 (not found).
+
+# The `private` section contains the `patient_params` method, which is a strong parameter method used to ensure that only specific parameters related to patients are allowed to be passed into the controller actions. It helps prevent mass assignment vulnerabilities.
 
   # before_action :find_patient, only: [:show, :update, :destroy]
   # before_action :is_owner?, only: [:update, :destroy]
@@ -67,7 +86,7 @@ end
   #   render json: {errors: {User: "does not own this"}}, status: :forbidden unless permitted 
   # end 
 
-  
+
 # For patients#show: 
   # When searching for a specific patient, we want to look through the current_user's patients only. Why would we look through the Patient model? params[:id] is in the URL, user_id is in the session hash.
   # Look through this user's patients and find the one that has that ID. 

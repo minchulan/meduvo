@@ -15,6 +15,7 @@ const initialPatientState = {
   address: "",
   guardian: "",
   viewed_notice_of_privacy_practices: "",
+  language_preferences: ""
 };
 
 const PatientList = () => {
@@ -22,18 +23,30 @@ const PatientList = () => {
   const [showForm, setShowForm] = useState(false);
   const [patientFormData, setPatientFormData] = useState(initialPatientState);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // State for the search query
   const navigate = useNavigate();
+
+  // Filter the patients based on the search query
+  const filteredPatients = patients.filter((patient) => {
+    const fullName = `${patient.first_name} ${patient.last_name}`.toLowerCase();
+    return fullName.includes(searchQuery.toLowerCase());
+  });
 
   // we gets the patients array from context. map over patients to get individual patient cards.
   const patientCards =
-    patients.length > 0 ? (
-      patients.map((patient) => (
+    filteredPatients.length > 0 ? (
+      filteredPatients.map((patient) => (
         <PatientCard key={patient.id} patient={patient} />
       ))
     ) : (
-      <div>Loading patients...</div>
+      <div>Patient not found.</div>
     );
+  
 
+    const handleSearchChange = (e) => {
+      setSearchQuery(e.target.value);
+    };
+  
   const goBack = () => {
     navigate(`/`);
   };
@@ -53,6 +66,7 @@ const PatientList = () => {
       phone: patientFormData.phone,
       notes: patientFormData.notes,
       guardian: patientFormData.guardian,
+      language_preferences: patientFormData.language_preferences,
       viewed_notice_of_privacy_practices:
         patientFormData.viewed_notice_of_privacy_practices,
     });
@@ -104,10 +118,20 @@ const PatientList = () => {
       )}
       <br />
       <h2>My Patients</h2>
+      <div className="search-container">
+        {/* Search input field with added CSS class "search-input" */}
+        <input
+          type="text"
+          placeholder="Search patients..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="search-input"
+        />
+      </div>
       {showForm ? (
         <form onSubmit={handleSubmit} className="form-container">
           <label htmlFor="first_name" className="form-label">
-            First Name: *
+            First Name: 
           </label>
           <input
             required
@@ -121,7 +145,7 @@ const PatientList = () => {
             className="form-input"
           />
           <label htmlFor="last_name" className="form-label">
-            Last Name: *
+            Last Name: 
           </label>
           <input
             required
@@ -148,7 +172,7 @@ const PatientList = () => {
             className="form-input"
           />
           <label htmlFor="dob" className="form-label">
-            Date of Birth: *
+            Date of Birth: 
           </label>
           <input
             required
@@ -161,10 +185,10 @@ const PatientList = () => {
             className="form-input"
           />
           <label htmlFor="phone" className="form-label">
-            Phone Number: *
+            Phone Number: 
           </label>
-          required
           <input
+            required
             type="tel"
             id="phone"
             name="phone"
@@ -175,7 +199,7 @@ const PatientList = () => {
             className="form-input"
           />
           <label htmlFor="email" className="form-label">
-            Email: *
+            Email: 
           </label>
           <input
             required
@@ -192,6 +216,7 @@ const PatientList = () => {
             Address:
           </label>
           <input
+            required
             type="text"
             id="address"
             name="address"
@@ -205,6 +230,7 @@ const PatientList = () => {
             Allergies:
           </label>
           <input
+            required
             type="text"
             id="allergies"
             name="allergies"
@@ -214,10 +240,25 @@ const PatientList = () => {
             onChange={handleChange}
             className="form-input"
           />
+          <label htmlFor="language-preferences" className="form-label">
+            Language Preferences:
+          </label>
+          <input
+            required 
+            type="text"
+            id="language_preferences"
+            name="language_preferences"
+            placeholder="E.g., Spanish"
+            autoComplete="on"
+            value={patientFormData.language_preferences}
+            onChange={handleChange}
+            className="form-input"
+          />
           <label htmlFor="notes" className="form-label">
             Quick notes:
           </label>
           <textarea
+            required
             id="notes"
             name="notes"
             placeholder="Add any pertinent patient information..."
@@ -258,15 +299,13 @@ const PatientList = () => {
           Add patient
         </button>
       )}
-      <hr />
+      <br />
+      <br />
       {showConfirmation && (
-        <div className="confirmation-message">
+        <div className="confirmation-message" style={{ fontSize: 18, color: "blue" }}>
           New patient added successfully!
         </div>
       )}
-
-      {/* Renders PatientCards  */}
-
       <ul>{patientCards}</ul>
       <hr />
       <button

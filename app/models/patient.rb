@@ -22,9 +22,8 @@ class Patient < ApplicationRecord
     has_many :appointments, dependent: :destroy 
     has_many :users, through: :appointments
 
-    validates :first_name, :last_name, :dob, :phone, :email, presence: true
+    validates :first_name, :last_name, :dob, :allergies, :phone, :email, presence: true
     # validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-    validates :email, presence: true
 
     def full_name
         "#{first_name} #{last_name}"

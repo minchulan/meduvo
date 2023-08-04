@@ -5,9 +5,10 @@ const UserContext = createContext();
 
 function UserProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [errors, setErrors] = useState(false);
+  const [errors, setErrors] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [patients, setPatients] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
   const navigate = useNavigate();
 
@@ -21,13 +22,31 @@ function UserProvider({ children }) {
       .then((data) => {
         if (data.error) {
           setLoggedIn(false);
+          setUser(null);
+          setErrors("Authentication failed. Please login.");
         } else {
           setLoggedIn(true);
           fetchPatients();
+          fetchAppointments();
           // setPatients(data.patients)
         }
       });
   }, []);
+
+  // GET '/patients/:patient_id/appointments', to: 'appointments#index'
+  // POST '/patients/:patient_id/appointments', to: 'appointments#create'
+
+  console.log({ appointments });
+
+  const fetchAppointments = () => {
+    fetch("/appointments").then((res) => {
+      if (res.ok) {
+        res.json().then(setAppointments);
+      } else {
+        res.json().then((data) => setErrors(data.error));
+      }
+    });
+  };
 
   // GET '/patients', to: 'patients#index'
   const fetchPatients = () => {
@@ -40,6 +59,22 @@ function UserProvider({ children }) {
     });
   };
 
+  // ADD APPOINTMENT
+  const addAppointment = (patientId, appointment) => {
+    fetch(`/patients/${patientId}/appointments`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(appointment),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setAppointments([...appointments, data]);
+      })
+      .catch((error) => {
+        setErrors(error);
+      });
+  };
+  
   // ADD PATIENT
   const addPatient = (patient) => {
     // 1. persist on server
@@ -72,22 +107,28 @@ function UserProvider({ children }) {
   };
 
   // UPDATE PATIENT
-  // Ensure that the updatePatient function returns a promise
   const updatePatient = (id, formData) => {
+    console.log(id);
+    console.log(formData);
     return fetch(`/patients/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     })
-      .then((res) => res.json())
-      .then((updatedPatient) => {
-        console.log(updatedPatient)
+      .then((response) => {
+        console.log(response);
+        if (!response.ok) {
+          throw new Error("Failed to update patient.");
+        }
+        return response.json();
+      })
+      .then((editedPatient) => {
         setPatients((patients) =>
           patients.map((patient) =>
-            patient.id === id ? { ...patient, ...updatedPatient } : patient
+            patient.id === id ? { ...patient, ...editedPatient } : patient
           )
         );
-        return updatedPatient; // Return the updated patient data
+        return editedPatient; // Return the updated patient data
       })
       .catch((error) => {
         setErrors(error.message);
@@ -161,6 +202,8 @@ function UserProvider({ children }) {
         loggedIn,
         patients,
         setPatients,
+        appointments,
+        addAppointment,
         addPatient,
         deletePatient,
         updatePatient,
@@ -180,8 +223,65 @@ export { UserContext, UserProvider };
   
 //-----------------------------------------
 /*
+  // const updatePatient = (id, formData) => {
+  //   return fetch(`/patients/${id}`, {
+  //     method: "PATCH",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(formData),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((editedPatient) => {
+  //       setPatients((patients) =>
+  //         patients.map((patient) =>
+  //           patient.id === id ? { ...patient, ...editedPatient } : patient
+  //         )
+  //       );
+  //       return editedPatient; // Return the updated patient data
+  //     })
+  //     .catch((error) => {
+  //       setErrors(error.message);
+  //       throw error; // Re-throw the error to handle it in the component
+  //     });
+  // };
 
-updatePatient function: The provided code for updating a patient's data is already quite concise and efficient. However, if you want to simplify it further, you can use `async/await` syntax to handle the asynchronous operations more cleanly. Additionally, you can use the `try/catch` block to handle errors in a more readable way. Here's the simplified version using `async/await`:
+  // const updatePatient = async (id, formData) => {
+  //   try {
+  //     const response = await fetch(`/patients/${id}`, {
+  //       method: "PATCH",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(formData),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to update patient.");
+  //     }
+
+  //     const editedPatient = await response.json();
+
+  //     // Update the patients state with the edited patient
+  //     setPatients((patients) =>
+  //       patients.map((patient) =>
+  //         patient.id === id ? { ...patient, ...editedPatient } : patient
+  //       )
+  //     );
+
+  //     return editedPatient; // Return the updated patient data
+  //   } catch (error) {
+  //     setErrors(error.message);
+  //     throw error; // Re-throw the error to handle it in the component
+  //   }
+  // };
+
+
+updatePatient function: 
+
+1. iterate over the elements in our array
+2. check if the ID matches
+3. If it does, return an updated object
+4. Otherwise, return the original object 
+
+
+The provided code for updating a patient's data is already quite concise and efficient. However, if you want to simplify it further, you can use `async/await` syntax to handle the asynchronous operations more cleanly. Additionally, you can use the `try/catch` block to handle errors in a more readable way. Here's the simplified version using `async/await`:
 
 ```jsx
 const updatePatient = async (id, patientEdits) => {

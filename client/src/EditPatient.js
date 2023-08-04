@@ -7,13 +7,13 @@ const initialFormDataState = {
   last_name: "",
   allergies: "",
   email: "",
-  phone_number: "",
+  phone: "",
   address: "",
 };
 
-const EditPatient = ({ patient, onUpdate }) => {
+const EditPatient = ({ patient, setPatient, onUpdate }) => {
   const [formData, setFormData] = useState(initialFormDataState);
-  const { patients } = useContext(UserContext);
+  const { patients, updatePatient } = useContext(UserContext);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -25,37 +25,40 @@ const EditPatient = ({ patient, onUpdate }) => {
     );
     if (patientToUpdate) {
       // If the patient is found, set the formData state with the existing patient data
+      setPatient(patientToUpdate)
       setFormData(patientToUpdate);
     } else {
-      // Handle the case where the patient with the given id is not found (optional)
+      setFormData(null)
     }
-  }, [id, patients]);
+  }, [id, patients, setPatient]);
 
-  // when the editPatient form is submitted, make a patch request to update the patient on the server & also update state. Call updatePatient() over in context to do this! We also need to change our component to leave the editing mode and go back to viewing mode. So when form submits, go back to viewing mode.
+    const handleChange = (e) => {
+      const key = e.target.name;
+      setFormData({
+        ...formData,
+        [key]: e.target.value,
+      });
+    };
+
+    const handleCancelClick = () => {
+      navigate(`/patients`);
+    };
+  
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    // Call the onUpdate function and pass the updated patient data
-    onUpdate(formData);
-  };
-
-  const handleChange = (e) => {
-    const key = e.target.name;
-    setFormData({
+    const data = {
       ...formData,
-      [key]: e.target.value,
-    });
+      [e.target.name]: e.target.value,
+    };
+    // Call the onUpdate function and pass the updated patient data
+    updatePatient(data)
   };
 
-  const handleCancelClick = () => {
-    navigate(`/patients`);
-  };
+  console.log(formData)
 
   return (
-    <div>
+    <div className="highlight">
       <hr />
-      <h3>
-        Edit Patient for {formData.first_name} {formData.last_name}
-      </h3>
       <form onSubmit={handleFormSubmit}>
         <div>
           <label htmlFor="first_name">First Name: </label>
@@ -72,6 +75,15 @@ const EditPatient = ({ patient, onUpdate }) => {
             name="last_name"
             id="last_name"
             value={formData.last_name}
+            onChange={handleChange}
+          />
+          <br />
+          <label htmlFor="dob">Date of Birth: </label>
+          <input
+            type="text"
+            name="dob"
+            id="dob"
+            value={formData.dob}
             onChange={handleChange}
           />
           <br />
@@ -93,12 +105,12 @@ const EditPatient = ({ patient, onUpdate }) => {
             onChange={handleChange}
           />
           <br />
-          <label htmlFor="phone_number">Phone Number: </label>
+          <label htmlFor="phone">Phone Number: </label>
           <input
             type="text"
-            name="phone_number"
-            id="phone_number"
-            value={formData.phone_number}
+            name="phone"
+            id="phone"
+            value={formData.phone}
             onChange={handleChange}
           />
           <br />
@@ -128,6 +140,11 @@ export default EditPatient;
 
 /*
 ----------------------------------------------------------------------
+
+  // when the editPatient form is submitted, make a patch request to update the patient on the server & also update state. Call updatePatient() over in context to do this! We also need to change our component to leave the editing mode and go back to viewing mode. So when form submits, go back to viewing mode.
+
+
+
 The formData state in your code is initialized as an empty object:
 
 jsx

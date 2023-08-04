@@ -8,14 +8,14 @@ const Home = () => {
   if (loggedIn) {
     return (
       <div className="home">
-        <h2>Meduvo Hub</h2>
+        <h3>Home</h3>
         <br />
         <div className="home-buttons">
           <Link to="/patients">
-            <button className="home-button">My Account</button>
+            <button className="home-button">My Patients</button>
           </Link>
           <Link to="/appointments">
-            <button className="home-button">Create New Event Type</button>
+            <button className="home-button">Create Event Type</button>
           </Link>
         </div>
         <hr />

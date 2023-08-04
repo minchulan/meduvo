@@ -9,6 +9,7 @@ const initialFormDataState = {
 
 const Login = () => {
   const [formData, setFormData] = useState(initialFormDataState);
+  const [error, setError] = useState("");
   const { login } = useContext(UserContext);
   const { email, password } = formData;
 
@@ -19,13 +20,19 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const user = {
       email,
       password,
     };
-    login(user);
+
+    try {
+      await login(user);
+      // if login is successful, redirect 
+    } catch (error) {
+      setError("Invalid email or password"); // Set the error message
+    }
   };
 
   return (
@@ -66,10 +73,14 @@ const Login = () => {
         </div>
         <button type="submit">Login</button>
       </form>
+      {error && <p style={{ fontSize: "14px", color: "red" }}>{error}</p>}
       <br />
       <>
         <small>
-          Don't have an account? <NavLink to="/signup">Sign up</NavLink>
+          <b>Don't have an account? {"   "}</b>
+          <u>
+            <NavLink to="/signup">Sign up</NavLink>
+          </u>
         </small>
       </>
       <hr />

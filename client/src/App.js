@@ -12,7 +12,6 @@ import NewAppointment from "./NewAppointment";
 import PatientList from "./PatientList";
 import PatientDetails from "./PatientDetails";
 import EditPatient from "./EditPatient";
-import NewPatient from "./NewPatient";
 import Footer from "./Footer";
 import About from "./About";
 import Contact from "./Contact";
@@ -20,6 +19,7 @@ import Faqs from "./Faqs";
 import Feature1 from "./Feature1";
 import Feature2 from "./Feature2";
 import Feature3 from "./Feature3";
+import PatientAppointments from "./PatientAppointments";
 
 const App = () => {
   return (
@@ -32,29 +32,15 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
 
         {/* Patients Routes */}
-        <Route
-          exact
-          path="/patients"
-          element={
-            <PatientList
-            />
-          }
-        />
+        <Route exact path="/patients" element={<PatientList />} />
         <Route exact path="/patients/:id" element={<PatientDetails />} />
-        <Route exact path="/patients/new" element={<NewPatient />} />
-        <Route exact path="/patients/:id" element={<EditPatient />} />
+        <Route exact path="/patients/:id/edit" element={<EditPatient />} />
 
         {/* Appointments Routes */}
         <Route exact path="/appointments" element={<AppointmentList />} />
-        <Route
-          exact
-          path="/appointments/:id"
-          element={<AppointmentDetails />}
-        />
-        <Route
-          path="/patients/:patientId/appointments/new"
-          element={<NewAppointment />}
-        />
+        <Route exact path="/patients/:patientId/appointments/new" element={<NewAppointment />} />
+        <Route exact path="/patients/:patientId/appointments/:appointmentId" element={<AppointmentDetails />} />
+        <Route exact path="/patients/:patientId/appointments" element={<PatientAppointments />} />
 
         {/* Other Public Routes */}
         <Route path="/about" element={<About />} />
@@ -75,6 +61,29 @@ export default App;
 
 //----------------------------------
 /*
+The React route /patients maps to the Rails route resources :patients, only: [:index], which corresponds to fetching a list of patients.
+The React route /patients/:id maps to the Rails route resources :patients, only: [:show, :update, :destroy], which corresponds to viewing, updating, and deleting a specific patient.
+The React route /patients/:id/edit also maps to the Rails route resources :patients, only: [:update], but it likely represents an editing form or component in your front end.
+The React route /appointments maps to the Rails route resources :appointments, only: [:index], allowing you to fetch a list of appointments.
+The React route /patients/:patientId/appointments/:appointmentId maps to the Rails route resources :appointments, only: [:show, :update, :destroy], indicating operations on a specific appointment within a specific patient.
+The React route /patients/:patientId/appointments maps to the Rails route resources :appointments, only: [:create] within the context of a specific patient, indicating creating a new appointment for that patient.
+
+
+
+
+The nested routes will mirror the nested routes defined in your Rails backend.
+
+# Rails -- Patients 
+resources :patients, only: [:index, :show, :create, :update, :destroy] do
+  resources :appointments, shallow: true
+end
+
+React -- App.js 
+<Route
+  path="/patients/:patientId/appointments"
+  element={<PatientAppointments />}
+/>
+
 
   // do not need to fetch patients upon mount because already fetching user's patients and appointments in user context. and when user logs in, we get the user's data. 
   // useEffect(() => {

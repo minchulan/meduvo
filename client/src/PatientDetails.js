@@ -14,7 +14,6 @@ const PatientDetails = () => {
     fetch(`/patients/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setPatient(data);
       })
       .catch((error) => {
@@ -29,6 +28,7 @@ const PatientDetails = () => {
   const handlePatientUpdate = (updatedPatient) => {
     // Call the updatePatient function from the parent component or context to update the patient on the server
     updatePatient(updatedPatient);
+    console.log(updatedPatient);
   };
 
   const goBack = () => {
@@ -39,8 +39,12 @@ const PatientDetails = () => {
     return (
       <div className="patient-details">
         {isEditing ? (
-              // /* Pass the onUpdate prop to the EditPatient component */
-          <EditPatient patient={patient} onUpdate={handlePatientUpdate} />
+          // /* Pass the onUpdate prop to the EditPatient component */
+          <EditPatient
+            patient={patient}
+            setPatient={setPatient}
+            onUpdate={handlePatientUpdate}
+          />
         ) : (
           <div>
             <h2>{patient.full_name}</h2>
@@ -72,6 +76,10 @@ const PatientDetails = () => {
             <div className="patient-info">
               <strong>Viewed Notice of Privacy Practices: </strong>
               {patient.viewed_notice_of_privacy_practices}
+            </div>
+            <div className="patient-info">
+              <strong>Notes: </strong>
+              {patient.notes}
             </div>
             <br />
             <button className="edit-button" onClick={handleEditClick}>

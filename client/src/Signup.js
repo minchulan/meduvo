@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
+import { NavLink } from "react-router-dom";
 
 const initialFormDataSignUp = {
   email: "",
@@ -8,6 +9,7 @@ const initialFormDataSignUp = {
 const Signup = () => {
   const [formData, setFormData] = useState(initialFormDataSignUp);
   const { signup } = useContext(UserContext);
+  const [errors, setErrors] = useState([])
 
   const handleChange = (e) => {
     setFormData({
@@ -24,6 +26,10 @@ const Signup = () => {
       password: formData.password,
     }
     signup(user);
+  };
+
+  if (errors) {
+    setErrors(errors)
   };
 
   return (
@@ -65,7 +71,23 @@ const Signup = () => {
           Sign up
         </button>
       </form>
+      <small>
+        <p>
+          By clicking on sign-up, you agree to Meduvo's{" "}
+          <NavLink>Terms and Conditions of Use</NavLink>.
+        </p>
+      </small>
+      <br />
+      <>
+        <small>
+          <b>Have an account already?</b>{" "}
+          <u>
+            <NavLink to="/login">Log in</NavLink>
+          </u>
+        </small>
+      </>
       <hr />
+      {errors}
     </div>
   );
 };
