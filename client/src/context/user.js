@@ -14,12 +14,14 @@ function UserProvider({ children }) {
 
   // GET '/me', to: 'users#show'
   useEffect(() => {
-    fetch("/me", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch("/me", {
+          method: "GET",
+          credentials: "include",
+        });
+        const data = await response.json();
+
         if (data.error) {
           setLoggedIn(false);
           setUser(null);
@@ -28,50 +30,45 @@ function UserProvider({ children }) {
           setLoggedIn(true);
           fetchPatients();
           fetchAppointments();
-          // setPatients(data.patients)
         }
-      });
+      } catch (error) {
+        setContextErrors(error.message);
+      }
+    };
+
+    fetchUserData();
   }, []);
 
-  // GET '/patients/:patient_id/appointments', to: 'appointments#index'
-  // POST '/patients/:patient_id/appointments', to: 'appointments#create'
-
-  const fetchAppointments = () => {
-    fetch("/appointments").then((res) => {
+  // GET ALL APPOINTMENTS
+  const fetchAppointments = async () => {
+    try {
+      const res = await fetch("/appointments");
       if (res.ok) {
-        res.json().then(setAppointments);
+        const data = await res.json();
+        setAppointments(data);
       } else {
-        res.json().then((data) => setContextErrors(data.error));
+        const data = await res.json();
+        setContextErrors(data.error);
       }
-    });
+    } catch (error) {
+      setContextErrors(error.message);
+    }
   };
 
-  // GET '/patients', to: 'patients#index'
-  const fetchPatients = () => {
-    fetch("/patients").then((res) => {
+  // GET ALL PATIENTS
+  const fetchPatients = async () => {
+    try {
+      const res = await fetch("/patients");
       if (res.ok) {
-        res.json().then(setPatients);
+        const data = await res.json();
+        setPatients(data);
       } else {
-        res.json().then((data) => setContextErrors(data.error));
+        const data = await res.json();
+        setContextErrors(data.error);
       }
-    });
-  };
-
-  // ADD APPOINTMENT
-  const addAppointment = (patientId, appointment) => {
-    fetch(`/patients/${patientId}/appointments`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(appointment),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setAppointments([...appointments, data]);
-      })
-      .catch((error) => {
-        setContextErrors(error);
-      });
+    } catch (error) {
+      setContextErrors(error.message);
+    }
   };
 
   // ADD PATIENT
@@ -107,37 +104,62 @@ function UserProvider({ children }) {
 
   // UPDATE PATIENT
   const updatePatient = (id, formData) => {
-    console.log(id);
-    console.log(formData);
+    console.log("Updating patient with ID:", id);
+    console.log("Form data:", formData);
+
     return fetch(`/patients/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     })
       .then((response) => {
-        console.log(response);
+        console.log("Response from server:", response);
+
         if (!response.ok) {
           throw new Error("Failed to update patient.");
         }
+
         return response.json();
       })
       .then((editedPatient) => {
+        // Update the patients state with the edited patient data
         setPatients((patients) =>
           patients.map((patient) =>
             patient.id === id ? { ...patient, ...editedPatient } : patient
           )
         );
+
         return editedPatient; // Return the updated patient data
       })
       .catch((error) => {
+        // Handle and propagate the error to the component
         setContextErrors(error.message);
-        throw error; // Re-throw the error to handle it in the component
+        throw error;
       });
   };
 
+  // ADD APPOINTMENT
+  const addAppointment = (patientId, appointment) => {
+    fetch(`/patients/${patientId}/appointments`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        appointment: appointment,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data); // check the received data
+        setAppointments([...appointments, data]); // update appointments state
+      })
+      .catch((error) => {
+        setContextErrors(error);
+      });
+  };
+  
   // UPDATE APPOINTMENT
   const updateAppointment = () => {
-
+    //  define the function's logic to update appointment
   };
 
   // LOGIN
@@ -150,14 +172,19 @@ function UserProvider({ children }) {
       .then((res) => res.json())
       .then((data) => {
         if (!data.errors) {
+          // Update user state and set as logged in
           setUser(data);
           setLoggedIn(true);
+
+          // Redirect to home page
           navigate(`/`);
         } else {
+          // Set errors in the context
           setContextErrors(data.errors);
         }
       })
       .catch((error) => {
+        // Handle login error and set error message
         console.error("Login error:", error);
         setContextErrors(["An error occurred during login. Please try again."]);
       });
@@ -192,7 +219,9 @@ function UserProvider({ children }) {
       })
       .catch((error) => {
         console.error("Signup error:", error);
-        setContextErrors(["An error occurred during signup. Please try again."]);
+        setContextErrors([
+          "An error occurred during signup. Please try again.",
+        ]);
       });
   };
 
@@ -228,6 +257,11 @@ export { UserContext, UserProvider };
   
 //-----------------------------------------
 /*
+
+utilizing the useEffect hook to fetch user-related data and perform authentication when the component mounts.
+
+well-structured functions for managing patients, appointments, login, logout, signup, and error handling.
+
   // const updatePatient = (id, formData) => {
   //   return fetch(`/patients/${id}`, {
   //     method: "PATCH",

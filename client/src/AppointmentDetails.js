@@ -1,91 +1,110 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { UserContext } from "./context/user";
-import EditAppointment from "./EditAppointment";
+import React from "react";
 
 const AppointmentDetails = () => {
-  const { updateAppointment } = useContext(UserContext);
-  const { appointmentId, patientId } = useParams();
-  const [appointment, setAppointment] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Fetch the specific appointment using the correct URL format for nested routes
-    fetch(`/patients/${patientId}/appointments/${appointmentId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
-        setAppointment(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching appointment details", error);
-      });
-  }, [appointmentId, patientId]); // Include both IDs in the dependency array
-
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  const goBack = () => {
-    navigate(-1); // Navigate back to the previous page
-  };
-
-  if (!appointment) {
-    return <div>No Appointment Found.</div>; // You can display a loading indicator while fetching data
-  }
-
+  // Fetch appointment details based on the appointmentId from the route params
+  // and display the appointment details
   return (
     <div>
       <h2>Appointment Details</h2>
-      <div>
-        <p>
-          <b>Name: </b>
-          {appointment.name}
-        </p>
-        <p>
-          <b>Date:</b> {formatDate(appointment.created_at)}
-        </p>
-        <p>
-          <b>Description:</b> {appointment.description}
-        </p>
-        <p>
-          <b>Location:</b> {appointment.location}
-        </p>
-        <button>Update</button>
-        <button>Delete</button>
-        <br />
-        <br />
-        <hr />
-        <button
-          className="go-back-button"
-          onClick={goBack}
-          style={{
-            backgroundColor: "#ffffff",
-            color: "#333333",
-            border: "1px solid #cccccc",
-            borderRadius: "5px",
-            padding: "10px 20px",
-            fontSize: "16px",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
-        >
-          ◁ Go Back
-        </button>
-        <br />
-        <br />
-        <br />
-      </div>
+      {/* Display appointment details */}
     </div>
   );
 };
 
 export default AppointmentDetails;
 
+
+// import React, { useState, useEffect, useContext } from "react";
+// import { useNavigate, useParams } from "react-router-dom";
+// import { UserContext } from "./context/user";
+// import EditAppointment from "./EditAppointment";
+
+// const AppointmentDetails = () => {
+//   const { updateAppointment } = useContext(UserContext);
+//   const { appointmentId, patientId } = useParams();
+//   const [appointment, setAppointment] = useState(null);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     // Fetch the specific appointment using the correct URL format for nested routes
+//     fetch(`/patients/${patientId}/appointments/${appointmentId}`)
+//       .then((res) => res.json())
+//       .then((data) => {
+//         console.log(data)
+//         setAppointment(data);
+//       })
+//       .catch((error) => {
+//         console.error("Error fetching appointment details", error);
+//       });
+//   }, [appointmentId, patientId]); // Include both IDs in the dependency array
+
+//   const formatDate = (dateString) => {
+//     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+//     return new Date(dateString).toLocaleDateString(undefined, options);
+//   };
+
+//   const goBack = () => {
+//     navigate(-1); // Navigate back to the previous page
+//   };
+
+//   if (!appointment) {
+//     return <div>No Appointment Found.</div>; // You can display a loading indicator while fetching data
+//   }
+
+//   return (
+//     <div>
+//       <h2>Appointment Details</h2>
+//       <div>
+//         <p>
+//           <b>Name: </b>
+//           {appointment.name}
+//         </p>
+//         <p>
+//           <b>Date:</b> {formatDate(appointment.created_at)}
+//         </p>
+//         <p>
+//           <b>Description:</b> {appointment.description}
+//         </p>
+//         <p>
+//           <b>Location:</b> {appointment.location}
+//         </p>
+//         <button>Update</button>
+//         <button>Delete</button>
+//         <br />
+//         <br />
+//         <hr />
+//         <button
+//           className="go-back-button"
+//           onClick={goBack}
+//           style={{
+//             backgroundColor: "#ffffff",
+//             color: "#333333",
+//             border: "1px solid #cccccc",
+//             borderRadius: "5px",
+//             padding: "10px 20px",
+//             fontSize: "16px",
+//             fontWeight: "bold",
+//             cursor: "pointer",
+//           }}
+//         >
+//           ◁ Go Back
+//         </button>
+//         <br />
+//         <br />
+//         <br />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AppointmentDetails;
+
 //-----------------------------------------
 /*
 
+AppointmentDetails component is associated with the route `/patients/:patientId/appointments/:appointmentId`. This is where you can display the details of a specific appointment.
+
+/patients/:patientId/appointments/:appointmentId: This route, managed by the AppointmentDetails component, is used to display details about a specific appointment for a specific patient.
 
 Format Date logic: 
 This code defines a function named `formatDate` that takes a `dateString` as input and returns a formatted date string.

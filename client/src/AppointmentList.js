@@ -56,6 +56,7 @@ export default AppointmentList;
 
 /*
 
+/appointments: This route could be used to display a list of all appointments. The AppointmentList component might be responsible for rendering this list.
 
   const handleNewAppointment = (appointmentType) => {
     // Handle creating a new appointment based on the appointmentType

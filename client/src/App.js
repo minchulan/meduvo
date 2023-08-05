@@ -9,6 +9,7 @@ import Signup from "./Signup";
 import AppointmentList from "./AppointmentList";
 import AppointmentDetails from "./AppointmentDetails";
 import NewAppointment from "./NewAppointment";
+import PatientAppointments from "./PatientAppointments";
 import PatientList from "./PatientList";
 import PatientDetails from "./PatientDetails";
 import EditPatient from "./EditPatient";
@@ -19,8 +20,8 @@ import Faqs from "./Faqs";
 import Feature1 from "./Feature1";
 import Feature2 from "./Feature2";
 import Feature3 from "./Feature3";
-import PatientAppointments from "./PatientAppointments";
 import Terms from "./Terms";
+import EditAppointment from "./EditAppointment";
 
 const App = () => {
   return (
@@ -37,18 +38,30 @@ const App = () => {
         <Route exact path="/patients/:id" element={<PatientDetails />} />
         <Route exact path="/patients/:id/edit" element={<EditPatient />} />
 
+        {/* Nested Routes - Patient's Appointments */}
+        {/* GET */}
+        <Route
+          path="/patients/:patientId/appointments"
+          element={<PatientAppointments />}
+        />
+        {/* POST */}
+        <Route
+          path="/patients/:patientId/appointments/new"
+          element={<NewAppointment />}
+        />
+        <Route
+          path="/patients/:patientId/appointments/:appointmentId"
+          element={<AppointmentDetails />}
+        />
         {/* Appointments Routes */}
-        <Route exact path="/appointments" element={<AppointmentList />} />
-        <Route exact path="/patients/:patientId/appointments/new" element={<NewAppointment />} />
-        <Route exact path="/patients/:patientId/appointments/:appointmentId" element={<AppointmentDetails />} />
-        <Route exact path="/patients/:patientId/appointments" element={<PatientAppointments />} />
+        <Route path="/appointments" element={<AppointmentList />} />
+        <Route path="/appointments/:id/edit" element={<EditAppointment />} />
 
         {/* Other Public Routes */}
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/faqs" element={<Faqs />} />
         <Route path="/terms" element={<Terms />} />
-
         {/* Feature Routes */}
         <Route path="/feature1" element={<Feature1 />} />
         <Route path="/feature2" element={<Feature2 />} />
@@ -63,6 +76,9 @@ export default App;
 
 //----------------------------------
 /*
+route definitions in both the Rails backend and the React frontend are aligned, which is crucial for smooth communication between your frontend and backend components.
+
+
 The React route /patients maps to the Rails route resources :patients, only: [:index], which corresponds to fetching a list of patients.
 The React route /patients/:id maps to the Rails route resources :patients, only: [:show, :update, :destroy], which corresponds to viewing, updating, and deleting a specific patient.
 The React route /patients/:id/edit also maps to the Rails route resources :patients, only: [:update], but it likely represents an editing form or component in your front end.

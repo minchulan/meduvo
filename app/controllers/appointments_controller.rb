@@ -8,6 +8,9 @@ class AppointmentsController < ApplicationController
 
     # patient_appointments -- POST '/patients/:patient_id/appointments', to: "appointments#create"
     def create 
+        puts "Received Parameters: #{params.inspect}"
+
+        patient = Patient.find(params[:patient_id])
         appointment = current_user.appointments.new(appointment_params)
         if appointment.save
             render json: appointment, status: :created 
@@ -42,8 +45,16 @@ class AppointmentsController < ApplicationController
     private 
 
     def appointment_params
-        params.require(:appointment).permit(:patient_id, :user_id, :category, :name, :location, :description, :date)
-    end 
+        params.require(:appointment).permit(
+            :name,
+            :date,
+            :location,
+            :category,
+            :description
+        )
+    end
+
+
 end
 
 

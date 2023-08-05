@@ -18,9 +18,10 @@ class Appointment < ApplicationRecord
   belongs_to :patient
 
   with_options if: :validate_appointment? do |appointment|
-    appointment.validates :category, :name, :location, presence: true
+    appointment.validates :category, :name, :location, :date, presence: true
     appointment.validates :description, length: { in: 5..500 }
     appointment.validates :name, length: { minimum: 2, maximum: 50 }
+
   end
 
 

@@ -1,64 +1,22 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "./context/user";
-import { useParams, useNavigate, NavLink } from "react-router-dom";
+import { useParams, NavLink, useNavigate } from "react-router-dom";
 
 const PatientAppointments = () => {
   const [categorySearchQuery, setCategorySearchQuery] = useState("");
-  const [showAddForm, setShowAddForm] = useState(false); // Flag to control form visibility
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [newAppointmentFormData, setNewAppointmentFormData] = useState({
-    name: "",
-    date: "",
-    location: "",
-    category: "",
-    description: "",
-  });
-  const { appointments, addAppointment } = useContext(UserContext);
-  const navigate = useNavigate();
+  const { appointments } = useContext(UserContext);
   const { patientId } = useParams();
-
-  const goBack = () => {
-    navigate(`/patients`);
-  };
-
-  const toggleAddForm = () => {
-    setShowAddForm(!showAddForm);
-  };
-
-  const handleSubmitNewAppointment = (e) => {
-    e.preventDefault();
-
-    addAppointment(patientId, {
-      name: newAppointmentFormData.name,
-      date: newAppointmentFormData.date,
-      location: newAppointmentFormData.location,
-      category: newAppointmentFormData.category,
-      description: newAppointmentFormData.description,
-    });
-
-    setShowConfirmation(true);
-    setShowAddForm(false);
-
-    // Reset the form data after submission
-    setNewAppointmentFormData({
-      name: "",
-      date: "",
-      location: "",
-      category: "",
-      description: "",
-    });
-
-    // Reset the confirmation message after 5 seconds
-    setTimeout(() => {
-      setShowConfirmation(false);
-    }, 5000); // 5 seconds
-  };
+  const navigate = useNavigate();
 
   const filteredAppointments = categorySearchQuery
     ? appointments.filter(
         (appointment) => appointment.category === categorySearchQuery
       )
     : appointments;
+  
+  const goBack = () => {
+    navigate(`/patients`);
+  };
 
   return (
     <div className="patient-appointments-container">
@@ -92,95 +50,8 @@ const PatientAppointments = () => {
         ))}
       </ul>
       <br />
-      {showAddForm ? (
-        <form
-          onSubmit={handleSubmitNewAppointment}
-          className="appointment-form"
-        >
-          <label htmlFor="name">
-            Appointment Name:
-            <input
-              type="text"
-              id="name"
-              value={newAppointmentFormData.name}
-              onChange={(e) =>
-                setNewAppointmentFormData({
-                  ...newAppointmentFormData,
-                  name: e.target.value,
-                })
-              }
-            />
-          </label>
-          <label htmlFor="date">
-            Date:
-            <input
-              type="date"
-              id="date"
-              value={newAppointmentFormData.date}
-              onChange={(e) =>
-                setNewAppointmentFormData({
-                  ...newAppointmentFormData,
-                  date: e.target.value,
-                })
-              }
-            />
-          </label>
-          <label htmlFor="location">
-            Location:
-            <input
-              type="text"
-              id="location"
-              value={newAppointmentFormData.location}
-              onChange={(e) =>
-                setNewAppointmentFormData({
-                  ...newAppointmentFormData,
-                  location: e.target.value,
-                })
-              }
-            />
-          </label>
-          <label htmlFor="category">
-            Category:
-            <select
-              id="category"
-              value={newAppointmentFormData.category}
-              onChange={(e) =>
-                setNewAppointmentFormData({
-                  ...newAppointmentFormData,
-                  category: e.target.value,
-                })
-              }
-            >
-              <option value="">Select Category</option>
-              <option value="msc">MSC</option>
-              <option value="immunization">Immunization</option>
-              <option value="mtm">MTM</option>
-            </select>
-          </label>
-          <label htmlFor="description">
-            Description:
-            <textarea
-              id="description"
-              value={newAppointmentFormData.description}
-              onChange={(e) =>
-                setNewAppointmentFormData({
-                  ...newAppointmentFormData,
-                  description: e.target.value,
-                })
-              }
-            />
-          </label>
-          <button type="submit" style={submitButtonStyle}>
-            Add Appointment
-          </button>
-        </form>
-      ) : (
-        <button className="add-appointment-button" onClick={toggleAddForm}>
-          + New Appointment
-        </button>
-      )}
-      {showConfirmation && <p>Appointment added successfully!</p>}
       <hr />
+      <br />
       <button
         className="go-back-button"
         onClick={goBack}
@@ -198,20 +69,15 @@ const PatientAppointments = () => {
         ◁ Go Back
       </button>
       <br />
-      <br />
-      <br />
     </div>
   );
 };
 
-const submitButtonStyle = {
-  backgroundColor: "#007bff",
-  color: "#ffffff",
-  border: "none",
-  borderRadius: "3px",
-  padding: "10px 20px",
-  fontSize: "16px",
-  cursor: "pointer",
-};
-
 export default PatientAppointments;
+
+//----------------------------------
+/*
+PatientAppointments component is associated with the route `/patients/:patientId/appointments`. This is where you list the existing appointments for a patient.
+
+/patients/:patientId/appointments: This route uses the PatientAppointments component to display appointments specific to a patient. It could show a list of appointments for a particular patient.
+*/
