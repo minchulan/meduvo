@@ -4,6 +4,7 @@
 #
 #  id          :bigint           not null, primary key
 #  category    :string
+#  date        :date
 #  description :text
 #  location    :string
 #  name        :string

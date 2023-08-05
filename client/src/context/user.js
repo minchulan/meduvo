@@ -5,7 +5,7 @@ const UserContext = createContext();
 
 function UserProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [errors, setErrors] = useState(null);
+  const [contextErrors, setContextErrors] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
@@ -23,7 +23,7 @@ function UserProvider({ children }) {
         if (data.error) {
           setLoggedIn(false);
           setUser(null);
-          setErrors("Authentication failed. Please login.");
+          setContextErrors("Authentication failed. Please login.");
         } else {
           setLoggedIn(true);
           fetchPatients();
@@ -41,7 +41,7 @@ function UserProvider({ children }) {
       if (res.ok) {
         res.json().then(setAppointments);
       } else {
-        res.json().then((data) => setErrors(data.error));
+        res.json().then((data) => setContextErrors(data.error));
       }
     });
   };
@@ -52,7 +52,7 @@ function UserProvider({ children }) {
       if (res.ok) {
         res.json().then(setPatients);
       } else {
-        res.json().then((data) => setErrors(data.error));
+        res.json().then((data) => setContextErrors(data.error));
       }
     });
   };
@@ -70,7 +70,7 @@ function UserProvider({ children }) {
         setAppointments([...appointments, data]);
       })
       .catch((error) => {
-        setErrors(error);
+        setContextErrors(error);
       });
   };
 
@@ -88,7 +88,7 @@ function UserProvider({ children }) {
         setPatients([...patients, data]);
       })
       .catch((error) => {
-        setErrors(error);
+        setContextErrors(error);
       });
   };
 
@@ -130,7 +130,7 @@ function UserProvider({ children }) {
         return editedPatient; // Return the updated patient data
       })
       .catch((error) => {
-        setErrors(error.message);
+        setContextErrors(error.message);
         throw error; // Re-throw the error to handle it in the component
       });
   };
@@ -154,12 +154,12 @@ function UserProvider({ children }) {
           setLoggedIn(true);
           navigate(`/`);
         } else {
-          setErrors(data.errors);
+          setContextErrors(data.errors);
         }
       })
       .catch((error) => {
         console.error("Login error:", error);
-        setErrors(["An error occurred during login. Please try again."]);
+        setContextErrors(["An error occurred during login. Please try again."]);
       });
   };
 
@@ -187,12 +187,12 @@ function UserProvider({ children }) {
           setLoggedIn(true);
           navigate(`/`);
         } else {
-          setErrors(data.errors);
+          setContextErrors(data.errors);
         }
       })
       .catch((error) => {
         console.error("Signup error:", error);
-        setErrors(["An error occurred during signup. Please try again."]);
+        setContextErrors(["An error occurred during signup. Please try again."]);
       });
   };
 
@@ -212,11 +212,11 @@ function UserProvider({ children }) {
         deletePatient,
         updatePatient,
         updateAppointment,
-        errors,
-        setErrors,
+        contextErrors,
+        setContextErrors,
       }}
     >
-      {errors ? <h2>{errors.message}</h2> : children}
+      {contextErrors ? <h2>{contextErrors.message}</h2> : children}
     </UserContext.Provider>
   );
 }

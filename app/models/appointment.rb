@@ -4,6 +4,7 @@
 #
 #  id          :bigint           not null, primary key
 #  category    :string
+#  date        :date
 #  description :text
 #  location    :string
 #  name        :string
@@ -13,27 +14,48 @@
 #  user_id     :integer
 #
 class Appointment < ApplicationRecord
-  belongs_to :user 
-  belongs_to :patient 
+  belongs_to :user
+  belongs_to :patient
 
-  # validates :category, :name, presence: true 
-  # validates :description, length: { in: 10..500 }
-  # # validates :category, inclusion: { in: %w[category1 category2 category3] }
-  # validates :name, length: { minimum: 2, maximum: 50 }
+  with_options if: :validate_appointment? do |appointment|
+    appointment.validates :category, :name, :location, presence: true
+    appointment.validates :description, length: { in: 5..500 }
+    appointment.validates :name, length: { minimum: 2, maximum: 50 }
+  end
 
-  before_save :format_name 
+
+  before_save :format_name
 
   scope :sort_desc_by_name, -> { order(name: :desc) }
 
-  def format_name
-    self.name = name.capitalize if name.present? && name[0] != name[0].upcase 
+  private
+
+  def validate_appointment?
+    # Return true if the appointment should be validated
+    # Return false when creating a new patient
+    !new_record?
   end 
+
+  def format_name
+    self.name = name.capitalize if should_format_name?
+  end
+
+  def should_format_name?
+    name.present? && name[0] != name[0].upcase
+  end
 end
 
 
+
 # --------------------
+# In this example, we're using the with_options block to define validations that should only be triggered if the validate_appointment? method returns true. The validate_appointment? method returns false when creating a new patient (new_record? returns true for a new record). By using this approach, the appointment validations will be applied when saving appointments as usual, but they will be skipped when creating new patients. This allows you to control when certain validations should be applied based on the context of the operation.
 
 # Let's go through the code line by line:
+
+# I've moved the should_format_name? method to improve readability. It helps clarify whether the name should be formatted or not.
+# I've encapsulated the should_format_name? method within the private section, since it's an internal logic detail.
+# The before_save callback now directly calls should_format_name? to determine whether the name should be formatted.
+# The logic remains unchanged; this version is simply organized and named in a way that might make the code's intent clearer.
 
 # ```ruby
 # class Appointment < ApplicationRecord

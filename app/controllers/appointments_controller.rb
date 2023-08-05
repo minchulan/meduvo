@@ -25,10 +25,11 @@ class AppointmentsController < ApplicationController
 
     # appointment -- PATCH '/appointments/:id', to: "appointments#update"
     def update 
+        appointment = current_user.appointments.find(params[:id])
         if appointment.update(appointment_params)
             render json: appointment, status: :ok 
         else  
-            render json: { error: @appointment.errors.full_messages }, status: :unprocessable_entity
+            render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity
         end 
     end 
 
@@ -41,7 +42,7 @@ class AppointmentsController < ApplicationController
     private 
 
     def appointment_params
-        params.require(:appointment).permit(:patient_id, :user_id, :category, :name, :location, :description, :created_at, :updated_at)
+        params.require(:appointment).permit(:patient_id, :user_id, :category, :name, :location, :description, :date)
     end 
 end
 
@@ -53,7 +54,6 @@ end
 
 # .find(params[:id]): Once we have the appointments associated with the user, we use the find method to retrieve the specific appointment with the given id. This ensures that the appointment belongs to the current user and has the specified id.
 
-# By using Active Record associations, you ensure that the appointment you're fetching belongs to the current user, and you retrieve it directly through the association without querying the Appointment model directly.
 
 
 # Let's walk through the code:
