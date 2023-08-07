@@ -1,86 +1,44 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { UserContext } from "./context/user";
-
-const initialFormDataState = {
-  first_name: "",
-  last_name: "",
-  allergies: "",
-  email: "",
-  phone: "",
-  address: "",
-};
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const EditPatient = ({ patient, setPatient, onUpdate }) => {
-  const [formData, setFormData] = useState(initialFormDataState);
-  const { patients, updatePatient } = useContext(UserContext);
+  const [formData, setFormData] = useState({...patient});
   const navigate = useNavigate();
-  const { id } = useParams();
 
-  // Fetch the patient data when the component mounts
-  useEffect(() => {
-    // Find the patient with the specified id from the patients array
-    const patientToUpdate = patients.find(
-      (patient) => patient.id === Number(id)
-    );
-    if (patientToUpdate) {
-      // If the patient is found, set the formData state with the existing patient data
-      setPatient(patientToUpdate)
-      setFormData(patientToUpdate);
-    } else {
-      setFormData(null)
-    }
-  }, [id, patients, setPatient]);
-
-    const handleChange = (e) => {
-      const key = e.target.name;
-      setFormData({
-        ...formData,
-        [key]: e.target.value,
-      });
-    };
-
-    const handleCancelClick = () => {
-      navigate(`/patients`);
-    };
-  
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    const data = {
-      ...formData,
-      [e.target.name]: e.target.value,
-    };
-    // Call the onUpdate function and pass the updated patient data
-    updatePatient(data)
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+  const handleCancelClick = () => {
+    navigate(`/patients`);
   };
 
-  console.log(formData)
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    onUpdate(formData); // Pass updated data to onUpdate function
+    navigate(`/patients/${patient.id}`); // Redirect to patient details
+  };
 
   return (
-    <div className="highlight">
+    <div className="edit-patient">
       <hr />
       <form onSubmit={handleFormSubmit}>
         <div>
-          <label htmlFor="first_name">First Name: </label>
+          <label htmlFor="full_name">Full Name: </label>
           <input
             type="text"
-            name="first_name"
-            id="first_name"
-            value={formData.first_name}
-            onChange={handleChange}
-          />{" "}
-          <label htmlFor="last_name">Last Name: </label>
-          <input
-            type="text"
-            name="last_name"
-            id="last_name"
-            value={formData.last_name}
+            name="full_name"
+            id="full_name"
+            value={formData.full_name}
             onChange={handleChange}
           />
           <br />
           <label htmlFor="dob">Date of Birth: </label>
           <input
-            type="text"
+            type="date"
             name="dob"
             id="dob"
             value={formData.dob}
@@ -98,7 +56,7 @@ const EditPatient = ({ patient, setPatient, onUpdate }) => {
           <br />
           <label htmlFor="email">Email: </label>
           <input
-            type="text"
+            type="email"
             name="email"
             id="email"
             value={formData.email}
@@ -107,7 +65,7 @@ const EditPatient = ({ patient, setPatient, onUpdate }) => {
           <br />
           <label htmlFor="phone">Phone Number: </label>
           <input
-            type="text"
+            type="tel"
             name="phone"
             id="phone"
             value={formData.phone}
@@ -115,11 +73,20 @@ const EditPatient = ({ patient, setPatient, onUpdate }) => {
           />
           <br />
           <label htmlFor="address">Address: </label>
-          <input
+          <textarea
             type="text"
             name="address"
             id="address"
             value={formData.address}
+            onChange={handleChange}
+          />
+          <br />
+          <label htmlFor="notes">Notes: </label>
+          <textarea
+            type="text"
+            name="notes"
+            id="notes"
+            value={formData.notes}
             onChange={handleChange}
           />
         </div>

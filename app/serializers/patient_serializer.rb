@@ -5,7 +5,7 @@
 #  id                                 :bigint           not null, primary key
 #  address                            :string
 #  allergies                          :string
-#  dob                                :string
+#  dob                                :date
 #  email                              :string
 #  first_name                         :string
 #  gender                             :string

@@ -4,12 +4,12 @@ import { NavLink } from "react-router-dom";
 
 const initialFormDataSignUp = {
   email: "",
-  password: ""
+  password: "",
 };
+
 const Signup = () => {
   const [formData, setFormData] = useState(initialFormDataSignUp);
-  const { signup } = useContext(UserContext);
-  const [errors, setErrors] = useState([]);
+  const { signup, contextErrors } = useContext(UserContext);
 
   const handleChange = (e) => {
     setFormData({
@@ -20,11 +20,11 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData.password);
     const user = {
       email: formData.email,
       password: formData.password,
     };
+
     signup(user);
   };
 
@@ -37,7 +37,6 @@ const Signup = () => {
             Email: <span className="required-field">*</span>
           </label>
           <input
-            required
             onChange={handleChange}
             value={formData.email}
             type="text"
@@ -52,7 +51,6 @@ const Signup = () => {
             Password: <span className="required-field">*</span>
           </label>
           <input
-            required
             onChange={handleChange}
             value={formData.password}
             type="password"
@@ -60,7 +58,6 @@ const Signup = () => {
             id="password"
             placeholder="Password"
             className="form-control"
-            autoComplete="on"
           />
         </div>
         <button className="btn" type="submit">
@@ -84,23 +81,18 @@ const Signup = () => {
         </small>
       </>
       <hr />
-      {/* Display errors */}
-      {errors.length > 0 && (
-        <div className="error-container">
-          {errors.map((error, index) => (
-            <p key={index} className="error-message">
-              {error}
-            </p>
+      {contextErrors && contextErrors.length > 0 && (
+        <ul style={{ color: "red" }}>
+          {contextErrors.map((error) => (
+            <li key={error}>{error}</li>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );
 };
 
 export default Signup;
-
-
 
 //-----------------------------------
 /*

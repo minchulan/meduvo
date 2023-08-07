@@ -1,6 +1,19 @@
-import React from 'react'
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate, useParams } from "react-router-dom";
+import { UserContext } from './context/user';
+
+const initialAppointmentFormDataState = {
+    name: "",
+    category: "",
+    location: "",
+    date: "",
+    description: "",
+};
 
 const EditAppointment = () => {
+    const [appointmentFormData, setAppointmentFormData] = useState({
+        ...initialAppointmentFormDataState
+    })
     return (
         <div>EditAppointment</div>
     )

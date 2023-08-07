@@ -1,19 +1,34 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "./context/user";
 import { useParams, NavLink, useNavigate } from "react-router-dom";
+import NewAppointment from "./NewAppointment";
 
-const PatientAppointments = () => {
+const PatientAppointments = ({ submitButtonStyle }) => {
   const [categorySearchQuery, setCategorySearchQuery] = useState("");
-  const { appointments } = useContext(UserContext);
+  const [showNewAppointmentForm, setShowNewAppointmentForm] = useState(false);
+  const { appointments, deleteAppointment } = useContext(UserContext);
   const { patientId } = useParams();
   const navigate = useNavigate();
 
+  // Filtering appointments based on the selected category
   const filteredAppointments = categorySearchQuery
     ? appointments.filter(
         (appointment) => appointment.category === categorySearchQuery
       )
     : appointments;
-  
+
+  const handleDeleteClick = (appointmentId) => {
+    deleteAppointment(patientId, appointmentId);
+  };
+
+  const toggleNewAppointmentForm = () => {
+    setShowNewAppointmentForm((prev) => !prev);
+  };
+
+  const handleCancel = () => {
+    setShowNewAppointmentForm(false);
+  };
+
   const goBack = () => {
     navigate(`/patients`);
   };
@@ -37,18 +52,36 @@ const PatientAppointments = () => {
         </label>
         <hr />
       </div>
-      <ul>
+      <ul className="appointments-list">
         {filteredAppointments.map((appointment) => (
           <li key={appointment.id}>
-            {/* Link to the appointment details page with the appointment ID */}
             <NavLink
               to={`/patients/${patientId}/appointments/${appointment.id}`}
             >
               {appointment.name}
             </NavLink>
+            <button
+              className="delete-button"
+              onClick={() => handleDeleteClick(appointment.id)}
+            >
+              🗑️ Delete
+            </button>
           </li>
         ))}
       </ul>
+      <br />
+      <br />
+      <button className="new-button" onClick={toggleNewAppointmentForm}>
+        + New
+      </button>
+      <br />
+      {showNewAppointmentForm && (
+        <NewAppointment
+          patientId={patientId}
+          onCancel={handleCancel}
+          submitButtonStyle={submitButtonStyle}
+        />
+      )}
       <br />
       <hr />
       <br />
@@ -69,6 +102,8 @@ const PatientAppointments = () => {
         ◁ Go Back
       </button>
       <br />
+      <br />
+      <br />
     </div>
   );
 };
@@ -77,6 +112,11 @@ export default PatientAppointments;
 
 //----------------------------------
 /*
+
+PatientAppointments renders:
+  - Appointment Details
+  - New Appointment `/patients/60/appointments/new
+
 PatientAppointments component is associated with the route `/patients/:patientId/appointments`. This is where you list the existing appointments for a patient.
 
 /patients/:patientId/appointments: This route uses the PatientAppointments component to display appointments specific to a patient. It could show a list of appointments for a particular patient.

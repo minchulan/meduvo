@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "./context/user";
 
-
 const PatientCard = ({ patient }) => {
   const { deletePatient } = useContext(UserContext);
   const { id, full_name, dob } = patient;
@@ -14,7 +13,8 @@ const PatientCard = ({ patient }) => {
   };
 
   const handleAppointmentsClick = () => {
-    navigate(`/patients/${patient.id}/appointments`);
+    // Navigate to the patient's appointments page
+    navigate(`/patients/${id}/appointments`);
   };
 
   if (patient) {
@@ -34,7 +34,12 @@ const PatientCard = ({ patient }) => {
           </button>
         </div>
         <br />
-        <button className="appointment-button" onClick={handleAppointmentsClick}>View Appointments</button>
+        <button
+          className="appointment-button"
+          onClick={handleAppointmentsClick}
+        >
+          View Appointments
+        </button>
         <br />
         <br />
       </div>
@@ -45,11 +50,6 @@ const PatientCard = ({ patient }) => {
 };
 
 export default PatientCard;
-
-
-
-
-
 
 //-----------
 /*

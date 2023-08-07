@@ -21,30 +21,17 @@ class Appointment < ApplicationRecord
     appointment.validates :category, :name, :location, :date, presence: true
     appointment.validates :description, length: { in: 5..500 }
     appointment.validates :name, length: { minimum: 2, maximum: 50 }
-
   end
-
-
-  before_save :format_name
 
   scope :sort_desc_by_name, -> { order(name: :desc) }
 
   private
 
   def validate_appointment?
-    # Return true if the appointment should be validated
-    # Return false when creating a new patient
     !new_record?
   end 
-
-  def format_name
-    self.name = name.capitalize if should_format_name?
-  end
-
-  def should_format_name?
-    name.present? && name[0] != name[0].upcase
-  end
 end
+
 
 
 

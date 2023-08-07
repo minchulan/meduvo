@@ -6,18 +6,18 @@ class AppointmentsController < ApplicationController
         render json: appointments, status: :ok 
     end 
 
-    # patient_appointments -- POST '/patients/:patient_id/appointments', to: "appointments#create"
-    def create 
-        puts "Received Parameters: #{params.inspect}"
+    # POST '/patients/:patient_id/appointments', to: "appointments#create"
+    def create
+        patient = current_user.patients.find(params[:patient_id]) # Fetch the patient based on the provided patient_id
+        appointment = patient.appointments.build(appointment_params) # Associate the appointment with the patient
 
-        patient = Patient.find(params[:patient_id])
-        appointment = current_user.appointments.new(appointment_params)
         if appointment.save
-            render json: appointment, status: :created 
-        else  
+            render json: appointment, status: :created
+        else
             render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity
-        end 
-    end 
+        end
+    end
+
 
     # appointment -- GET '/appointments/:id', to: "appointments#show"
     def show 
@@ -38,6 +38,7 @@ class AppointmentsController < ApplicationController
 
     # appointment -- DELETE '/appointments/:id', to: "appointments#destroy"
     def destroy 
+        appointment = current_user.appointments.find(params[:id])
         appointment.destroy 
         head :no_content
     end 
@@ -53,7 +54,6 @@ class AppointmentsController < ApplicationController
             :description
         )
     end
-
 
 end
 

@@ -1,28 +1,31 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 const AppointmentCard = ({ appointment }) => {
-
-
   const renderCategory = (category) => {
     switch (category) {
-      case "MTM":
+      case "mtm":
         return <span className="category-mtm">MTM</span>;
-      case "MSC":
+      case "msc":
         return <span className="category-msc">MSC</span>;
-      case "IMMUNIZATIONS":
-        return <span className="category-immunizations">Immunizations</span>;
+      case "immunization":
+        return <span className="category-immunization">Immunization</span>;
       default:
-        return <span>{category}</span>;
+        return <span className="category-common">{category}</span>;
     }
   };
 
   return (
     <div className="appointment-card">
-      <h3>{appointment.name}</h3>
-      <p>Date: {appointment.date}</p>
-      <p>Time: {appointment.time}</p>
-      <p>Location: {appointment.location}</p>
-      <p>Category: {renderCategory(appointment.category)}</p>
+      <div className="card-content">
+        <h3>
+          <NavLink to={`/appointments/${appointment.id}`}>{appointment.name}</NavLink>
+        </h3>
+        <p>Date: {appointment.date}</p>
+        <p>Time: {appointment.time}</p>
+        <p>Location: {appointment.location}</p>
+        <p>Category: {renderCategory(appointment.category)}</p>
+      </div>
     </div>
   );
 };

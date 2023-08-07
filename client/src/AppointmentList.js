@@ -9,12 +9,13 @@ const AppointmentList = () => {
   const navigate = useNavigate();
 
   const goBack = () => {
-    navigate("/"); // Navigate back to the previous page
+    navigate("/");
   };
 
   const filteredAppointments = categoryFilter
     ? appointments.filter(
-        (appointment) => appointment.category === categoryFilter
+        (appointment) =>
+          appointment.category.toLowerCase() === categoryFilter.toLowerCase()
       )
     : appointments;
 
@@ -31,7 +32,7 @@ const AppointmentList = () => {
           <option value="">All Categories</option>
           <option value="MTM">MTM</option>
           <option value="MSC">MSC</option>
-          <option value="IMMUNIZATIONS">Immunizations</option>
+          <option value="IMMUNIZATION">Immunization</option>
         </select>
       </div>
 
@@ -40,7 +41,11 @@ const AppointmentList = () => {
           <AppointmentCard key={appointment.id} appointment={appointment} />
         ))
       ) : (
-        <p>No appointments available.</p>
+        <p>
+          <b>
+            <em>No appointments found in this category</em>
+          </b>
+        </p>
       )}
       <br />
       <hr />

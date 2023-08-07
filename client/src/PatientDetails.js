@@ -14,6 +14,7 @@ const PatientDetails = () => {
     fetch(`/patients/${id}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         setPatient(data);
       })
       .catch((error) => {
@@ -22,13 +23,17 @@ const PatientDetails = () => {
   }, [id]);
 
   const handleEditClick = () => {
-    setIsEditing((isEditing) => !isEditing);
+    setIsEditing(true);
   };
 
-  const handlePatientUpdate = (updatedPatient) => {
-    // Call the updatePatient function from the parent component or context to update the patient on the server
-    updatePatient(updatedPatient);
-    console.log(updatedPatient);
+  const handlePatientUpdate = async (updatedPatient) => {
+    try {
+      await updatePatient(updatedPatient.id, updatedPatient); // Pass id to updatePatient
+      setPatient(updatedPatient);
+      setIsEditing(false); // Exit edit mode
+    } catch (error) {
+      console.error("Error updating patient:", error);
+    }
   };
 
   const goBack = () => {
@@ -42,7 +47,6 @@ const PatientDetails = () => {
           // /* Pass the onUpdate prop to the EditPatient component */
           <EditPatient
             patient={patient}
-            setPatient={setPatient}
             onUpdate={handlePatientUpdate}
           />
         ) : (

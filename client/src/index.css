@@ -822,5 +822,132 @@ button {
   cursor: pointer;
 }
 
+/* Styles for the PatientAppointments component */
+
+.patient-appointments-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f7f7f7;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.search-bar label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.search-bar select {
+  padding: 5px;
+  font-size: 16px;
+}
+
+.appointments-list {
+  list-style: none;
+  padding: 0;
+}
+
+.appointments-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.appointments-list a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.delete-button {
+  background-color: #b7b7b7;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.new-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.go-back-button {
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Appointment Cards  */
+.appointment-card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-content {
+  padding: 10px;
+}
+
+.category-mtm {
+  background-color: #007bff;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+}
+
+.category-msc {
+  background-color: #dc3545;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+}
+
+
+.category-immunization {
+  background-color: #28a745;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+}
+
+.category-common {
+  background-color: blue; 
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+
+
+
+
 
 

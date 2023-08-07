@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   end
 
   # # Appointments
-  resources :appointments, only: [:index]
+  resources :appointments, only: [:index, :show]
 
   # Users
   resources :users, only: [:update, :destroy]

@@ -10,17 +10,18 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #
+# Indexes
+#
+#  index_users_on_email  (email) UNIQUE
+#
 class User < ApplicationRecord
   has_secure_password
 
   has_many :appointments, dependent: :destroy
   has_many :patients, through: :appointments
 
-  validates :email, presence: true, uniqueness: { case_sensitive: false }
-
-  validates :password, presence: true, length: { minimum: 6 }
-
-
+  validates :email, presence: true, uniqueness: true 
+  validates :password, presence: true 
 
 end
 

@@ -10,6 +10,10 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #
+# Indexes
+#
+#  index_users_on_email  (email) UNIQUE
+#
 class UserSerializer < ActiveModel::Serializer
   attributes :id, :username, :email, :admin, :created_at, :updated_at
   has_many :patients

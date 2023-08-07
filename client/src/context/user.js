@@ -32,7 +32,7 @@ function UserProvider({ children }) {
           fetchAppointments();
         }
       } catch (error) {
-        setContextErrors(error.message);
+        setContextErrors("Failed to fetch user data. Please try again later.");
       }
     };
 
@@ -139,27 +139,64 @@ function UserProvider({ children }) {
   };
 
   // ADD APPOINTMENT
-  const addAppointment = (patientId, appointment) => {
-    fetch(`/patients/${patientId}/appointments`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        appointment: appointment,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data); // check the received data
-        setAppointments([...appointments, data]); // update appointments state
-      })
-      .catch((error) => {
-        setContextErrors(error);
+  const addAppointment = async (patientId, appointmentData) => {
+    try {
+      const response = await fetch(`/patients/${patientId}/appointments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ appointment: appointmentData }),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to add appointment.");
+      }
+
+      const newAppointment = await response.json();
+      setAppointments([...appointments, newAppointment]);
+    } catch (error) {
+      setContextErrors("Failed to add appointment. Please try again later.");
+    }
   };
-  
+
   // UPDATE APPOINTMENT
-  const updateAppointment = () => {
-    //  define the function's logic to update appointment
+  const updateAppointment = async (patientId, appointmentId, updatedData) => {
+    try {
+      const response = await fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          appointment: updatedData,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update appointment.");
+      }
+      const editedAppointment = await response.json();
+      // Update the appointments state with the edited appointment data
+      setAppointments((appointments) => appointments.map((appointment) => appointment.id === appointmentId
+        ? { ...appointment, ...editedAppointment }
+        : appointment
+      )
+      );
+      return editedAppointment;
+    } catch (error) {
+      // Handle and propagate the error to the component
+      setContextErrors(error.message);
+      throw error;
+    }
+  };
+
+  // DELETE APPOINTMENT
+  const deleteAppointment = (patientId, appointmentId) => {
+    // persist changes on server
+    fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
+      method: "DELETE",
+    }).then(() => {
+      // Update appointments state to remove the deleted appointment
+      setAppointments((appointments) =>
+        appointments.filter((appointment) => appointment.id !== appointmentId)
+      );
+    });
   };
 
   // LOGIN
@@ -206,23 +243,31 @@ function UserProvider({ children }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.errors) {
-          setUser(data);
-          setLoggedIn(true);
-          navigate(`/`);
-        } else {
-          setContextErrors(data.errors);
-        }
-      })
-      .catch((error) => {
-        console.error("Signup error:", error);
-        setContextErrors([
-          "An error occurred during signup. Please try again.",
-        ]);
-      });
+    }).then((resp) => {
+      console.log(resp);
+      // if (resp.ok) {
+      //   resp.json().then((newUser) => console.log(newUser))
+      // } else {
+      //   resp.json().then((errorData) => setContextErrors(errorData.errors))
+      // }
+    });
+
+    // .then((res) => res.json())
+    // .then((data) => {
+    //   if (!data.errors) {
+    //     setUser(data);
+    //     setLoggedIn(true);
+    //     navigate(`/`);
+    //   } else {
+    //     setContextErrors(data.errors);
+    //   }
+    // })
+    // .catch((error) => {
+    //   console.error("Signup error:", error);
+    //   setContextErrors([
+    //     "An error occurred during signup. Please try again.",
+    //   ]);
+    // });
   };
 
   return (
@@ -237,6 +282,7 @@ function UserProvider({ children }) {
         setPatients,
         appointments,
         addAppointment,
+        deleteAppointment,
         addPatient,
         deletePatient,
         updatePatient,
@@ -252,11 +298,45 @@ function UserProvider({ children }) {
 
 export { UserContext, UserProvider };
 
-
-  
   
 //-----------------------------------------
 /*
+Thank you for providing the complete `UserProvider` component code. It appears to be the context provider that manages user-related data and interactions in your React application. Based on the code you've shared, I can confirm that you are setting up a `UserContext` which provides various functions and state variables to handle user authentication, patient, and appointment data. The context values are then consumed by components within your application to perform actions like signing up, logging in, managing patients, appointments, and more.
+
+Here's a summary of what the `UserProvider` component does:
+
+1. **State Variables:**
+   - `user`: Stores user data once logged in or signed up.
+   - `contextErrors`: Stores any errors encountered during context operations.
+   - `loggedIn`: Indicates whether a user is logged in.
+   - `patients`: Stores an array of patient data.
+   - `appointments`: Stores an array of appointment data.
+
+2. **Context Functions:**
+   - `login`: Sends a POST request to log in a user, updating the `user` and `loggedIn` state variables.
+   - `logout`: Sends a DELETE request to log out a user, resetting the `user` and `loggedIn` state variables.
+   - `signup`: Sends a POST request to sign up a new user, updating the `user` and `loggedIn` state variables.
+   - `addPatient`: Sends a POST request to add a new patient, updating the `patients` state.
+   - `deletePatient`: Sends a DELETE request to delete a patient, updating the `patients` state.
+   - `updatePatient`: Sends a PATCH request to update a patient's information, updating the `patients` state.
+   - `addAppointment`: Sends a POST request to add a new appointment, updating the `appointments` state.
+   - `deleteAppointment`: Sends a DELETE request to delete an appointment, updating the `appointments` state.
+
+3. **Fetching Data:**
+   - The `useEffect` hook fetches user data on component mount. If authenticated, it also fetches patients and appointments data.
+
+4. **Context Provider:**
+   - Provides the values and functions to the rest of the application using the `UserContext.Provider`.
+
+5. **Error Handling:**
+   - If `contextErrors` has a value, it displays the error message at the top level of the application.
+
+6. **Usage of `navigate`:**
+   - The `navigate` function from the `react-router-dom` is used to redirect users after successful login or signup.
+
+This context provider is integral for managing user authentication and controlling access to patient and appointment data. However, for ensuring access control, you need to ensure that you correctly utilize these context values and functions within your components. Components that require authentication should check `loggedIn` before displaying sensitive information, and you should implement proper authorization checks based on user roles and permissions when fetching or manipulating patient and appointment data.
+
+Remember, access control and security are complex topics. It's crucial to thoroughly test your application, consider different edge cases, and ensure that both frontend and backend are properly secured to prevent unauthorized access to sensitive data.
 
 utilizing the useEffect hook to fetch user-related data and perform authentication when the component mounts.
 

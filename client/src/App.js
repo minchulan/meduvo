@@ -30,8 +30,8 @@ const App = () => {
       <Routes>
         {/* Public Routes */}
         <Route exact path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route exact path="/login" element={<Login />} />
+        <Route exact path="/signup" element={<Signup />} />
 
         {/* Patients Routes */}
         <Route exact path="/patients" element={<PatientList />} />
@@ -39,33 +39,32 @@ const App = () => {
         <Route exact path="/patients/:id/edit" element={<EditPatient />} />
 
         {/* Nested Routes - Patient's Appointments */}
-        {/* GET */}
         <Route
-          path="/patients/:patientId/appointments"
+          exact path="/patients/:patientId/appointments"
           element={<PatientAppointments />}
         />
-        {/* POST */}
         <Route
-          path="/patients/:patientId/appointments/new"
+          exact path="/patients/:patientId/appointments/new"
           element={<NewAppointment />}
         />
         <Route
-          path="/patients/:patientId/appointments/:appointmentId"
+          exact path="/patients/:patientId/appointments/:appointmentId"
           element={<AppointmentDetails />}
         />
         {/* Appointments Routes */}
-        <Route path="/appointments" element={<AppointmentList />} />
-        <Route path="/appointments/:id/edit" element={<EditAppointment />} />
+        <Route exact path="/appointments" element={<AppointmentList />} />
+        <Route exact path="/appointments/:id/edit" element={<EditAppointment />} />
+        <Route exact path="/appointments/:appointmentId" element={<AppointmentDetails />} />
 
         {/* Other Public Routes */}
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/faqs" element={<Faqs />} />
-        <Route path="/terms" element={<Terms />} />
+        <Route exact path="/about" element={<About />} />
+        <Route exact path="/contact" element={<Contact />} />
+        <Route exact path="/faqs" element={<Faqs />} />
+        <Route exact path="/terms" element={<Terms />} />
         {/* Feature Routes */}
-        <Route path="/feature1" element={<Feature1 />} />
-        <Route path="/feature2" element={<Feature2 />} />
-        <Route path="/feature3" element={<Feature3 />} />
+        <Route exact path="/feature1" element={<Feature1 />} />
+        <Route exact path="/feature2" element={<Feature2 />} />
+        <Route exact path="/feature3" element={<Feature3 />} />
       </Routes>
       <Footer />
     </main>
@@ -76,6 +75,10 @@ export default App;
 
 //----------------------------------
 /*
+
+access the appointmentId parameter through the useParams() hook or props.match.params.
+
+
 route definitions in both the Rails backend and the React frontend are aligned, which is crucial for smooth communication between your frontend and backend components.
 
 

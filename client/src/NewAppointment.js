@@ -1,50 +1,156 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
 
-const NewAppointment = () => {
-    const { addAppointment } = useContext(UserContext);
-    const [newAppointmentFormData, setNewAppointmentFormData] = useState({
-        name: "",
-        date: "",
-        location: "",
-        category: "",
-        description: "",
-    });
+const NewAppointment = ({ patientId, onCancel, submitButtonStyle }) => {
+  const { addAppointment, contextErrors } = useContext(UserContext);
+  const [newAppointmentFormData, setNewAppointmentFormData] = useState({
+    name: "",
+    date: "",
+    location: "",
+    category: "",
+    description: "",
+  });
 
-    const handleSubmitNewAppointment = (e) => {
-        e.preventDefault();
+  const handleSubmitNewAppointment = (e) => {
+    e.preventDefault();
 
-        // Code for adding a new appointment
-        addAppointment({
-
-        });
-    
-      
+    const appointmentData = {
+      name: newAppointmentFormData.name,
+      category: newAppointmentFormData.category,
+      location: newAppointmentFormData.location,
+      date: newAppointmentFormData.date,
+      description: newAppointmentFormData.description,
     };
+
+    addAppointment(patientId, appointmentData);
+
+    setNewAppointmentFormData({
+      name: "",
+      date: "",
+      location: "",
+      category: "",
+      description: "",
+    });
+  };
+
+  const handleChange = (e) => {
+    const key = e.target.id;
+
+    setNewAppointmentFormData({
+      ...newAppointmentFormData,
+      [key]: e.target.value,
+    });
+  };
     
-    return (
-        <div className="new-appointment-container">
-            <h2>New Appointment</h2>
-            <form onSubmit={handleSubmitNewAppointment}
-                className="appointment-form">
-                {/* Your form inputs */}
-                <button type="submit" style={submitButtonStyle}>
-                    Add Appointment
-                </button>
-            </form>
-        </div> 
-    );  
+const handleGetLocation = () => {
+    if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        // Update the location input value with the obtained coordinates
+        setNewAppointmentFormData((prevData) => ({
+            ...prevData,
+            location: `${latitude}, ${longitude}`,
+        }));
+        },
+        (error) => {
+        console.error("Error getting location:", error);
+        }
+    );
+    } else {
+    console.error("Geolocation is not supported by this browser.");
+    }
 };
 
-const submitButtonStyle = {
-  backgroundColor: "#007bff",
-  color: "#ffffff",
+
+  return (
+    <div className="new-appointment-container">
+      <br />
+      <h2>New Appointment</h2>
+      {contextErrors && (
+        <div className="error-message">{contextErrors.message}</div>
+      )}
+      <form onSubmit={handleSubmitNewAppointment} className="appointment-form">
+        <input
+          type="text"
+          id="name"
+          placeholder="Name of appointment"
+          value={newAppointmentFormData.name}
+          onChange={handleChange}
+        />
+        <select
+          id="category"
+          value={newAppointmentFormData.category}
+          onChange={handleChange}
+        >
+          <option value="disabled"> All Categories</option>
+          <option value="MSC">MSC</option>
+          <option value="Immunization">Immunization</option>
+          <option value="MTM">MTM</option>
+        </select>
+
+        <input
+          type="date"
+          id="date"
+          placeholder="Date"
+          value={newAppointmentFormData.date}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          id="location"
+          placeholder="Location"
+          value={newAppointmentFormData.location}
+          onChange={handleChange}
+        />
+        <button onClick={handleGetLocation} style={getLocationButtonStyle}>
+          📍 Get Location
+        </button>
+
+        <br />
+        <br />
+        <textarea
+          type="text"
+          id="description"
+          placeholder="Description"
+          value={newAppointmentFormData.description}
+          onChange={handleChange}
+        />
+        <button type="submit" style={submitButtonStyle}>
+          Add Appointment
+        </button>
+        <button type="button" onClick={onCancel} style={cancelButtonStyle}>
+          Cancel
+        </button>
+      </form>
+    </div>
+  );
+};
+
+const cancelButtonStyle = {
+  backgroundColor: "#ffffff",
+  color: "#333333",
   border: "none",
   borderRadius: "3px",
   padding: "10px 20px",
   fontSize: "16px",
   cursor: "pointer",
+  marginLeft: "10px",
 };
+
+const getLocationButtonStyle = {
+  backgroundColor: "#007bff",
+  color: "#ffffff",
+  border: "none",
+  borderRadius: "3px",
+  padding: "5px 10px",
+  fontSize: "14px",
+  cursor: "pointer",
+  transition: "background-color 0.2s, color 0.2s",
+};
+
 
 export default NewAppointment;
 
