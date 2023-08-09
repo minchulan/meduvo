@@ -21,28 +21,62 @@ admin = User.create(
 patients = []
 10.times do
   patients << Patient.create(
-    # ... (patient attributes)
+    user: User.all.sample,  # Assign a random user to the patient
+    first_name: Faker::Name.first_name,
+    last_name: Faker::Name.last_name,
+    guardian: Faker::Name.name,
+    gender: ['Male', 'Female'].sample,
+    dob: Faker::Date.birthday(min_age: 18, max_age: 65),
+    address: Faker::Address.full_address,
+    phone: Faker::PhoneNumber.phone_number,
+    email: Faker::Internet.unique.email,
+    language_preferences: ['English', 'Spanish', 'French'].sample,
+    allergies: Faker::Lorem.words(number: rand(1..5)).join(', '),
+    viewed_notice_of_privacy_practices: Faker::Boolean.boolean,
+    notes: Faker::Lorem.sentence
   )
 end
 
 # Create appointments
 [patients[0], patients[1], patients[2]].each do |patient|
-  # ... (appointment creation for u1)
+  3.times do
+    Appointment.create(
+      user: u1,
+      patient: patient,
+      name: Faker::Lorem.words(number: rand(2..4)).join(' '),
+      category: ['immunization', 'mtm', 'msc'].sample,
+      location: Faker::Address.full_address,
+      description: Faker::Lorem.paragraph(sentence_count: rand(2..6)),
+      date: Faker::Time.between(from: DateTime.now - 30.days, to: DateTime.now + 30.days)
+    )
+  end
 end
 
 [patients[3], patients[4], patients[5]].each do |patient|
-  # ... (appointment creation for u2)
+  2.times do
+    Appointment.create(
+      user: u2,
+      patient: patient,
+      name: Faker::Lorem.words(number: rand(2..4)).join(' '),
+      category: ['immunization', 'mtm', 'msc'].sample,
+      location: Faker::Address.full_address,
+      description: Faker::Lorem.paragraph(sentence_count: rand(2..6)),
+      date: Faker::Time.between(from: DateTime.now - 30.days, to: DateTime.now + 30.days)
+    )
+  end
 end
 
 patients[6..9].each do |patient|
-  # ... (appointment creation for admin)
+  Appointment.create(
+    user: admin,
+    patient: patient,
+    name: Faker::Lorem.words(number: rand(2..4)).join(' '),
+    category: ['immunization', 'mtm', 'msc'].sample,
+    location: Faker::Address.full_address,
+    description: Faker::Lorem.paragraph(sentence_count: rand(2..6)),
+    date: Faker::Time.between(from: DateTime.now - 30.days, to: DateTime.now + 30.days)
+  )
 end
-
-# Delete appointments
-Appointment.delete_all
-
-# Delete patients
-Patient.delete_all
 
 puts "✅ Done seeding!"
 

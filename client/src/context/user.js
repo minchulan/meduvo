@@ -249,32 +249,27 @@ function UserProvider({ children }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user),
-    }).then((resp) => {
-      console.log(resp);
-      // if (resp.ok) {
-      //   resp.json().then((newUser) => console.log(newUser))
-      // } else {
-      //   resp.json().then((errorData) => setContextErrors(errorData.errors))
-      // }
-    });
-
-    // .then((res) => res.json())
-    // .then((data) => {
-    //   if (!data.errors) {
-    //     setUser(data);
-    //     setLoggedIn(true);
-    //     navigate(`/`);
-    //   } else {
-    //     setContextErrors(data.errors);
-    //   }
-    // })
-    // .catch((error) => {
-    //   console.error("Signup error:", error);
-    //   setContextErrors([
-    //     "An error occurred during signup. Please try again.",
-    //   ]);
-    // });
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json(); // Return the JSON response if successful
+        } else {
+          throw new Error("Signup failed"); // Throw an error if signup fails
+        }
+      })
+      .then((data) => {
+        // Handle successful signup
+        setUser(data);
+        setLoggedIn(true);
+        navigate(`/`);
+      })
+      .catch((error) => {
+        console.error("Signup error:", error);
+        setContextErrors(["An error occurred during signup. Please try again."]);
+      });
   };
+
+
 
   return (
     <UserContext.Provider
