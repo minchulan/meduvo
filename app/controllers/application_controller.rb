@@ -11,7 +11,7 @@ class ApplicationController < ActionController::API
   def authenticate_user # we are checking if a user is logged in 
     render json: { errors: {User: "Not Authorized"} }, status: :unauthorized unless current_user
   end
-
+  
 end
 
 

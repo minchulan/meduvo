@@ -13,17 +13,17 @@ class UsersController < ApplicationController
         session[:user_id] = user.id
         render json: user, status: :created
       else
-        render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
       end
     end
 
     # user -- PATCH '/users/:id', to: "users#update"
     def update
       if current_user.update(user_params)
-          render json: current_user, status: :ok 
-      else  
-          render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
-      end 
+        render json: current_user, status: :ok
+      else
+        render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
+      end
     end
 
     # user -- DELETE '/users/:id', to: "users#destroy"
@@ -38,7 +38,7 @@ class UsersController < ApplicationController
     def user_params
       params.require(:user).permit(:email, :password)
     end
-  
+
 end
 
 

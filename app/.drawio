@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="ecMvP2gNG-EnvqieDkBH" name="Page-1">
-        <mxGraphModel dx="2353" dy="1903" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1790" dy="1408" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -370,22 +370,22 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="85" value="User has_many :patients, through: :appointments" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="30" y="230" width="290" height="30" as="geometry"/>
+                    <mxGeometry x="30" y="220" width="290" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="86" value="Patient has_many :users, through: :appointments" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="620" y="480" width="280" height="30" as="geometry"/>
+                <mxCell id="86" value="Patient belongs_to :user&amp;nbsp;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="621" y="470" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="87" value="Patient has_many :appointments" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="620" y="450" width="200" height="30" as="geometry"/>
+                    <mxGeometry x="623" y="450" width="200" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="88" value="User has_many :appointments" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="30" y="200" width="190" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="89" value="Appointment belongs_to :user" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="315" y="410" width="180" height="30" as="geometry"/>
+                    <mxGeometry x="335" y="400" width="180" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="90" value="Appointment belongs_to :patient" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="315" y="430" width="200" height="30" as="geometry"/>
+                    <mxGeometry x="330" y="420" width="200" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="93" value="&lt;h3&gt;&lt;b&gt;JOIN TABLE&lt;/b&gt;&lt;/h3&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="365" y="90" width="110" height="60" as="geometry"/>
@@ -396,15 +396,6 @@
                         <mxPoint x="560" y="70" as="targetPoint"/>
                         <Array as="points"/>
                     </mxGeometry>
-                </mxCell>
-                <mxCell id="96" value="&lt;h3&gt;&lt;b&gt;&lt;u&gt;OPTIONAL?&lt;/u&gt;&lt;/b&gt;&lt;/h3&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="35" y="300" width="100" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="97" value="&lt;h4&gt;MedicalRecord model&lt;/h4&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="30" y="320" width="150" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="98" value="belongs_to :patient" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="45" y="350" width="120" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="99" value="&lt;h1&gt;Meduvo&lt;/h1&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="25" y="610" width="110" height="70" as="geometry"/>
@@ -1599,10 +1590,10 @@
                 <mxCell id="478" value="&lt;div style=&quot;color: rgb(166, 172, 205); background-color: rgb(41, 45, 62); font-family: Menlo, Monaco, &amp;quot;Courier New&amp;quot;, monospace; line-height: 18px;&quot;&gt;&lt;div&gt;&lt;span style=&quot;color: #89ddff;&quot;&gt;  &lt;/span&gt;&lt;span style=&quot;color: #676e95;font-style: italic;&quot;&gt;# Patients&lt;/span&gt;&lt;/div&gt;&lt;div&gt;  resources &lt;span style=&quot;color: #89ddff;&quot;&gt;:patients,&lt;/span&gt; &lt;span style=&quot;color: #89ddff;&quot;&gt;only:&lt;/span&gt; &lt;span style=&quot;color: #89ddff;&quot;&gt;[:index,&lt;/span&gt; &lt;span style=&quot;color: #89ddff;&quot;&gt;:show,&lt;/span&gt; &lt;span style=&quot;color: #89ddff;&quot;&gt;:create,&lt;/span&gt; &lt;span style=&quot;color: #89ddff;&quot;&gt;:update,&lt;/span&gt; &lt;span style=&quot;color: #89ddff;&quot;&gt;:destroy]&lt;/span&gt; &lt;span style=&quot;color: #89ddff;font-style: italic;&quot;&gt;do&lt;/span&gt;&lt;/div&gt;&lt;div&gt;    resources &lt;span style=&quot;color: #89ddff;&quot;&gt;:appointments,&lt;/span&gt; &lt;span style=&quot;color: #89ddff;&quot;&gt;only:&lt;/span&gt; &lt;span style=&quot;color: #89ddff;&quot;&gt;[:index,&lt;/span&gt; &lt;span style=&quot;color: #89ddff;&quot;&gt;:create],&lt;/span&gt; &lt;span style=&quot;color: #89ddff;&quot;&gt;shallow:&lt;/span&gt; &lt;span style=&quot;color: #ff9cac;&quot;&gt;true&lt;/span&gt;&lt;/div&gt;&lt;div&gt;  &lt;span style=&quot;color: #89ddff;font-style: italic;&quot;&gt;end&lt;/span&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="4" y="2600" width="550" height="100" as="geometry"/>
                 </mxCell>
-                <mxCell id="479" value="PatientAppointments" style="whiteSpace=wrap;html=1;fontSize=24;" vertex="1" parent="1">
+                <mxCell id="479" value="PatientAppointments" style="whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
                     <mxGeometry x="2125" y="1640" width="305" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="480" value="" style="edgeStyle=segmentEdgeStyle;endArrow=classic;html=1;curved=0;rounded=0;endSize=8;startSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;fontSize=18;exitX=1;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1">
+                <mxCell id="480" value="" style="edgeStyle=segmentEdgeStyle;endArrow=classic;html=1;curved=0;rounded=0;endSize=8;startSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;fontSize=18;exitX=1;exitY=0;exitDx=0;exitDy=0;" parent="1" edge="1">
                     <mxGeometry width="100" relative="1" as="geometry">
                         <mxPoint x="1024.9299999999998" y="1510.0399999999997" as="sourcePoint"/>
                         <mxPoint x="1699.9299999999998" y="1630.0399999999997" as="targetPoint"/>
@@ -1613,7 +1604,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="481" value="" style="edgeStyle=segmentEdgeStyle;endArrow=classic;html=1;curved=0;rounded=0;endSize=8;startSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;fontSize=18;exitX=1;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1">
+                <mxCell id="481" value="" style="edgeStyle=segmentEdgeStyle;endArrow=classic;html=1;curved=0;rounded=0;endSize=8;startSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;fontSize=18;exitX=1;exitY=0;exitDx=0;exitDy=0;" parent="1" edge="1">
                     <mxGeometry width="100" relative="1" as="geometry">
                         <mxPoint x="871.9299999999994" y="1520.04" as="sourcePoint"/>
                         <mxPoint x="1546.9299999999998" y="1640.04" as="targetPoint"/>
@@ -1624,7 +1615,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="482" value="" style="edgeStyle=segmentEdgeStyle;endArrow=classic;html=1;curved=0;rounded=0;endSize=8;startSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;fontSize=18;exitX=1;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1">
+                <mxCell id="482" value="" style="edgeStyle=segmentEdgeStyle;endArrow=classic;html=1;curved=0;rounded=0;endSize=8;startSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;fontSize=18;exitX=1;exitY=0;exitDx=0;exitDy=0;" parent="1" edge="1">
                     <mxGeometry width="100" relative="1" as="geometry">
                         <mxPoint x="1203.0700000000002" y="1509.8999999999999" as="sourcePoint"/>
                         <mxPoint x="1878.0700000000002" y="1629.8999999999999" as="targetPoint"/>
@@ -1635,7 +1626,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="483" value="" style="edgeStyle=segmentEdgeStyle;endArrow=classic;html=1;curved=0;rounded=0;endSize=8;startSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;fontSize=18;exitX=1;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1">
+                <mxCell id="483" value="" style="edgeStyle=segmentEdgeStyle;endArrow=classic;html=1;curved=0;rounded=0;endSize=8;startSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;fontSize=18;exitX=1;exitY=0;exitDx=0;exitDy=0;" parent="1" edge="1">
                     <mxGeometry width="100" relative="1" as="geometry">
                         <mxPoint x="1352.9299999999998" y="1519.9999999999995" as="sourcePoint"/>
                         <mxPoint x="2027.9299999999998" y="1639.9999999999995" as="targetPoint"/>
@@ -1646,7 +1637,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="484" value="" style="edgeStyle=segmentEdgeStyle;endArrow=classic;html=1;curved=0;rounded=0;endSize=8;startSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;fontSize=18;exitX=1;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1">
+                <mxCell id="484" value="" style="edgeStyle=segmentEdgeStyle;endArrow=classic;html=1;curved=0;rounded=0;endSize=8;startSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;fontSize=18;exitX=1;exitY=0;exitDx=0;exitDy=0;" parent="1" edge="1">
                     <mxGeometry width="100" relative="1" as="geometry">
                         <mxPoint x="1603.0699999999997" y="1519.8599999999994" as="sourcePoint"/>
                         <mxPoint x="2278.07" y="1639.8599999999994" as="targetPoint"/>
@@ -1656,6 +1647,15 @@
                             <mxPoint x="2278.07" y="1509.8899999999999"/>
                         </Array>
                     </mxGeometry>
+                </mxCell>
+                <mxCell id="493" value="Text" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="35" y="3195" width="50" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="494" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;&lt;i&gt;*Each user (healthcare professional) can have multiple appointments.&lt;br&gt;*A user can have many patients through appointments,&lt;br&gt;and a patient can have many users through appointents.&amp;nbsp;&lt;br&gt;This could represent cases where multiple users are&lt;br&gt;associated with a patient's appointments (e.g., multiple doctors involved.)&lt;/i&gt;&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry y="260" width="310" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="495" value="&lt;i&gt;Each appointment belongs to a patient.&lt;br&gt;Each appointment is associated with a user (doctor)&amp;nbsp;&lt;br&gt;responsible for it.&amp;nbsp;&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=9;" vertex="1" parent="1">
+                    <mxGeometry x="308" y="450" width="230" height="50" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

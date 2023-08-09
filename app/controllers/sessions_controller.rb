@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
       session[:user_id] = user.id
       render json: user, status: :ok
     else
-      render json: "Invalid Credentials", status: :unauthorized 
+      render json: { errors: 'Incorrect Username or Password' }, status: :unauthorized
     end
 
   end
@@ -21,16 +21,7 @@ class SessionsController < ApplicationController
     # Clear the memoized current user 
     current_user = nil 
   end
-
-  private
-
-  def render_unauthorized
-    render json: { errors: 'Incorrect Username or Password' }, status: :unauthorized
-  end
-
-  def render_not_found
-    render json: { errors: 'User not found' }, status: :not_found
-  end
+  
 end
 
 

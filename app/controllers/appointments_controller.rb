@@ -22,13 +22,17 @@ class AppointmentsController < ApplicationController
     # appointment -- GET '/appointments/:id', to: "appointments#show"
     def show 
         appointment = current_user.appointments.find(params[:id])
-        render json: appointment, status: :ok 
+        if appointment 
+            render json: appointment, status: :ok 
+        else  
+            render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity 
+        end 
     end 
 
 
     # appointment -- PATCH '/appointments/:id', to: "appointments#update"
     def update 
-        appointment = current_user.appointments.find(params[:id])
+        appointment = current_user.appointments.find_by_id(params[:id])
         if appointment.update(appointment_params)
             render json: appointment, status: :ok 
         else  
@@ -39,8 +43,11 @@ class AppointmentsController < ApplicationController
     # appointment -- DELETE '/appointments/:id', to: "appointments#destroy"
     def destroy 
         appointment = current_user.appointments.find(params[:id])
-        appointment.destroy 
-        head :no_content
+        if appointment&.destroy 
+            head :no_content
+        else  
+            render json: { error: 'Appointment not found' }, status: :not_found
+        end 
     end 
 
     private 

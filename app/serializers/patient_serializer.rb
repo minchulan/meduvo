@@ -17,11 +17,20 @@
 #  viewed_notice_of_privacy_practices :string
 #  created_at                         :datetime         not null
 #  updated_at                         :datetime         not null
+#  user_id                            :bigint           not null
+#
+# Indexes
+#
+#  index_patients_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
 #
 class PatientSerializer < ActiveModel::Serializer
-  attributes :id, :full_name, :first_name, :last_name, :guardian, :gender, :dob, :address, :email, :phone, :notes, :language_preferences, :allergies, :viewed_notice_of_privacy_practices, :created_at, :updated_at
+  attributes :id, :full_name, :first_name, :last_name, :guardian, :gender, :dob, :address, :email, :phone, :notes, :language_preferences, :allergies, :viewed_notice_of_privacy_practices
   
-  has_many :users 
+  belongs_to :user 
   has_many :appointments
 end
 

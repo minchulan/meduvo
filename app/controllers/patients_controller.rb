@@ -3,16 +3,16 @@ class PatientsController < ApplicationController
   # patients -- GET '/patients', to: "patients#index"
   def index
     patients = current_user.patients
-    render json: patients
+    render json: patients, status: :ok 
   end
 
   # patients -- POST '/patients', to: "patients#create"
   def create #post "/patients/new"
     patient = current_user.patients.create(patient_params)
-    if patient.valid?
+    if patient.save
       render json: patient 
     else  
-      render json: { errors: patient.errors.full_messages }, status: :unprocessable_entity
+      render json: { error: patient.errors.full_messages }, status: :unprocessable_entity
     end 
   end 
 
@@ -22,22 +22,24 @@ class PatientsController < ApplicationController
     if patient 
       render json: patient, status: :ok 
     else  
-      render json: { error: "Not Found" }, status: :unauthorized
+      render json: { error: patient.errors.full_messages }, status: :unprocessable_entity
     end 
   end
 
   # patient -- PATCH '/patients/:id', to: "patients#update"
   def update
     patient = current_user.patients.find_by_id(params[:id])
-    patient.update(patient_params)
-    render json: patient, status: :accepted
+    if patient.update(patient_params)
+      render json: patient, status: :accepted
+    else  
+      render json: { error: patient.errors.full_messages }, status: :unprocessable_entity
+    end 
   end
 
   # patient -- DELETE '/patients/:id', to: "patients#destroy" 
   def destroy
     patient = current_user.patients.find_by_id(params[:id])
-    if patient
-      patient.destroy
+    if patient&.destroy
       head :no_content
     else
       render json: { error: 'Patient not found' }, status: :not_found

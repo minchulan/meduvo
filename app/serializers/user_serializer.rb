@@ -15,7 +15,7 @@
 #  index_users_on_email  (email) UNIQUE
 #
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :username, :email, :admin, :created_at, :updated_at
+  attributes :id, :username, :email, :admin
   has_many :patients
   has_many :appointments
 end
