@@ -4,7 +4,7 @@ import { UserContext } from "./context/user";
 import EditAppointment from "./EditAppointment";
 
 const AppointmentDetails = () => {
-  const { id } = useParams();
+  const { appointmentId } = useParams();
   const { appointments, updateAppointment } = useContext(UserContext);
   const [isEditing, setIsEditing] = useState(false);
   const [appointment, setAppointment] = useState(null);
@@ -15,7 +15,7 @@ const AppointmentDetails = () => {
   useEffect(() => {
     // Find the appointment with the specified id from the appointments array
     const appointmentToShow = appointments.find(
-      (appointment) => appointment.id === Number(id)
+      (appointment) => appointment.id === Number(appointmentId)
     );
 
     if (appointmentToShow) {
@@ -23,7 +23,7 @@ const AppointmentDetails = () => {
     } else {
       setAppointment(null);
     }
-  }, [id, appointments]);
+  }, [appointmentId, appointments]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -47,6 +47,8 @@ const AppointmentDetails = () => {
     return <div>Loading appointment details...</div>;
   }
 
+  const categoryClass = `category-${appointment.category.toLowerCase()}`;
+
   return (
     <div>
       <h2>Appointment Details</h2>
@@ -57,9 +59,20 @@ const AppointmentDetails = () => {
         />
       ) : (
         <div>
-          <h2>{appointment.name}</h2>
-          <h3>{appointment.category}</h3>
-          {/* Other appointment details */}
+          <p className={categoryClass}>{appointment.category}</p>
+          <p>
+            <b>Name:</b> {appointment.name}
+          </p>
+          <p>
+            <b>Date:</b> {appointment.date}
+          </p>
+          <p>
+            <b>Location:</b> {appointment.location}
+          </p>
+          <p>
+            <b>Description:</b> {appointment.description}
+          </p>
+
           <br />
           <button className="edit-button" onClick={handleEditClick}>
             📝 Edit

@@ -1,23 +1,89 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, useParams } from "react-router-dom";
-import { UserContext } from './context/user';
+import React, { useState } from "react";
 
-const initialAppointmentFormDataState = {
-    name: "",
-    category: "",
-    location: "",
-    date: "",
-    description: "",
+const EditAppointment = ({ appointment, onUpdate }) => {
+  const [editedAppointment, setEditedAppointment] = useState(appointment);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedAppointment((prevAppointment) => ({
+      ...prevAppointment,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await onUpdate(editedAppointment);
+    } catch (error) {
+      console.error("Error updating appointment:", error);
+    }
+  };
+
+  return (
+    <div className="edit-appointment-container">
+      <h2>Edit Appointment</h2>
+      <form className="edit-appointment-form" onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="category">Category:</label>
+          <input
+            type="text"
+            id="category"
+            name="category"
+            value={editedAppointment.category}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={editedAppointment.name}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="date">Date:</label>
+          <input
+            type="date"
+            id="date"
+            name="date"
+            value={editedAppointment.date}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="location">Location:</label>
+          <input
+            type="text"
+            id="location"
+            name="location"
+            value={editedAppointment.location}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="description">Description:</label>
+          <textarea
+            id="description"
+            name="description"
+            value={editedAppointment.description}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <button type="submit">Save Changes</button>
+      </form>
+    </div>
+  );
 };
-
-const EditAppointment = () => {
-    const [appointmentFormData, setAppointmentFormData] = useState({
-        ...initialAppointmentFormDataState
-    })
-    return (
-        <div>EditAppointment</div>
-    )
-}
 
 export default EditAppointment;
 

@@ -11,7 +11,8 @@ const NewAppointment = ({ patientId, onCancel, submitButtonStyle }) => {
     description: "",
   });
 
-  console.log({patientId})
+  console.log({ patientId })
+
 
   const {name, category, location, date, description} = newAppointmentFormData
 
@@ -25,6 +26,9 @@ const NewAppointment = ({ patientId, onCancel, submitButtonStyle }) => {
       date,
       description,
     };
+
+    console.log("Sending appointment data:", appointmentData);
+
 
     addAppointment(patientId, appointmentData)
       .then(() => {
@@ -40,6 +44,7 @@ const NewAppointment = ({ patientId, onCancel, submitButtonStyle }) => {
         console.error("Failed to add appointment:", error);
       })
   };
+
 
   const handleChange = (e) => {
     const key = e.target.id;

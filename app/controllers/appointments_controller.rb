@@ -9,9 +9,12 @@ class AppointmentsController < ApplicationController
     # POST '/patients/:patient_id/appointments', to: "appointments#create"
     def create
         patient = current_user.patients.find(params[:patient_id]) # Fetch the patient based on the provided patient_id
+
         appointment = patient.appointments.build(appointment_params) # Associate the appointment with the patient
 
-        if appointment.save
+        appointment.user_id = current_user.id # Set the user_id attribute
+
+        if appointment.save(validate: false)
             render json: appointment, status: :created
         else
             render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity

@@ -96,18 +96,6 @@ const PatientList = () => {
     setShowForm(false); // Hide the form
   };
 
-  // Add the handlePatientUpdate function to handle patient updates
-  const handlePatientUpdate = (updatedPatient) => {
-    // Call the updatePatient function from the context to update the patient
-    updatePatient(updatedPatient.id, updatedPatient)
-      .then(() => {
-        // Handle the update success (if needed)
-      })
-      .catch((error) => {
-        console.error("Error updating patient:", error);
-        // Handle any errors that occurred during the update
-      });
-  };
 
   return (
     <div className="patient-list">

@@ -823,7 +823,6 @@ button {
 }
 
 /* Styles for the PatientAppointments component */
-
 .patient-appointments-container {
   max-width: 600px;
   margin: 0 auto;
@@ -944,6 +943,53 @@ h2 {
   padding: 2px 6px;
   border-radius: 4px;
 }
+
+/* edit-appointment.css */
+.edit-appointment-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.edit-appointment-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.edit-appointment-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.edit-appointment-form input,
+.edit-appointment-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.edit-appointment-form button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.edit-appointment-form button:hover {
+  background-color: #0056b3;
+}
+
 
 
 

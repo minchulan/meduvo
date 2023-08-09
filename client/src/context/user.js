@@ -22,8 +22,8 @@ function UserProvider({ children }) {
         });
         const data = await response.json();
         console.log("Fetched data: ", data);
-        console.log(data.patients)
-        console.log(data.appointments)
+        console.log(data.patients);
+        console.log(data.appointments);
 
         if (data.error) {
           setLoggedIn(false);
@@ -34,7 +34,6 @@ function UserProvider({ children }) {
           setUser(data);
 
           await Promise.all([fetchPatients(), fetchAppointments()]);
-    
         }
       } catch (error) {
         setContextErrors("Failed to fetch user data. Please try again later.");
@@ -48,9 +47,15 @@ function UserProvider({ children }) {
   const fetchAppointments = async () => {
     try {
       const res = await fetch("/appointments");
+
       if (res.ok) {
         const data = await res.json();
-        setAppointments(data);
+        // Filter the appointments to include only those associated with the current user's patients
+        const userAppointments = data.filter((appointment) =>
+          patients.some((patient) => patient.id === appointment.patient_id)
+        );
+
+        setAppointments(userAppointments);
         return data;
       } else {
         const data = await res.json();
@@ -67,6 +72,12 @@ function UserProvider({ children }) {
       const res = await fetch("/patients");
       if (res.ok) {
         const data = await res.json();
+
+        // // Filter the patients to include only those associated with the current user
+        // const userPatients = data.filter(
+        //   (patient) => patient.user_id === user.id
+        // );
+
         setPatients(data);
         return data;
       } else {
@@ -78,6 +89,73 @@ function UserProvider({ children }) {
     }
   };
 
+  // LOGIN
+  const login = (user) => {
+    fetch(`/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.errors) {
+          // Update user state and set as logged in
+          setUser(data);
+          setLoggedIn(true);
+
+          // Redirect to home page
+          navigate(`/`);
+        } else {
+          // Set errors in the context
+          setContextErrors(data.errors);
+        }
+      })
+      .catch((error) => {
+        // Handle login error and set error message
+        console.error("Login error:", error);
+        setContextErrors(["An error occurred during login. Please try again."]);
+      });
+  };
+
+  // LOGOUT
+  const logout = () => {
+    fetch(`/logout`, {
+      method: "DELETE",
+    }).then(() => {
+      setUser(null);
+      setLoggedIn(false);
+    });
+  };
+
+  // SIGNUP
+  const signup = (user) => {
+    fetch(`/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json(); // Return the JSON response if successful
+        } else {
+          throw new Error("Signup failed"); // Throw an error if signup fails
+        }
+      })
+      .then((data) => {
+        // Handle successful signup
+        setUser(data);
+        setLoggedIn(true);
+        navigate(`/`);
+      })
+      .catch((error) => {
+        console.error("Signup error:", error);
+        setContextErrors([
+          "An error occurred during signup. Please try again.",
+        ]);
+      });
+  };
+
+  // CRUD HELPER METHODS - PATIENT & APPOINTMENT
   // ADD PATIENT
   const addPatient = (patient) => {
     // 1. persist on server
@@ -154,7 +232,7 @@ function UserProvider({ children }) {
         body: JSON.stringify(appointmentData),
       });
 
-      console.log(response)
+      console.log(response);
 
       if (!response.ok) {
         throw new Error("Failed to add appointment.");
@@ -170,22 +248,27 @@ function UserProvider({ children }) {
   // UPDATE APPOINTMENT
   const updateAppointment = async (patientId, appointmentId, updatedData) => {
     try {
-      const response = await fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          appointment: updatedData,
-        }),
-      });
+      const response = await fetch(
+        `/patients/${patientId}/appointments/${appointmentId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            appointment: updatedData,
+          }),
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to update appointment.");
       }
       const editedAppointment = await response.json();
       // Update the appointments state with the edited appointment data
-      setAppointments((appointments) => appointments.map((appointment) => appointment.id === appointmentId
-        ? { ...appointment, ...editedAppointment }
-        : appointment
-      )
+      setAppointments((appointments) =>
+        appointments.map((appointment) =>
+          appointment.id === appointmentId
+            ? { ...appointment, ...editedAppointment }
+            : appointment
+        )
       );
       return editedAppointment;
     } catch (error) {
@@ -207,72 +290,6 @@ function UserProvider({ children }) {
       );
     });
   };
-
-  // LOGIN
-  const login = (user) => {
-    fetch(`/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.errors) {
-          // Update user state and set as logged in
-          setUser(data);
-          setLoggedIn(true);
-
-          // Redirect to home page
-          navigate(`/`);
-        } else {
-          // Set errors in the context
-          setContextErrors(data.errors);
-        }
-      })
-      .catch((error) => {
-        // Handle login error and set error message
-        console.error("Login error:", error);
-        setContextErrors(["An error occurred during login. Please try again."]);
-      });
-  };
-
-  // LOGOUT
-  const logout = () => {
-    fetch(`/logout`, {
-      method: "DELETE",
-    }).then(() => {
-      setUser(null);
-      setLoggedIn(false);
-    });
-  };
-
-  // SIGNUP
-  const signup = (user) => {
-    fetch(`/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json(); // Return the JSON response if successful
-        } else {
-          throw new Error("Signup failed"); // Throw an error if signup fails
-        }
-      })
-      .then((data) => {
-        // Handle successful signup
-        setUser(data);
-        setLoggedIn(true);
-        navigate(`/`);
-      })
-      .catch((error) => {
-        console.error("Signup error:", error);
-        setContextErrors(["An error occurred during signup. Please try again."]);
-      });
-  };
-
-
 
   return (
     <UserContext.Provider
