@@ -1,25 +1,35 @@
 import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const EditAppointment = ({ appointment, onUpdate }) => {
-  const [editedAppointment, setEditedAppointment] = useState(appointment);
+    const [editedAppointment, setEditedAppointment] = useState(appointment);
+    const navigate = useNavigate();
+    const { patientId } = useParams();
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedAppointment((prevAppointment) => ({
-      ...prevAppointment,
-      [name]: value,
-    }));
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setEditedAppointment((prevAppointment) => ({
+        ...prevAppointment,
+        [name]: value,
+        }));
+    };
 
-    try {
-      await onUpdate(editedAppointment);
-    } catch (error) {
-      console.error("Error updating appointment:", error);
-    }
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+        await onUpdate(editedAppointment);
+        } catch (error) {
+        console.error("Error updating appointment:", error);
+        }
+    };
+        
+        const handleCancelClick = () => {
+            navigate(`/patients/${patientId}/appointments`)
+        
+        };
+    
 
   return (
     <div className="edit-appointment-container">
@@ -80,9 +90,24 @@ const EditAppointment = ({ appointment, onUpdate }) => {
           />
         </div>
         <button type="submit">Save Changes</button>
+        <button type="button" onClick={handleCancelClick} style={cancelButtonStyle}>
+          Cancel
+        </button>
       </form>
     </div>
   );
+};
+
+
+const cancelButtonStyle = {
+  backgroundColor: "#ffffff",
+  color: "#333333",
+  border: "none",
+  borderRadius: "3px",
+  padding: "10px 20px",
+  fontSize: "16px",
+  cursor: "pointer",
+  marginLeft: "10px",
 };
 
 export default EditAppointment;
