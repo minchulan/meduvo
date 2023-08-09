@@ -32,8 +32,9 @@ function UserProvider({ children }) {
         } else {
           setLoggedIn(true);
           setUser(data);
-          // Wait for both patient and appointment data to be fetched
+
           await Promise.all([fetchPatients(), fetchAppointments()]);
+    
         }
       } catch (error) {
         setContextErrors("Failed to fetch user data. Please try again later.");
@@ -150,8 +151,10 @@ function UserProvider({ children }) {
       const response = await fetch(`/patients/${patientId}/appointments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ appointment: appointmentData }),
+        body: JSON.stringify(appointmentData),
       });
+
+      console.log(response)
 
       if (!response.ok) {
         throw new Error("Failed to add appointment.");

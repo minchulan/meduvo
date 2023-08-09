@@ -11,26 +11,34 @@ const NewAppointment = ({ patientId, onCancel, submitButtonStyle }) => {
     description: "",
   });
 
+  console.log({patientId})
+
+  const {name, category, location, date, description} = newAppointmentFormData
+
   const handleSubmitNewAppointment = (e) => {
     e.preventDefault();
 
     const appointmentData = {
-      name: newAppointmentFormData.name,
-      category: newAppointmentFormData.category,
-      location: newAppointmentFormData.location,
-      date: newAppointmentFormData.date,
-      description: newAppointmentFormData.description,
+      name,
+      category,
+      location,
+      date,
+      description,
     };
 
-    addAppointment(patientId, appointmentData);
-
-    setNewAppointmentFormData({
-      name: "",
-      date: "",
-      location: "",
-      category: "",
-      description: "",
-    });
+    addAppointment(patientId, appointmentData)
+      .then(() => {
+            setNewAppointmentFormData({
+              name: "",
+              date: "",
+              location: "",
+              category: "",
+              description: "",
+            });
+      })
+      .catch((error) => {
+        console.error("Failed to add appointment:", error);
+      })
   };
 
   const handleChange = (e) => {
@@ -77,12 +85,12 @@ const handleGetLocation = () => {
           type="text"
           id="name"
           placeholder="Name of appointment"
-          value={newAppointmentFormData.name}
+          value={name}
           onChange={handleChange}
         />
         <select
           id="category"
-          value={newAppointmentFormData.category}
+          value={category}
           onChange={handleChange}
         >
           <option value="disabled"> All Categories</option>
@@ -95,14 +103,14 @@ const handleGetLocation = () => {
           type="date"
           id="date"
           placeholder="Date"
-          value={newAppointmentFormData.date}
+          value={date}
           onChange={handleChange}
         />
         <input
           type="text"
           id="location"
           placeholder="Location"
-          value={newAppointmentFormData.location}
+          value={location}
           onChange={handleChange}
         />
         <button onClick={handleGetLocation} style={getLocationButtonStyle}>
@@ -115,7 +123,7 @@ const handleGetLocation = () => {
           type="text"
           id="description"
           placeholder="Description"
-          value={newAppointmentFormData.description}
+          value={description}
           onChange={handleChange}
         />
         <button type="submit" style={submitButtonStyle}>
@@ -156,7 +164,25 @@ export default NewAppointment;
 
 //--------------------------------
 /*
+
+1. Make it a controlled form -> input fields are the new dynamic value 
+    synchronize state variable to what we see in input field 
+    value={state}
+    onChange={e => setState(e.target.value)}
+
+2. Set up 'POST' request when form is submitted. Need submit handler and as always preventDefault().
+    put together the data that needs to be sent to server(object). look at the data we have to put together the object 
+
+3. Then, make a FETCH request and send the config object & in the body send over the stringified object we just put together in step 2. 
+
+4. Determine where the new object (from response) needs to go in order to render new object to the array of objects. 
+
+
+
 NewAppointment component is associated with the route `/patients/:patientId/appointments/new`. This is where you can create a new appointment.
 
 /patients/:patientId/appointments/new: This route is for creating a new appointment for a specific patient, using the NewAppointment component.
+
+addAppointment().then()
+It seems that you are calling the addAppointment function and immediately resetting the newAppointmentFormData state to empty values. This might cause issues since the addAppointment function is asynchronous and relies on the data in newAppointmentFormData. The reset of newAppointmentFormData should ideally be done after the addAppointment operation is complete.
 */
