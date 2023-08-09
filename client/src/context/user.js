@@ -21,6 +21,9 @@ function UserProvider({ children }) {
           credentials: "include",
         });
         const data = await response.json();
+        console.log("Fetched data: ", data);
+        console.log(data.patients)
+        console.log(data.appointments)
 
         if (data.error) {
           setLoggedIn(false);
@@ -28,8 +31,9 @@ function UserProvider({ children }) {
           setContextErrors("Authentication failed. Please login.");
         } else {
           setLoggedIn(true);
-          fetchPatients();
-          fetchAppointments();
+          setUser(data);
+          // Wait for both patient and appointment data to be fetched
+          await Promise.all([fetchPatients(), fetchAppointments()]);
         }
       } catch (error) {
         setContextErrors("Failed to fetch user data. Please try again later.");
@@ -46,6 +50,7 @@ function UserProvider({ children }) {
       if (res.ok) {
         const data = await res.json();
         setAppointments(data);
+        return data;
       } else {
         const data = await res.json();
         setContextErrors(data.error);
@@ -62,6 +67,7 @@ function UserProvider({ children }) {
       if (res.ok) {
         const data = await res.json();
         setPatients(data);
+        return data;
       } else {
         const data = await res.json();
         setContextErrors(data.error);
