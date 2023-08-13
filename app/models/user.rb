@@ -17,11 +17,15 @@
 class User < ApplicationRecord
   has_secure_password
 
-  has_many :patients
   has_many :appointments
+  has_many :patients, through: :appointments
 
   validates :email, presence: true, uniqueness: true 
   validates :password, presence: true 
+
+  # def unique_patient_ids 
+  #   self.patients.pluck(:id).uniq 
+  # end 
 
 end
 

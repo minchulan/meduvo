@@ -21,7 +21,6 @@ admin = User.create(
 patients = []
 10.times do
   patients << Patient.create(
-    user: User.all.sample,  # Assign a random user to the patient
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name,
     guardian: Faker::Name.name,
@@ -41,8 +40,8 @@ end
 [patients[0], patients[1], patients[2]].each do |patient|
   3.times do
     Appointment.create(
-      user: u1,
-      patient: patient,
+      user_id: u1.id,
+      patient_id: patient.id,
       name: Faker::Lorem.words(number: rand(2..4)).join(' '),
       category: ['immunization', 'mtm', 'msc'].sample,
       location: Faker::Address.full_address,
@@ -55,8 +54,8 @@ end
 [patients[3], patients[4], patients[5]].each do |patient|
   2.times do
     Appointment.create(
-      user: u2,
-      patient: patient,
+      user_id: u2.id,
+      patient_id: patient.id,
       name: Faker::Lorem.words(number: rand(2..4)).join(' '),
       category: ['immunization', 'mtm', 'msc'].sample,
       location: Faker::Address.full_address,
@@ -68,8 +67,8 @@ end
 
 patients[6..9].each do |patient|
   Appointment.create(
-    user: admin,
-    patient: patient,
+    user_id: admin.id,
+    patient_id: patient.id,
     name: Faker::Lorem.words(number: rand(2..4)).join(' '),
     category: ['immunization', 'mtm', 'msc'].sample,
     location: Faker::Address.full_address,

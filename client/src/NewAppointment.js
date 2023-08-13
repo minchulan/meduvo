@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
 
 const NewAppointment = ({ patientId, onCancel, submitButtonStyle }) => {
-  const { addAppointment, contextErrors } = useContext(UserContext);
+  const { addAppointment } = useContext(UserContext);
   const [newAppointmentFormData, setNewAppointmentFormData] = useState({
     name: "",
     date: "",
@@ -11,14 +11,13 @@ const NewAppointment = ({ patientId, onCancel, submitButtonStyle }) => {
     description: "",
   });
 
-  console.log({ patientId })
+  const { name, category, location, date, description } = newAppointmentFormData;
+
+  console.log("Patient ID:", patientId)
 
 
-  const {name, category, location, date, description} = newAppointmentFormData
-
-  const handleSubmitNewAppointment = (e) => {
+  const handleSubmitNewAppointment = async (e) => {
     e.preventDefault();
-
     const appointmentData = {
       name,
       category,
@@ -29,31 +28,38 @@ const NewAppointment = ({ patientId, onCancel, submitButtonStyle }) => {
 
     console.log("Sending appointment data:", appointmentData);
 
-
-    addAppointment(patientId, appointmentData)
-      .then(() => {
-            setNewAppointmentFormData({
-              name: "",
-              date: "",
-              location: "",
-              category: "",
-              description: "",
-            });
-      })
-      .catch((error) => {
-        console.error("Failed to add appointment:", error);
-      })
+    try {
+      await addAppointment(patientId, appointmentData);
+      setNewAppointmentFormData({
+        name: "",
+        date: "",
+        location: "",
+        category: "",
+        description: "",
+      });
+    } catch (error) {
+      console.error("Failed to add appointment:", error);
+    }
   };
 
 
   const handleChange = (e) => {
     const key = e.target.id;
-
     setNewAppointmentFormData({
       ...newAppointmentFormData,
-      [key]: e.target.value,
-    });
-  };
+      [key]: e.target.value
+    })
+};
+
+
+  // const handleChange = (e) => {
+  //   const key = e.target.id;
+
+  //   setNewAppointmentFormData({
+  //     ...newAppointmentFormData,
+  //     [key]: e.target.value,
+  //   });
+  // };
     
 const handleGetLocation = () => {
     if (navigator.geolocation) {
@@ -67,14 +73,21 @@ const handleGetLocation = () => {
             ...prevData,
             location: `${latitude}, ${longitude}`,
         }));
-        },
-        (error) => {
+      },
+      
+      (error) => {
+          
         console.error("Error getting location:", error);
-        }
+
+      }
+      
     );
+      
     } else {
+
     console.error("Geolocation is not supported by this browser.");
     }
+  
 };
 
 
@@ -82,10 +95,9 @@ const handleGetLocation = () => {
     <div className="new-appointment-container">
       <br />
       <h2>New Appointment</h2>
-      {contextErrors && (
-        <div className="error-message">{contextErrors.message}</div>
-      )}
       <form onSubmit={handleSubmitNewAppointment} className="appointment-form">
+        <input type="hidden" name="appointment[patient_id]" value={patientId} />
+
         <input
           type="text"
           id="name"
@@ -93,11 +105,7 @@ const handleGetLocation = () => {
           value={name}
           onChange={handleChange}
         />
-        <select
-          id="category"
-          value={category}
-          onChange={handleChange}
-        >
+        <select id="category" value={category} onChange={handleChange}>
           <option value="disabled"> All Categories</option>
           <option value="MSC">MSC</option>
           <option value="Immunization">Immunization</option>
@@ -190,4 +198,31 @@ NewAppointment component is associated with the route `/patients/:patientId/appo
 
 addAppointment().then()
 It seems that you are calling the addAppointment function and immediately resetting the newAppointmentFormData state to empty values. This might cause issues since the addAppointment function is asynchronous and relies on the data in newAppointmentFormData. The reset of newAppointmentFormData should ideally be done after the addAppointment operation is complete.
+
+
+nclude patient_id in the Request (Frontend):
+When making a request from the frontend to create a new appointment, ensure that you include the patient_id in the request payload. This can be done using JSON or form data depending on how you're sending the request.
+If you're using JSON format, your request might look like this:
+json
+Copy code
+{
+  "appointment": {
+    "name": "Flu shot",
+    "category": "Immunization",
+    "location": "Meduvo Clinic",
+    "date": "2023-09-09",
+    "description": "erererererererer",
+    "patient_id": 45
+  }
+}
+If you're using form data, make sure your form includes a hidden input field for the patient_id:
+html
+Copy code
+<form action="/appointments" method="post">
+  <!-- other appointment fields here -->
+  <input type="hidden" name="appointment[patient_id]" value="45">
+  <button type="submit">Create Appointment</button>
+</form>
+This way, when the request is sent to the server, the patient_id will be included in the payload.
+By following these steps, you'll ensure that the patient_id is correctly associated with the appointment when it's being created. This should address the issue of the patient_id being nil in the new appointment records.
 */

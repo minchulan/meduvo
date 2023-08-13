@@ -8,13 +8,18 @@ class PatientsController < ApplicationController
 
   # patients -- POST '/patients', to: "patients#create"
   def create #post "/patients/new"
-    patient = current_user.patients.create(patient_params)
-    if patient.save
+    patient = current_user.patients.build(patient_params)
+    # methods that will invoke our validations: .save, .valid?
+
+    #if patient.save(valid: false)
+    if patient.save 
       render json: patient 
     else  
-      render json: { error: patient.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: patient.errors.full_messages }, status: :unprocessable_entity
     end 
   end 
+
+
 
   # patient -- GET '/patients/:id', to: "patients#show"
   def show
@@ -22,7 +27,7 @@ class PatientsController < ApplicationController
     if patient 
       render json: patient, status: :ok 
     else  
-      render json: { error: patient.errors.full_messages }, status: :unprocessable_entity
+      render json: { error: 'Patient not found' }, status: :not_found
     end 
   end
 
@@ -56,11 +61,24 @@ class PatientsController < ApplicationController
 end
 
 
+#create - patient w/o triggering appointment validations 
+  # def create
+  #   patient = current_user.patients.new(patient_params)
+  #   patient.save(validate: false)
 
+  #   if patient.errors.empty?
+  #     render json: patient
+  #   else
+  #     render json: { error: patient.errors.full_messages }, status: :unprocessable_entity
+  #   end
+  # end
 
 
 
 #----------------------------
+# This code creates a new patient record without triggering validations by using save(validate: false). It then checks if there are any validation errors. If there are no errors, it renders the patient information. If there are errors, it renders the error messages with a status of unprocessable entity.
+
+# Remember that skipping validations should be used judiciously and only when necessary, as it can lead to inconsistent data in the database. It's a good practice to perform data cleanup or validation at a later stage if possible.
 
     # render only the patients that belong to the current user
 

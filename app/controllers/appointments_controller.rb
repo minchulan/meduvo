@@ -8,17 +8,16 @@ class AppointmentsController < ApplicationController
 
     # POST '/patients/:patient_id/appointments', to: "appointments#create"
     def create
-        patient = current_user.patients.find(params[:patient_id]) # Fetch the patient based on the provided patient_id
+        appointment = current_user.appointments.build(appointment_params) # Associate the appointment with the patient
 
-        appointment = patient.appointments.build(appointment_params) # Associate the appointment with the patient
+        puts "Received appointment parameters: #{params.inspect}"
 
-        appointment.user_id = current_user.id # Set the user_id attribute
-
-        if appointment.save(validate: false)
-            render json: appointment, status: :created
-        else
-            render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity
-        end
+        if appointment.save
+            render json: appointment 
+        else  
+            puts "Appointment validation errors: #{appointment.errors.full_messages.inspect}"
+            render json: { errors: appointment.errors.full_messages }, status: :unprocessable_entity
+        end 
     end
 
 
@@ -56,19 +55,17 @@ class AppointmentsController < ApplicationController
     private 
 
     def appointment_params
-        params.require(:appointment).permit(
-            :name,
-            :date,
-            :location,
-            :category,
-            :description
-        )
+        params.require(:appointment).permit(:name, :category, :location, :date, :description, :patient_id)
     end
+
 
 end
 
 
 #------------------------------
+# Create Patient Before Appointment: If the patient doesn't exist when creating an appointment, you'll need to ensure that the patient is created first. If you're allowing the creation of new patients along with appointments, you might need to handle this in the controller's create action.
+# For example, if you're creating an appointment for a patient with an ID of 44, make sure that a patient with ID 44 exists in your database.
+# Controller Logic: In your AppointmentsController#create action, make sure you're correctly handling the patient association. If you're using strong parameters, ensure that you're permitting the patient_id parameter.
 
 ## SHOW ACTION: 
 # @current_user.appointments: This line uses the has_many association between User and Appointment models. It fetches appointments associated with the currently logged-in user.

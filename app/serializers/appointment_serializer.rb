@@ -14,12 +14,14 @@
 #  user_id     :integer
 #
 class AppointmentSerializer < ActiveModel::Serializer
-  attributes :id, :user_id, :patient_id, :category, :name, :location, :description, :created_at, :date 
+  attributes :id, :patient_id, :category, :name, :location, :description, :created_at, :date 
   
   belongs_to :user
   belongs_to :patient
 end
-          
+
+#  the user_id and patient_id will be included in the JSON output as part of the nested user and patient objects, respectively. Including them directly as attributes in the root of the appointment object (attributes) is redundant since they are already included through the associations.
+
 # Serializers in Rails are typically run during the rendering of a response. When you call `render` in your controller action, Rails automatically determines the appropriate serializer based on the object you're rendering and applies it.
 
 # Serializers are responsible for converting the Ruby objects into a JSON or XML representation that can be sent as a response. They define which attributes and associations of the object should be included in the serialized output.

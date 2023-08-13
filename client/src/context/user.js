@@ -5,7 +5,7 @@ const UserContext = createContext();
 
 function UserProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [contextErrors, setContextErrors] = useState(null);
+  const [contextErrors, setContextErrors] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
@@ -27,7 +27,7 @@ function UserProvider({ children }) {
         if (data.error) {
           setLoggedIn(false);
           setUser(null);
-          setContextErrors("Authentication failed. Please login.");
+          setContextErrors(["Authentication failed. Please login."]);
         } else {
           setLoggedIn(true);
           setUser(data);
@@ -36,7 +36,9 @@ function UserProvider({ children }) {
         }
       })
       .catch((error) => {
-        setContextErrors("Failed to fetch user data. Please try again later.");
+        setContextErrors([
+          "Failed to fetch user data. Please try again later.",
+        ]);
       });
   }, []);
 
@@ -58,7 +60,7 @@ function UserProvider({ children }) {
           navigate(`/`);
         } else {
           // Set errors in the context
-          setContextErrors(data.errors);
+          setContextErrors([data.errors]);
         }
       })
       .catch((error) => {
@@ -114,13 +116,20 @@ function UserProvider({ children }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patient),
     })
-      .then((res) => res.json())
-      // 2. add patient to state
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error("Failed to add patient.");
+        }
+      })
       .then((data) => {
+        console.log(data);
+        // 2. Update patients state with the new patient
         setPatients([...patients, data]);
       })
       .catch((error) => {
-        setContextErrors(error);
+        setContextErrors([error.message]);
       });
   };
 
@@ -168,7 +177,7 @@ function UserProvider({ children }) {
       })
       .catch((error) => {
         // Handle and propagate the error to the component
-        setContextErrors(error.message);
+        setContextErrors([error.message]);
         throw error;
       });
   };
@@ -187,9 +196,10 @@ function UserProvider({ children }) {
       }
 
       const newAppointment = await response.json();
+      console.log("New Appointment:", newAppointment);
       setAppointments([...appointments, newAppointment]);
     } catch (error) {
-      setContextErrors("Failed to add appointment. Please try again later.");
+      setContextErrors(["Failed to add appointment. Please try again later."]);
     }
   };
 
@@ -221,7 +231,7 @@ function UserProvider({ children }) {
       return editedAppointment;
     } catch (error) {
       // Handle and propagate the error to the component
-      setContextErrors(error.message);
+      setContextErrors([error.message]);
       throw error;
     }
   };
@@ -256,20 +266,26 @@ function UserProvider({ children }) {
         deletePatient,
         updatePatient,
         updateAppointment,
-        contextErrors,
-        setContextErrors,
       }}
     >
-      {contextErrors ? <h2>{contextErrors.message}</h2> : children}
+      {contextErrors && contextErrors.length > 0 ? (
+        <div>
+          {contextErrors.map((error, index) => (
+            <h2 key={index}>{error}</h2>
+          ))}
+        </div>
+      ) : (
+        children
+      )}
     </UserContext.Provider>
   );
 }
 
 export { UserContext, UserProvider };
 
-  
 //-----------------------------------------
 /*
+contextErrors.message originally, changed bc since contextErrors is an array, should iterate through the errors and render them individually.
 
 useEffect(() => {
   fetch('/patients')
@@ -496,4 +512,72 @@ Pro-tips:
   //       setLoggedIn(false);
   //     });
   // }, []);
+
+  Recursion is a programming concept where a function calls itself in order to solve a problem. Recursion involves breaking a problem down into smaller, similar sub-problems until a base case is reached where the problem becomes trivial to solve.
+
+In your code, the term "recursively" refers to the action of calling a function from within itself. Here's what's happening in your original code snippet:
+
+```javascript
+const addPatient = (patient) => {
+  fetch("/patients", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(patient),
+  })
+    .then((res) => {
+      if (res.ok) {
+        res.json().then(patient => addPatient(patient)) // This is the recursive call
+      } else {
+        res.json().then(data => setContextErrors(data.errors.map(error => `${error}`)))
+      }
+    });
+};
+```
+
+In the success case (`if (res.ok)`), you're calling the `addPatient` function again inside the `.then()` block. This creates a new call to `addPatient` within the existing call, forming a recursion. In other words, you're calling `addPatient` repeatedly for each new patient data you receive, which can lead to infinite recursion.
+
+Here's the problem with this approach:
+
+1. The function is called with new patient data.
+2. It sends a request to create the patient on the server.
+3. When the server responds with success, it calls `addPatient` again with the newly received patient data.
+4. The process repeats, creating an infinite chain of function calls.
+
+This behavior can lead to a stack overflow or infinite loop, causing your program to crash.
+
+Instead of recursively calling `addPatient`, you should simply update the state with the new patient data received from the server. This ensures that you add the new patient to your state without causing infinite function calls.
+^^^ ADD PATIENT ^^^
+  // const addPatient = (patient) => {
+  //   // 1. persist on server
+  //   fetch("/patients", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(patient),
+  //   })
+  //     .then((res) => res.json())
+  //     // 2. add patient to state
+  //     .then((data) => {
+  //       setPatients([...patients, data]);
+  //     })
+  //     .catch((error) => {
+  //       setContextErrors(error);
+  //     });
+  // };
+
+  // const addPatient = (patient) => {
+  //   // 1. persist on server
+  //   fetch("/patients", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(patient),
+  //   })
+  //     .then((res) => {
+  //       if (res.ok) {
+  //         res.json().then(patient => addPatient(patient))
+  //       } else {
+  //         // first thing is figure out how to retain my errors that occur: set state to array
+  //         res.json().then(data => setContextErrors(data.errors.map(error => `${error}`)))
+  //       }
+  //     })
+  //   };
 */

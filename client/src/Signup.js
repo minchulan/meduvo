@@ -9,7 +9,9 @@ const initialFormDataSignUp = {
 
 const Signup = () => {
   const [formData, setFormData] = useState(initialFormDataSignUp);
-  const { signup, contextErrors } = useContext(UserContext);
+  const { signup } = useContext(UserContext);
+
+  const { email, password } = formData;
 
   const handleChange = (e) => {
     setFormData({
@@ -21,8 +23,8 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const user = {
-      email: formData.email,
-      password: formData.password,
+      email,
+      password,
     };
 
     signup(user);
@@ -38,7 +40,7 @@ const Signup = () => {
           </label>
           <input
             onChange={handleChange}
-            value={formData.email}
+            value={email}
             type="text"
             name="email"
             id="email"
@@ -52,7 +54,7 @@ const Signup = () => {
           </label>
           <input
             onChange={handleChange}
-            value={formData.password}
+            value={password}
             type="password"
             name="password"
             id="password"
@@ -81,13 +83,6 @@ const Signup = () => {
         </small>
       </>
       <hr />
-      {contextErrors && contextErrors.length > 0 && (
-        <ul style={{ color: "red" }}>
-          {contextErrors.map((error) => (
-            <li key={error}>{error}</li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };

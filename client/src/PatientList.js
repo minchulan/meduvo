@@ -92,11 +92,6 @@ const PatientList = () => {
     });
   };
 
-  const handleCancel = () => {
-    setShowForm(false); // Hide the form
-  };
-
-
   return (
     <div className="patient-list">
       {user && (
@@ -107,7 +102,6 @@ const PatientList = () => {
       <br />
       <h2>My Patients</h2>
       <div className="search-container">
-        {/* Search input field with added CSS class "search-input" */}
         <input
           type="text"
           placeholder="Search patients..."
@@ -119,7 +113,7 @@ const PatientList = () => {
       {showForm ? (
         <form onSubmit={handleSubmit} className="form-container">
           <label htmlFor="first_name" className="form-label">
-            First Name: 
+            First Name:
           </label>
           <input
             required
@@ -133,7 +127,7 @@ const PatientList = () => {
             className="form-input"
           />
           <label htmlFor="last_name" className="form-label">
-            Last Name: 
+            Last Name:
           </label>
           <input
             required
@@ -160,7 +154,7 @@ const PatientList = () => {
             className="form-input"
           />
           <label htmlFor="dob" className="form-label">
-            Date of Birth: 
+            Date of Birth:
           </label>
           <input
             required
@@ -173,7 +167,7 @@ const PatientList = () => {
             className="form-input"
           />
           <label htmlFor="phone" className="form-label">
-            Phone Number: 
+            Phone Number:
           </label>
           <input
             required
@@ -187,7 +181,7 @@ const PatientList = () => {
             className="form-input"
           />
           <label htmlFor="email" className="form-label">
-            Email: 
+            Email:
           </label>
           <input
             required
@@ -232,7 +226,7 @@ const PatientList = () => {
             Language Preferences:
           </label>
           <input
-            required 
+            required
             type="text"
             id="language_preferences"
             name="language_preferences"
@@ -274,23 +268,34 @@ const PatientList = () => {
             Add
           </button>
           <button
-            type="submit"
             className="form-cancel"
-            onClick={handleCancel}
+            onClick={() => {
+              setShowForm(false);
+              setPatientFormData(initialPatientState); // Reset the form data
+            }}
             style={{ marginLeft: "10px" }}
           >
             Cancel
           </button>
         </form>
       ) : (
-        <button className="small-button" onClick={() => setShowForm(true)}>
+        <button
+          className="small-button"
+          onClick={() => {
+            setShowForm(true);
+            setPatientFormData(initialPatientState); // Reset the form data
+          }}
+        >
           Add patient
         </button>
       )}
       <br />
       <br />
       {showConfirmation && (
-        <div className="confirmation-message" style={{ fontSize: 18, color: "blue" }}>
+        <div
+          className="confirmation-message"
+          style={{ fontSize: 18, color: "blue" }}
+        >
           New patient added successfully!
         </div>
       )}
