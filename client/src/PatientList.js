@@ -19,12 +19,14 @@ const initialPatientState = {
 };
 
 const PatientList = () => {
-  const { patients, user, addPatient, updatePatient } = useContext(UserContext);
+  const { patients, user, addPatient } = useContext(UserContext);
   const [showForm, setShowForm] = useState(false);
   const [patientFormData, setPatientFormData] = useState(initialPatientState);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // State for the search query
   const navigate = useNavigate();
+
+  const { first_name, last_name, dob, address, phone, allergies, email, guardian, notes, viewed_notice_of_privacy_practices, language_preferences } = patientFormData
 
   // Filter the patients based on the search query
   const filteredPatients = patients.filter((patient) => {
@@ -42,7 +44,6 @@ const PatientList = () => {
       <div>Patient not found.</div>
     );
   
-
     const handleSearchChange = (e) => {
       setSearchQuery(e.target.value);
     };
@@ -57,18 +58,17 @@ const PatientList = () => {
 
     // handing the patient from this form to global state (the addPatient in context) which is where the patients lives.
     addPatient({
-      first_name: patientFormData.first_name,
-      last_name: patientFormData.last_name,
-      dob: patientFormData.dob,
-      allergies: patientFormData.allergies,
-      address: patientFormData.address,
-      email: patientFormData.email,
-      phone: patientFormData.phone,
-      notes: patientFormData.notes,
-      guardian: patientFormData.guardian,
-      language_preferences: patientFormData.language_preferences,
-      viewed_notice_of_privacy_practices:
-        patientFormData.viewed_notice_of_privacy_practices,
+      first_name,
+      last_name,
+      dob,
+      allergies,
+      address,
+      email,
+      phone,
+      notes,
+      guardian,
+      language_preferences,
+      viewed_notice_of_privacy_practices,
     });
 
     setShowConfirmation(true); // Show the confirmation message
@@ -128,7 +128,7 @@ const PatientList = () => {
             name="first_name"
             placeholder="e.g., John"
             autoComplete="on"
-            value={patientFormData.first_name}
+            value={first_name}
             onChange={handleChange}
             className="form-input"
           />
@@ -142,7 +142,7 @@ const PatientList = () => {
             name="last_name"
             placeholder="Smith"
             autoComplete="on"
-            value={patientFormData.last_name}
+            value={last_name}
             onChange={handleChange} // handleChange works as long as id matches key we're trying to update in patientForm object
             className="form-input"
           />
@@ -155,7 +155,7 @@ const PatientList = () => {
             name="guardian"
             placeholder="E.g., John Smith"
             autoComplete="on"
-            value={patientFormData.guardian}
+            value={guardian}
             onChange={handleChange}
             className="form-input"
           />
@@ -168,7 +168,7 @@ const PatientList = () => {
             id="dob"
             name="dob"
             placeholder="Date of Birth"
-            value={patientFormData.dob}
+            value={dob}
             onChange={handleChange}
             className="form-input"
           />
@@ -182,7 +182,7 @@ const PatientList = () => {
             name="phone"
             placeholder="+1 555 655 5656"
             autoComplete="on"
-            value={patientFormData.phone}
+            value={phone}
             onChange={handleChange}
             className="form-input"
           />
@@ -196,7 +196,7 @@ const PatientList = () => {
             name="email"
             placeholder="name@email.com"
             autoComplete="on"
-            value={patientFormData.email}
+            value={email}
             onChange={handleChange}
             className="form-input"
           />
@@ -210,7 +210,7 @@ const PatientList = () => {
             name="address"
             placeholder="Enter patient's home address"
             autoComplete="on"
-            value={patientFormData.address}
+            value={address}
             onChange={handleChange}
             className="form-input"
           />
@@ -224,7 +224,7 @@ const PatientList = () => {
             name="allergies"
             placeholder="E.g., Rash with penicillin"
             autoComplete="on"
-            value={patientFormData.allergies}
+            value={allergies}
             onChange={handleChange}
             className="form-input"
           />
@@ -238,7 +238,7 @@ const PatientList = () => {
             name="language_preferences"
             placeholder="E.g., Spanish"
             autoComplete="on"
-            value={patientFormData.language_preferences}
+            value={language_preferences}
             onChange={handleChange}
             className="form-input"
           />
@@ -251,7 +251,7 @@ const PatientList = () => {
             name="notes"
             placeholder="Add any pertinent patient information..."
             autoComplete="on"
-            value={patientFormData.notes}
+            value={notes}
             onChange={handleChange}
             className="form-input"
           />
@@ -260,7 +260,7 @@ const PatientList = () => {
             <input
               type="checkbox"
               id="viewed_notice_of_privacy_practices"
-              checked={patientFormData.viewed_notice_of_privacy_practices}
+              checked={viewed_notice_of_privacy_practices}
               onChange={handleChange}
             />
           </label>

@@ -51,7 +51,7 @@ const PatientDetails = () => {
           />
         ) : (
           <div>
-            <h2>{patient.full_name}</h2>
+              <h2>{patient.first_name} {patient.last_name}</h2>
             <h3>{patient.dob}</h3>
             <div className="patient-info">
               <strong>Phone: </strong>

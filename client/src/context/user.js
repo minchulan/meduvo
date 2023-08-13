@@ -14,16 +14,15 @@ function UserProvider({ children }) {
 
   // GET '/me', to: 'users#show'
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("/me", {
-          method: "GET",
-          credentials: "include",
-        });
-        const data = await response.json();
-        console.log("Fetched data: ", data);
-        console.log(data.patients);
-        console.log(data.appointments);
+    fetch("/me", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log("Fetched data:", data);
+        console.log("Fetched patients:", data.patients);
+        console.log("Fetched appointments:", data.appointments);
 
         if (data.error) {
           setLoggedIn(false);
@@ -32,62 +31,14 @@ function UserProvider({ children }) {
         } else {
           setLoggedIn(true);
           setUser(data);
-
-          await Promise.all([fetchPatients(), fetchAppointments()]);
+          setPatients(data.patients);
+          setAppointments(data.appointments);
         }
-      } catch (error) {
+      })
+      .catch((error) => {
         setContextErrors("Failed to fetch user data. Please try again later.");
-      }
-    };
-
-    fetchUserData();
+      });
   }, []);
-
-  // GET ALL APPOINTMENTS
-  const fetchAppointments = async () => {
-    try {
-      const res = await fetch("/appointments");
-
-      if (res.ok) {
-        const data = await res.json();
-        // Filter the appointments to include only those associated with the current user's patients
-        const userAppointments = data.filter((appointment) =>
-          patients.some((patient) => patient.id === appointment.patient_id)
-        );
-
-        setAppointments(userAppointments);
-        return data;
-      } else {
-        const data = await res.json();
-        setContextErrors(data.error);
-      }
-    } catch (error) {
-      setContextErrors(error.message);
-    }
-  };
-
-  // GET ALL PATIENTS
-  const fetchPatients = async () => {
-    try {
-      const res = await fetch("/patients");
-      if (res.ok) {
-        const data = await res.json();
-
-        // // Filter the patients to include only those associated with the current user
-        // const userPatients = data.filter(
-        //   (patient) => patient.user_id === user.id
-        // );
-
-        setPatients(data);
-        return data;
-      } else {
-        const data = await res.json();
-        setContextErrors(data.error);
-      }
-    } catch (error) {
-      setContextErrors(error.message);
-    }
-  };
 
   // LOGIN
   const login = (user) => {
@@ -155,7 +106,6 @@ function UserProvider({ children }) {
       });
   };
 
-  // CRUD HELPER METHODS - PATIENT & APPOINTMENT
   // ADD PATIENT
   const addPatient = (patient) => {
     // 1. persist on server
@@ -231,8 +181,6 @@ function UserProvider({ children }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(appointmentData),
       });
-
-      console.log(response);
 
       if (!response.ok) {
         throw new Error("Failed to add appointment.");
@@ -322,6 +270,36 @@ export { UserContext, UserProvider };
   
 //-----------------------------------------
 /*
+
+useEffect(() => {
+  fetch('/patients')
+  .then(res => {
+    if (res.ok){
+      res.json().then(setPatients)
+    } else {
+      res.json().then(data => setErrors(data.error))
+    }
+  })
+}, [])
+
+const addPatient = (patient) => setPatients(current => [....current, patient])
+
+const updatePatient = (updatePatient) => setPatient(current => {
+  return current.map(patient => {
+    if(patient.id === updatedPatient.id) {
+      return updatedPatient
+    } else {
+      return patient 
+    }
+  })
+})
+
+const deletePatient = (id) => setPatients(current => current.filter(p => p.id !== id))
+
+if(errors) return <h1>{errors}</h1>
+//else 
+return()
+
 Thank you for providing the complete `UserProvider` component code. It appears to be the context provider that manages user-related data and interactions in your React application. Based on the code you've shared, I can confirm that you are setting up a `UserContext` which provides various functions and state variables to handle user authentication, patient, and appointment data. The context values are then consumed by components within your application to perform actions like signing up, logging in, managing patients, appointments, and more.
 
 Here's a summary of what the `UserProvider` component does:

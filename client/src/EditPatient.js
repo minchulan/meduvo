@@ -27,12 +27,21 @@ const EditPatient = ({ patient, setPatient, onUpdate }) => {
       <hr />
       <form onSubmit={handleFormSubmit}>
         <div>
-          <label htmlFor="full_name">Full Name: </label>
+          <label htmlFor="first_name">First Name: </label>
           <input
             type="text"
-            name="full_name"
-            id="full_name"
-            value={formData.full_name}
+            name="first_name"
+            id="first_name"
+            value={formData.first_name}
+            onChange={handleChange}
+          />
+          <br />
+          <label htmlFor="last_name">Last Name: </label>
+          <input
+            type="text"
+            name="last_name"
+            id="last_name"
+            value={formData.last_name}
             onChange={handleChange}
           />
           <br />

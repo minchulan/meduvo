@@ -4,7 +4,7 @@ import { UserContext } from "./context/user";
 
 const PatientCard = ({ patient }) => {
   const { deletePatient } = useContext(UserContext);
-  const { id, full_name, dob } = patient;
+  const { id, first_name, last_name, dob } = patient;
   const navigate = useNavigate();
 
   const handleDeleteClick = () => {
@@ -22,7 +22,7 @@ const PatientCard = ({ patient }) => {
       <div className="patient-card">
         {/* Use NavLink to navigate to the patient details page  */}
         <NavLink to={`/patients/${id}`} className="patient-link">
-          <h3 className="patient-name">{full_name}</h3>
+          <h3 className="patient-name">{first_name} {last_name}</h3>
         </NavLink>
         <div className="patient-info">
           <strong>Date of Birth: </strong>
