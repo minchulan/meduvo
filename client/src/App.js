@@ -1,7 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
-// Components
 import Navbar from "./Navbar";
 import Home from "./Home";
 import Login from "./Login";
@@ -12,7 +11,6 @@ import NewAppointment from "./NewAppointment";
 import PatientAppointments from "./PatientAppointments";
 import PatientList from "./PatientList";
 import PatientDetails from "./PatientDetails";
-import EditPatient from "./EditPatient";
 import Footer from "./Footer";
 import About from "./About";
 import Contact from "./Contact";
@@ -21,24 +19,17 @@ import Feature1 from "./Feature1";
 import Feature2 from "./Feature2";
 import Feature3 from "./Feature3";
 import Terms from "./Terms";
-import EditAppointment from "./EditAppointment";
 
 const App = () => {
   return (
     <main className="App">
       <Navbar />
       <Routes>
-        {/* Public Routes */}
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/signup" element={<Signup />} />
-
-        {/* Patients Routes */}
         <Route exact path="/patients" element={<PatientList />} />
         <Route exact path="/patients/:id" element={<PatientDetails />} />
-        <Route exact path="/patients/:id/edit" element={<EditPatient />} />
-
-        {/* Nested Routes - Patient's Appointments */}
         <Route
           exact path="/patients/:patientId/appointments"
           element={<PatientAppointments />}
@@ -51,17 +42,12 @@ const App = () => {
           exact path="/patients/:patientId/appointments/:appointmentId"
           element={<AppointmentDetails />}
         />
-        {/* Appointments Routes */}
         <Route exact path="/appointments" element={<AppointmentList />} />
-        <Route exact path="/appointments/:id/edit" element={<EditAppointment />} />
         <Route exact path="/appointments/:appointmentId" element={<AppointmentDetails />} />
-
-        {/* Other Public Routes */}
         <Route exact path="/about" element={<About />} />
         <Route exact path="/contact" element={<Contact />} />
         <Route exact path="/faqs" element={<Faqs />} />
         <Route exact path="/terms" element={<Terms />} />
-        {/* Feature Routes */}
         <Route exact path="/feature1" element={<Feature1 />} />
         <Route exact path="/feature2" element={<Feature2 />} />
         <Route exact path="/feature3" element={<Feature3 />} />

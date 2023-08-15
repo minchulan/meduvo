@@ -10,10 +10,7 @@ const AppointmentDetails = () => {
   const [appointment, setAppointment] = useState(null);
   const navigate = useNavigate();
 
-  console.log(appointments)
-
   useEffect(() => {
-    // Find the appointment with the specified id from the appointments array
     const appointmentToShow = appointments.find(
       (appointment) => appointment.id === Number(appointmentId)
     );
@@ -29,19 +26,21 @@ const AppointmentDetails = () => {
     setIsEditing(true);
   };
 
-  const handleAppointmentUpdate = async (updatedAppointment) => {
-    try {
-      const updated = await updateAppointment(
-        Number(appointment.patient_id),
-        Number(appointment.id),
-        updatedAppointment
-      );
-      setAppointment(updated);
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error updating appointment:", error);
-    }
+  const handleAppointmentUpdate = (updatedAppointment) => {
+    updateAppointment(
+      Number(appointment.patient_id),
+      Number(appointment.id),
+      updatedAppointment
+    )
+      .then((updated) => {
+        setAppointment(updated);
+        setIsEditing(false);
+      })
+      .catch((error) => {
+        console.error("Error updating appointment:", error);
+      });
   };
+
 
 
   const goBack = () => {

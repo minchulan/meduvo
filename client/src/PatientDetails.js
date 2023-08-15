@@ -28,9 +28,9 @@ const PatientDetails = () => {
 
   const handlePatientUpdate = async (updatedPatient) => {
     try {
-      await updatePatient(updatedPatient.id, updatedPatient); // Pass id to updatePatient
+      await updatePatient(updatedPatient.id, updatedPatient);
       setPatient(updatedPatient);
-      setIsEditing(false); // Exit edit mode
+      setIsEditing(false);
     } catch (error) {
       console.error("Error updating patient:", error);
     }
@@ -44,7 +44,6 @@ const PatientDetails = () => {
     return (
       <div className="patient-details">
         {isEditing ? (
-          // /* Pass the onUpdate prop to the EditPatient component */
           <EditPatient
             patient={patient}
             onUpdate={handlePatientUpdate}

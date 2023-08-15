@@ -10,7 +10,6 @@ const PatientAppointments = ({ submitButtonStyle }) => {
   const { patientId } = useParams();
   const navigate = useNavigate();
 
-  // Filtering appointments based on the selected category
   const filteredAppointments = categorySearchQuery
     ? appointments.filter(
         (appointment) => appointment.category === categorySearchQuery

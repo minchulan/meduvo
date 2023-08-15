@@ -7,7 +7,6 @@ const EditAppointment = ({ appointment, onUpdate }) => {
   });
   const navigate = useNavigate();
   const { patientId } = useParams();
-  console.log({ patientId });
 
   const handleInputChange = (e) => {
     const key = e.target.id;

@@ -77,7 +77,6 @@ const Login = () => {
         </small>
       </>
       <hr />
-      {/* <p style={{ fontSize: "14px", color: "red" }}>{errors}</p> */}
     </div>
   );
 };

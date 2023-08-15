@@ -59,7 +59,6 @@ const Contact = () => {
           address: "",
           notes: "",
         });
-        // navigate("/"); // Navigate back to the home page after successful form submission
       })
       .catch((error) => {
         console.error(error);

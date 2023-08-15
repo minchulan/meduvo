@@ -113,22 +113,3 @@ const EditPatient = ({ patient, onUpdate }) => {
 };
 
 export default EditPatient;
-
-/*
-----------------------------------------------------------------------
-
-  // when the editPatient form is submitted, make a patch request to update the patient on the server & also update state. Call updatePatient() over in context to do this! We also need to change our component to leave the editing mode and go back to viewing mode. So when form submits, go back to viewing mode.
-
-
-
-The formData state in your code is initialized as an empty object:
-
-jsx
-Copy code
-const [formData, setFormData] = useState({});
-It starts with an empty object because there is no initial data provided when defining the state. When the component mounts and the useEffect hook is triggered, it fetches the patient data and updates the formData state with the existing patient data retrieved from the server.
-
-So, initially, formData will be an empty object until the data is fetched and the useEffect hook updates it with the patient details. Once the data is fetched and the state is updated, the form inputs will be populated with the patient data, and any changes made to the form inputs will be reflected in the formData state.
-
-In summary, the formData state is properly initialized as an empty object, and it will be updated with the patient details fetched from the server when the component mounts.
-*/
