@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { UserContext } from "./context/user";
+import { UserContext } from "./context/user"; 
 import EditPatient from "./EditPatient";
 
 const PatientDetails = () => {
@@ -14,7 +14,6 @@ const PatientDetails = () => {
     fetch(`/patients/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setPatient(data);
       })
       .catch((error) => {
@@ -88,8 +87,9 @@ const PatientDetails = () => {
             <br />
             <button className="edit-button" onClick={handleEditClick}>
               📝 Edit
-            </button>
-            <hr />
+              </button>
+              <hr />
+              <br />
             <button
               className="go-back-button"
               onClick={goBack}

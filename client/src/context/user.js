@@ -9,7 +9,6 @@ function UserProvider({ children }) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
-
   const navigate = useNavigate();
 
   // GET '/me', to: 'users#show'

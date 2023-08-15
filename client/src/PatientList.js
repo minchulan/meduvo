@@ -29,10 +29,13 @@ const PatientList = () => {
   const { first_name, last_name, dob, address, phone, allergies, email, guardian, notes, viewed_notice_of_privacy_practices, language_preferences } = patientFormData
 
   // Filter the patients based on the search query
-  const filteredPatients = patients.filter((patient) => {
-    const fullName = `${patient.first_name} ${patient.last_name}`.toLowerCase();
-    return fullName.includes(searchQuery.toLowerCase());
-  });
+  const filteredPatients = patients
+    ? patients.filter((patient) => {
+        const fullName =
+          `${patient.first_name} ${patient.last_name}`.toLowerCase();
+        return fullName.includes(searchQuery.toLowerCase());
+      })
+    : [];
 
   // we gets the patients array from context. map over patients to get individual patient cards.
   const patientCards =

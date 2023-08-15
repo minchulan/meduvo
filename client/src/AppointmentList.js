@@ -12,6 +12,10 @@ const AppointmentList = () => {
     navigate("/");
   };
 
+  if (!appointments) {
+    return <div>Loading appointments...</div>;
+  }
+
   const filteredAppointments = categoryFilter
     ? appointments.filter(
         (appointment) =>
