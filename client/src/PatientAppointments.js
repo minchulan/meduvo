@@ -109,15 +109,3 @@ const PatientAppointments = ({ submitButtonStyle }) => {
 };
 
 export default PatientAppointments;
-
-//----------------------------------
-/*
-
-PatientAppointments renders:
-  - Appointment Details
-  - New Appointment `/patients/60/appointments/new
-
-PatientAppointments component is associated with the route `/patients/:patientId/appointments`. This is where you list the existing appointments for a patient.
-
-/patients/:patientId/appointments: This route uses the PatientAppointments component to display appointments specific to a patient. It could show a list of appointments for a particular patient.
-*/

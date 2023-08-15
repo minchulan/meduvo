@@ -1,14 +1,14 @@
 class UsersController < ApplicationController
-  skip_before_action :authorize_user, only: [:create]
-  before_action :find_user, only: [:show, :update, :destroy] 
+  before_action :find_user, only: [:show, :update, :destroy]
+  skip_before_action :authorize_user, only: [:create] 
 
   def show # '/me'
     render json: @user, status: :ok 
   end
 
   def create # '/signup'
-    user = User.new(user_params)
-    if user.save
+    user = User.create(user_params)
+    if user
       render json: user, status: :created
     else  
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity

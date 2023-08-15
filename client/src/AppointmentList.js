@@ -62,36 +62,3 @@ const AppointmentList = () => {
 };
 
 export default AppointmentList;
-
-/*
-
-/appointments: This route could be used to display a list of all appointments. The AppointmentList component might be responsible for rendering this list.
-
-  const handleNewAppointment = (appointmentType) => {
-    // Handle creating a new appointment based on the appointmentType
-    // You can navigate to a different page/component with a form to add appointment details
-    navigate(`/appointments/new?type=${appointmentType}`);
-  };
-
-
-      <hr />
-      <div>
-        <button
-          onClick={() => handleNewAppointment("mtm")}
-          style={{ marginRight: "10px" }}
-        >
-          MTM
-        </button>
-        <button
-          onClick={() => handleNewAppointment("immunizations")}
-          style={{ marginRight: "10px" }}
-        >
-          Immunizations
-        </button>
-        <button onClick={() => handleNewAppointment("msc")}>
-          Miscellaneous
-        </button>
-      </div>
-      <br />
-
-*/

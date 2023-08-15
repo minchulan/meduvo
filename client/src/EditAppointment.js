@@ -2,31 +2,37 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditAppointment = ({ appointment, onUpdate }) => {
-    const [editedAppointment, setEditedAppointment] = useState({...appointment});
-    const navigate = useNavigate();
+  const [editedAppointment, setEditedAppointment] = useState({
+    ...appointment,
+  });
+  const navigate = useNavigate();
   const { patientId } = useParams();
-  console.log({patientId})
+  console.log({ patientId });
 
+  const handleInputChange = (e) => {
+    const key = e.target.id;
+    setEditedAppointment({
+      ...editedAppointment,
+      [key]: e.target.value,
+    });
+  };
 
-    const handleInputChange = (e) => {
-      const key = e.target.id 
-      setEditedAppointment({
-        ...editedAppointment,
-        [key]: e.target.value,
-      });
-    };
-  
+  const handleCategoryChange = (e) => {
+    setEditedAppointment({
+      ...editedAppointment,
+      category: e.target.value,
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onUpdate(editedAppointment);
-    navigate(`/patients/${patientId}/appointments/${appointment.id}`)
+    navigate(`/patients/${patientId}/appointments/${appointment.id}`);
   };
-  
-        
+
   const handleCancelClick = () => {
-      navigate(`/patients/${patientId}/appointments`)
+    navigate(`/patients/${patientId}/appointments`);
   };
-    
 
   return (
     <div className="edit-appointment-container">
@@ -34,14 +40,18 @@ const EditAppointment = ({ appointment, onUpdate }) => {
       <form className="edit-appointment-form" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="category">Category:</label>
-          <input
-            type="text"
+          <select
             id="category"
             name="category"
             value={editedAppointment.category}
-            onChange={handleInputChange}
+            onChange={handleCategoryChange}
             required
-          />
+          >
+            <option value="">All Categories</option>
+            <option value="mtm">MTM</option>
+            <option value="msc">MSC</option>
+            <option value="immunization">Immunization</option>
+          </select>
         </div>
         <div>
           <label htmlFor="name">Name:</label>
@@ -87,14 +97,17 @@ const EditAppointment = ({ appointment, onUpdate }) => {
           />
         </div>
         <button type="submit">Save Changes</button>
-        <button type="button" onClick={handleCancelClick} style={cancelButtonStyle}>
+        <button
+          type="button"
+          onClick={handleCancelClick}
+          style={cancelButtonStyle}
+        >
           Cancel
         </button>
       </form>
     </div>
   );
 };
-
 
 const cancelButtonStyle = {
   backgroundColor: "#ffffff",
@@ -108,10 +121,3 @@ const cancelButtonStyle = {
 };
 
 export default EditAppointment;
-
-//--------------------------------
-/*
-/appointments/:id/edit: This route, associated with the EditAppointment component, indicates that you have a dedicated route for editing an appointment. The :id parameter might represent the ID of the appointment being edited.
-
-In the EditAppointment component, you would typically fetch the appointment data based on the :id parameter from the URL and present a form or interface for users to update the appointment details. This separation of concerns makes your codebase cleaner and more maintainable.
-*/

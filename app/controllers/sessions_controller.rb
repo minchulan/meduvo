@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_user, only: [:create, :destroy]
+  skip_before_action :authorize_user, only: [:create, :destroy]
 
   def create
     user = User.find_by_email(params[:email])
@@ -7,13 +7,12 @@ class SessionsController < ApplicationController
       session[:user_id] = user.id
       render json: user, status: :ok
     else
-      render_unauthorized
+      render json: { errors: "Invalid username or password" }, status: :unauthorized
     end
   end
 
   def destroy
     session.delete :user_id
     head :no_content
-    current_user = nil # Clear the memoized current user
   end
 end
