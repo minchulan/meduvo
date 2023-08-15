@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const EditPatient = ({ patient, setPatient, onUpdate }) => {
+const EditPatient = ({ patient, onUpdate }) => {
   const [formData, setFormData] = useState({...patient});
   const navigate = useNavigate();
 

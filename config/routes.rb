@@ -5,12 +5,11 @@ Rails.application.routes.draw do
 
   # Patients
   resources :patients, only: [:index, :show, :create, :update, :destroy] do
-    resources :appointments, only: [ :show, :create, :update, :destroy]
-    #shallow: true --> resources :appointments, only: [:index, :create]
+    resources :appointments, only: [:index, :show, :create, :update, :destroy]
   end
 
   # # Appointments
-  resources :appointments, only: [:index]
+  resources :appointments, only: [:index, :show]
 
   # Users
   resources :users, only: [:update, :destroy]

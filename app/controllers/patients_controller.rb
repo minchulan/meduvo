@@ -1,13 +1,14 @@
 class PatientsController < ApplicationController
-  before_action :authenticate_user
+  before_action :authorize_user
 
   def index
-    render json: Patient.all
+    patients = Patient.all 
+    render json: patients 
   end
 
   def create
-    patient = Patient.create(patient_params)
-    if patient 
+    patient = Patient.new(patient_params)
+    if patient.save 
       render json: patient 
     else  
       render json: { errors: patient.errors.full_messages }, status: :unprocessable_entity
@@ -17,22 +18,21 @@ class PatientsController < ApplicationController
   # blank appointment is being created by the `current_user.appointments.create`, this is creating a blank appointment because User had patients through appointments. 
 
   def show
-    patient = Patient.find_by_id(params[:id])
-    if patient 
-      render json: patient 
-    else  
-      render json: { errors: patient.errors.full_messages }, status: :not_found
-    end  
-  end
-
-  def update
-    patient = Patient.find_by_id(params[:id])
-    patient.update(patient_params)
+    patient = Patient.find(params[:id])
     render json: patient 
   end
 
+  def update
+    patient = Patient.find(params[:id])
+    if patient.update(patient_params)
+      render json: patient 
+    else  
+      render json: { errors: patient.errors.full_messages }, status: :unprocessable_entity
+    end 
+  end
+
   def destroy
-    patient = Patient.find_by_id(params[:id])
+    patient = Patient.find(params[:id])
     patient.destroy 
     head :no_content
   end

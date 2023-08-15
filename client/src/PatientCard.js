@@ -7,6 +7,8 @@ const PatientCard = ({ patient }) => {
   const { id, first_name, last_name, dob } = patient;
   const navigate = useNavigate();
 
+  console.log({id})
+
   const handleDeleteClick = () => {
     // Call the deletePatient function from the context to delete the patient
     deletePatient(id);

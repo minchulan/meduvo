@@ -87,6 +87,7 @@ function UserProvider({ children }) {
       body: JSON.stringify(user),
     })
       .then((res) => {
+        console.log(res)
         if (res.ok) {
           return res.json(); // Return the JSON response if successful
         } else {

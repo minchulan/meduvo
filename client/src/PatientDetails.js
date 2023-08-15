@@ -14,6 +14,7 @@ const PatientDetails = () => {
     fetch(`/patients/${id}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         setPatient(data);
       })
       .catch((error) => {

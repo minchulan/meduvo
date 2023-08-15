@@ -2,33 +2,30 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditAppointment = ({ appointment, onUpdate }) => {
-    const [editedAppointment, setEditedAppointment] = useState(appointment);
+    const [editedAppointment, setEditedAppointment] = useState({...appointment});
     const navigate = useNavigate();
-    const { patientId } = useParams();
+  const { patientId } = useParams();
+  console.log({patientId})
 
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setEditedAppointment((prevAppointment) => ({
-        ...prevAppointment,
-        [name]: value,
-        }));
+      const key = e.target.id 
+      setEditedAppointment({
+        ...editedAppointment,
+        [key]: e.target.value,
+      });
     };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-        await onUpdate(editedAppointment);
-        } catch (error) {
-        console.error("Error updating appointment:", error);
-        }
-    };
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onUpdate(editedAppointment);
+    navigate(`/patients/${patientId}/appointments/${appointment.id}`)
+  };
+  
         
-        const handleCancelClick = () => {
-            navigate(`/patients/${patientId}/appointments`)
-        
-        };
+  const handleCancelClick = () => {
+      navigate(`/patients/${patientId}/appointments`)
+  };
     
 
   return (
