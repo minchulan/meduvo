@@ -49,6 +49,3 @@ class AppointmentsController < ApplicationController
     appointment 
   end 
 end
-
-## appointment = current_user.appointments.find_by_id(params[:id])
-# update and destroy actions are performing similar operations to find the appointment associated with the current user by its ID. Consolidated comon logic into a private method `find_user_appointment_by_id`

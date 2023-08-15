@@ -2,11 +2,11 @@ class UsersController < ApplicationController
   before_action :find_user, only: [:show, :update, :destroy]
   skip_before_action :authorize_user, only: [:create] 
 
-  def show # '/me'
+  def show
     render json: @user, status: :ok 
   end
 
-  def create # '/signup'
+  def create
     user = User.create(user_params)
     if user
       render json: user, status: :created
@@ -35,15 +35,8 @@ class UsersController < ApplicationController
     params.require(:user).permit(:email, :password)
   end
 
-  def find_user # 
+  def find_user 
     @user = current_user
     render_not_found unless @user 
   end 
 end
-
-## `create` action:
-# used create instead of create! to avoid raising an exception if the record cannot be saved. this way i have more control over the flow and better error handling. 
-
-## `before_action` for the `find_user` method:
-# `find_user` method is shared among the actions that need the current user.
-# instead of manually calling `authorize_user` in each action, used `before_action to auto run the authorization check before these actions.` 

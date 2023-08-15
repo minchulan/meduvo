@@ -15,8 +15,6 @@ class PatientsController < ApplicationController
     end  
   end
 
-  # blank appointment is being created by the `current_user.appointments.create`, this is creating a blank appointment because User had patients through appointments. 
-
   def show
     patient = Patient.find(params[:id])
     render json: patient 
