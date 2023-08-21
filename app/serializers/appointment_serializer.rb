@@ -3,4 +3,9 @@ class AppointmentSerializer < ActiveModel::Serializer
   
   belongs_to :user
   belongs_to :patient
+
+  def date 
+    self.object.date.strftime('%m-%d-%Y')
+  end 
+
 end

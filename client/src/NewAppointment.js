@@ -1,41 +1,34 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
+import { useNavigate, useParams } from "react-router-dom";
 
-const NewAppointment = ({ patientId, onCancel, submitButtonStyle }) => {
+const initialAppointmentState = {
+  name: "",
+  date: "",
+  location: "",
+  category: "",
+  description: "",
+};
+
+const NewAppointment = ({ submitButtonStyle }) => {
   const { addAppointment } = useContext(UserContext);
-  const [newAppointmentFormData, setNewAppointmentFormData] = useState({
-    name: "",
-    date: "",
-    location: "",
-    category: "",
-    description: "",
-  });
+  const [newAppointmentFormData, setNewAppointmentFormData] = useState(
+    initialAppointmentState
+  );
+
+  const { patientId } = useParams();
+  console.log(patientId);
 
   const { name, category, location, date, description } =
     newAppointmentFormData;
 
-  const handleSubmitNewAppointment = async (e) => {
-    e.preventDefault();
-    const appointmentData = {
-      name,
-      category,
-      location,
-      date,
-      description,
-    };
+  const navigate = useNavigate();
 
-    try {
-      await addAppointment(patientId, appointmentData);
-      setNewAppointmentFormData({
-        name: "",
-        date: "",
-        location: "",
-        category: "",
-        description: "",
-      });
-    } catch (error) {
-      console.error("Failed to add appointment:", error);
-    }
+  const handleSubmitNewAppointment = (e) => {
+    e.preventDefault();
+    const appointmentData = {...newAppointmentFormData};
+
+    addAppointment(patientId, appointmentData);
   };
 
   const handleChange = (e) => {
@@ -44,6 +37,10 @@ const NewAppointment = ({ patientId, onCancel, submitButtonStyle }) => {
       ...newAppointmentFormData,
       [key]: e.target.value,
     });
+  };
+
+  const handleCancelClick = () => {
+    navigate(`/patients/${patientId}`);
   };
 
   const handleGetLocation = () => {
@@ -72,7 +69,8 @@ const NewAppointment = ({ patientId, onCancel, submitButtonStyle }) => {
       <br />
       <h2>New Appointment</h2>
       <form onSubmit={handleSubmitNewAppointment} className="appointment-form">
-        <input type="hidden" name="appointment[patient_id]" value={patientId} />
+        {/* Remove this hidden input, it's not needed */}
+        {/* <input type="hidden" name="appointment[patient_id]" value={patientId} /> */}
 
         <input
           type="text"
@@ -118,7 +116,11 @@ const NewAppointment = ({ patientId, onCancel, submitButtonStyle }) => {
         <button type="submit" style={submitButtonStyle}>
           Add Appointment
         </button>
-        <button type="button" onClick={onCancel} style={cancelButtonStyle}>
+        <button
+          type="button"
+          onClick={handleCancelClick}
+          style={cancelButtonStyle}
+        >
           Cancel
         </button>
       </form>

@@ -1,5 +1,8 @@
 class ApplicationController < ActionController::API
-  include ActionController::Cookies
+  include ActionController::Cookies #extended the middleware in our ApplicationController
+
+  config.wrap_parameters format: [:json]
+
   rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity 
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found 
 
@@ -16,10 +19,18 @@ class ApplicationController < ActionController::API
   end
 
   def render_unprocessable_entity(invalid)
-    render json: { errors: invalid.record.errors }, status: :unprocessable_entity
+    render json: { errors: ErrorSerializer.serialize(invalid.record.errors) }, status: :unprocessable_entity
   end
 
   def render_not_found(error)
-    render json: { error: "Not Found" }, status: :not_found 
+    render json: { errors: {error.model => "Not Found"} }, status: :not_found 
   end 
 end
+
+#`render_not_found`` takes a param and then we'll use that param to figure out which controller is failing. 
+
+# not preferred - do errors in serializer if going for backend 
+  # def render_unprocessable_entity(invalid)
+  #   errors_arr = invalid.record.errors.map{ |key, value| "#{key}: #{value}" }
+  #   render json: { errors: errors_arr }, status: :unprocessable_entity
+  # end

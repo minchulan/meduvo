@@ -12,10 +12,10 @@ const Home = () => {
         <br />
         <div className="home-buttons">
           <Link to="/patients">
-            <button className="home-button">My Patients</button>
+            <button className="home-button">Patients</button>
           </Link>
-          <Link to="/appointments">
-            <button className="home-button">Event Types</button>
+          <Link to="/me">
+            <button>My Profile</button>
           </Link>
         </div>
         <hr />

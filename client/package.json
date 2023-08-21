@@ -16,7 +16,9 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.0",
     "react-scripts": "^5.0.1",
-    "web-vitals": "^1.1.2"
+    "styled-components": "^6.0.7",
+    "web-vitals": "^1.1.2",
+    "@babel/plugin-proposal-private-property-in-object": "version"
   },
   "scripts": {
     "start": "PORT=4000 react-scripts start",

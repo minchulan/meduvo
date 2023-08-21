@@ -26,6 +26,8 @@ ActiveRecord::Schema.define(version: 2023_08_09_201621) do
     t.datetime "updated_at", precision: 6, null: false
     t.date "date"
   end
+  # t.belongs_to :patient, null: false, foreign_key: true 
+  # index makes querying from DB much faster
 
   create_table "contacts", force: :cascade do |t|
     t.string "first_name"

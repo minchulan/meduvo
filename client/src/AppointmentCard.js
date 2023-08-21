@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-const AppointmentCard = ({ appointment }) => {
+const AppointmentCard = ({ appointment, onDelete, onUpdate }) => {
   const renderCategory = (category) => {
     switch (category) {
       case "mtm":
@@ -18,13 +18,15 @@ const AppointmentCard = ({ appointment }) => {
   return (
     <div className="appointment-card">
       <div className="card-content">
-        <h3>
-          <NavLink to={`/appointments/${appointment.id}`}>{appointment.name}</NavLink>
-        </h3>
+        <p>{renderCategory(appointment.category)}</p>
+        <h3>{appointment.name}</h3>
         <p>Date: {appointment.date}</p>
-        <p>Time: {appointment.time}</p>
         <p>Location: {appointment.location}</p>
-        <p>Category: {renderCategory(appointment.category)}</p>
+        <p>Details: {appointment.description}</p>
+        <div className="card-actions">
+          <button className="edit-button" onClick={() => onUpdate(appointment.id)}>Edit</button>
+          <button className="delete-button" onClick={() => onDelete(appointment.id)}>Delete</button>
+        </div>
       </div>
     </div>
   );

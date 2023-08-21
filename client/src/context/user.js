@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 const UserContext = createContext();
 
+
+
 function UserProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [contextErrors, setContextErrors] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [errors, setErrors] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
@@ -19,29 +21,38 @@ function UserProvider({ children }) {
     })
       .then((resp) => resp.json())
       .then((data) => {
-        console.log("Fetched data:", data);
-        console.log("Fetched patients:", data.patients);
-        console.log("Fetched appointments:", data.appointments);
-
+        console.log("Fetched logged-in user's data:", data);
+        console.log("Fetched user's appointments:", data.appointments);
         if (data.error) {
           setLoggedIn(false);
-          setUser(null);
-          setContextErrors(["Authentication failed. Please login."]);
+          setCurrentUser(null);
+          setErrors(["Authentication failed. Please login."]);
         } else {
-          setLoggedIn(true);
-          setUser(data);
-          setPatients(data.patients);
-          setAppointments(data.appointments);
-          setContextErrors([]);
+          setLoggedIn(true); // if user is loggedIn
+          setCurrentUser(data); // set to state
+          fetchPatients();
+          setErrors([]);
         }
       })
       .catch((error) => {
-        setContextErrors([
-          "Failed to fetch user data. Please try again later.",
-        ]);
+        setErrors(["Failed to fetch user data. Please try again later."]);
         console.error("Fetching user data error:", error);
       });
   }, []);
+
+  const fetchPatients = () => {
+    fetch("/patients").then((resp) => {
+      if (resp.ok) {
+        console.log(resp);
+        resp.json().then((data) => {
+          console.log(data);
+          setPatients(data);
+        });
+      } else {
+        resp.json().then((data) => setErrors(data.error));
+      }
+    });
+  };
 
   // LOGIN
   const login = (user) => {
@@ -53,16 +64,16 @@ function UserProvider({ children }) {
       .then((res) => res.json())
       .then((data) => {
         if (!data.errors) {
-          setUser(data);
+          setCurrentUser(data);
           setLoggedIn(true);
-          navigate(`/`);
+          navigate("/me");
         } else {
-          setContextErrors([data.errors]);
+          setErrors([data.errors]);
         }
       })
       .catch((error) => {
         console.error("Login error:", error);
-        setContextErrors(["An error occurred during login. Please try again."]);
+        setErrors(["An error occurred during login. Please try again."]);
       });
   };
 
@@ -71,7 +82,7 @@ function UserProvider({ children }) {
     fetch(`/logout`, {
       method: "DELETE",
     }).then(() => {
-      setUser(null);
+      setCurrentUser(null);
       setLoggedIn(false);
     });
   };
@@ -88,19 +99,19 @@ function UserProvider({ children }) {
         if (res.ok) {
           return res.json();
         } else {
-          throw new Error("Signup failed");
+          res.json().then((errors) => {
+            console.error(errors);
+          });
         }
       })
       .then((data) => {
-        setUser(data);
+        setCurrentUser(data);
         setLoggedIn(true);
         navigate(`/`);
       })
       .catch((error) => {
         console.error("Signup error:", error);
-        setContextErrors([
-          "An error occurred during signup. Please try again.",
-        ]);
+        setErrors(["An error occurred during signup. Please try again."]);
       });
   };
 
@@ -119,10 +130,11 @@ function UserProvider({ children }) {
         }
       })
       .then((data) => {
-        setPatients([...patients, data]);
+        setPatients((patients) => [...patients, data]);
+        navigate(`/patients/${data.id}`);
       })
       .catch((error) => {
-        setContextErrors([error.message]);
+        setErrors([error.message]);
       });
   };
 
@@ -152,8 +164,11 @@ function UserProvider({ children }) {
 
         return editedPatient;
       })
+      .then((editedPatient) => {
+        navigate(`/patients/${editedPatient.id}`);
+      })
       .catch((error) => {
-        setContextErrors([error.message]);
+        setErrors([error.message]);
         throw error;
       });
   };
@@ -162,101 +177,67 @@ function UserProvider({ children }) {
   const deletePatient = (id) => {
     fetch(`/patients/${id}`, {
       method: "DELETE",
-    }).then(() => {
-      setPatients((patients) =>
-        patients.filter((patient) => patient.id !== id)
-      );
+    }).then((res) => {
+      if (res.ok) {
+        // Update the patients list in the context
+        setPatients((prevPatients) =>
+          prevPatients.filter((patient) => patient.id !== id)
+        );
+        navigate(`/patients`);
+      } else {
+        res.json().then((data) => setErrors(data.errors));
+      }
     });
   };
 
   // ADD APPOINTMENT
-  const addAppointment = async (patientId, appointmentData) => {
-    console.log(patientId);
-    console.log(appointmentData);
-    try {
-      const response = await fetch(`/patients/${patientId}/appointments`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(appointmentData),
-      });
+  // ADD APPOINTMENT
+  const addAppointment = (id, appointmentData) => {
+    console.log("Patient ID:", id); // Log the patient ID
+    console.log("Appointment Data:", appointmentData); // Log the appointmentData
 
-      if (!response.ok) {
-        throw new Error("Failed to add appointment.");
-      }
-
-      const newAppointment = await response.json();
-      setAppointments([...appointments, newAppointment]);
-      console.log("New Appointment:", newAppointment);
-    } catch (error) {
-      setContextErrors(["Failed to add appointment. Please try again later."]);
-    }
-  };
-
-  // UPDATE APPOINTMENT
-  const updateAppointment = (patientId, appointmentId, updatedData) => {
-    console.log("Updating appointment with ID:", appointmentId);
-    console.log("Updated appointment data:", updatedData);
-
-    return fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
-      method: "PATCH",
+    fetch(`/patients/${id}/appointments`, {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedData),
+      body: JSON.stringify(appointmentData),
     })
-      .then((resp) => {
-        if (!resp.ok) {
-          throw new Error("Failed to update appointment.");
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to add appointment.");
         }
-        return resp.json();
+        return response.json();
       })
-      .then((editedAppointment) => {
-        setAppointments((appointments) =>
-          appointments.map((appointment) =>
-            appointment.id === appointmentId
-              ? { ...appointment, ...editedAppointment }
-              : appointment
-          )
-        );
-        return editedAppointment;
+      .then((newAppointment) => {
+        setAppointments([...appointments, newAppointment]);
+        console.log("New Appointment:", newAppointment);
+        navigate(`/patients/${id}`);
       })
       .catch((error) => {
-        setContextErrors([error.message]);
-        throw error;
+        setErrors(["Failed to add appointment. Please try again later."]);
       });
-  };
-
-  // DELETE APPOINTMENT
-  const deleteAppointment = (patientId, appointmentId) => {
-    fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
-      method: "DELETE",
-    }).then(() => {
-      setAppointments((appointments) =>
-        appointments.filter((appointment) => appointment.id !== appointmentId)
-      );
-    });
   };
 
   return (
     <UserContext.Provider
       value={{
-        user,
+        currentUser,
         login,
         logout,
         signup,
         loggedIn,
         patients,
         setPatients,
-        appointments,
-        addAppointment,
-        deleteAppointment,
         addPatient,
         deletePatient,
         updatePatient,
-        updateAppointment,
+        addAppointment,
+        errors,
+        setErrors,
       }}
     >
-      {contextErrors && contextErrors.length > 0 ? (
+      {errors && errors.length > 0 ? (
         <div>
-          {contextErrors.map((error, index) => (
+          {errors.map((error, index) => (
             <h2 key={index}>{error}</h2>
           ))}
         </div>
@@ -268,3 +249,86 @@ function UserProvider({ children }) {
 }
 
 export { UserContext, UserProvider };
+
+// must listen for the status... (status.ok) so frontend knows what happened in the backend. if anything is outside of 200 range, we will return something that's not okay. if outside that range, go into our errors and render our errors. 
+
+  /*
+  .then(res => {
+    if(res.ok){
+      deletePatient(patient.id)
+      navigate(`/`)
+    } else {
+      res.json().then(data => setErrors(data.errors))
+    }
+  })
+  */
+
+  // ADD APPOINTMENT
+  // const addAppointment = async (patientId, appointmentData) => {
+  //   console.log(patientId);
+  //   console.log(appointmentData);
+  //   try {
+  //     const response = await fetch(`/patients/${patientId}/appointments`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(appointmentData),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to add appointment.");
+  //     }
+
+  //     const newAppointment = await response.json();
+  //     setAppointments([...appointments, newAppointment]);
+  //     console.log("New Appointment:", newAppointment);
+  //   } catch (error) {
+  //     setErrors(["Failed to add appointment. Please try again later."]);
+  //   }
+  // };
+
+  // UPDATE APPOINTMENT
+  // const updateAppointment = (patientId, appointmentId, updatedData) => {
+  //   console.log("Updating appointment with ID:", appointmentId);
+  //   console.log("Updated appointment data:", updatedData);
+
+  //   return fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
+  //     method: "PATCH",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(updatedData),
+  //   })
+  //     .then((resp) => {
+  //       if (!resp.ok) {
+  //         throw new Error("Failed to update appointment.");
+  //       }
+  //       return resp.json();
+  //     })
+  //     .then((editedAppointment) => {
+  //       setAppointments((appointments) =>
+  //         appointments.map((appointment) =>
+  //           appointment.id === appointmentId
+  //             ? { ...appointment, ...editedAppointment }
+  //             : appointment
+  //         )
+  //       );
+  //       return editedAppointment;
+  //     })
+  //     .catch((error) => {
+  //       setErrors([error.message]);
+  //       throw error;
+  //     });
+  // };
+
+  // DELETE APPOINTMENT
+  // const deleteAppointment = (patientId, appointmentId) => {
+  //   fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
+  //     method: "DELETE",
+  //   }).then(() => {
+  //     setAppointments((appointments) =>
+  //       appointments.filter((appointment) => appointment.id !== appointmentId)
+  //     );
+  //   });
+  // };
+
+          // addAppointment,
+        // deleteAppointment,
+        // updateAppointment,

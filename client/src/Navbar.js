@@ -21,6 +21,9 @@ const Navbar = () => {
       </nav>
       {loggedIn ? (
         <>
+          <NavLink to="/">Home</NavLink>
+          <NavLink to="/patients">Patients</NavLink>
+          <NavLink to="/me">My Profile</NavLink>
           <button onClick={handleLogout}>Logout</button>
         </>
       ) : (

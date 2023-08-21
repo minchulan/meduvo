@@ -17,8 +17,8 @@ const initialPatientState = {
   language_preferences: ""
 };
 
-const PatientList = () => {
-  const { patients, user, addPatient } = useContext(UserContext);
+const PatientList = ({ onDelete }) => {
+  const { patients, currentUser, addPatient } = useContext(UserContext);
   const [showForm, setShowForm] = useState(false);
   const [patientFormData, setPatientFormData] = useState(initialPatientState);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -38,23 +38,33 @@ const PatientList = () => {
   const patientCards =
     filteredPatients.length > 0 ? (
       filteredPatients.map((patient) => (
-        <PatientCard key={patient.id} patient={patient} />
+        <PatientCard key={patient.id} patient={patient} onDelete={onDelete} />
       ))
     ) : (
       <div>Patient not found.</div>
     );
   
-    const handleSearchChange = (e) => {
-      setSearchQuery(e.target.value);
-    };
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
   
   const goBack = () => {
     navigate(`/`);
   };
 
+  const handleChange = (e) => {
+    const key = e.target.id;
+    const value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
+
+    setPatientFormData({
+      ...patientFormData,
+      [key]: value,
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
     addPatient({
       first_name,
       last_name,
@@ -79,26 +89,15 @@ const PatientList = () => {
 
   };
 
-  const handleChange = (e) => {
-    const key = e.target.id;
-    const value =
-      e.target.type === "checkbox" ? e.target.checked : e.target.value;
-
-    setPatientFormData({
-      ...patientFormData,
-      [key]: value,
-    });
-  };
-
   return (
     <div className="patient-list">
-      {user && (
+      {currentUser && (
         <h5 className="signed-in-user">
-          Signed in: <em>{user.email}</em>
+          Signed in: <em>{currentUser.email}</em>
         </h5>
       )}
       <br />
-      <h2>My Patients</h2>
+      <h2>Patient List</h2>
       <div className="search-container">
         <input
           type="text"

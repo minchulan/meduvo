@@ -2,20 +2,21 @@ class UsersController < ApplicationController
   before_action :find_user, only: [:show, :update, :destroy]
   skip_before_action :authorize_user, only: [:create] 
 
-  def show
+  def index #get '/users'
+    users = User.all 
+    render json: users
+  end 
+
+  def show #get '/me'
     render json: @user, status: :ok 
   end
 
-  def create
-    user = User.create(user_params)
-    if user
-      render json: user, status: :created
-    else  
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
-    end  
+  def create #post '/signup'
+    new_user = User.create!(user_params) # create new user 
+    render json: new_user, status: :ok 
   end
 
-  def update
+  def update #patch '/users/:id'
     if @user.update(user_params)
       render json: @user, status: :ok
     else
@@ -23,9 +24,9 @@ class UsersController < ApplicationController
     end
   end
 
-  def destroy
+  def destroy #delete '/users/:id'
     @user.destroy
-    session.delete :user_id
+    session.delete(:user_id) #log out our user by removing the id from our sessions hash / forgets our user.
     head :no_content
   end
 
