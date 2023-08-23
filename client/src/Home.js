@@ -3,19 +3,24 @@ import { UserContext } from "./context/user";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  const { loggedIn } = useContext(UserContext);
+  const { currentUser, loggedIn } = useContext(UserContext);
 
   if (loggedIn) {
     return (
       <div className="home">
         <h3>Home</h3>
+        {currentUser && (
+          <h5 className="signed-in-user">
+            Signed in: <em>{currentUser.email}</em>
+          </h5>
+        )}
         <br />
         <div className="home-buttons">
           <Link to="/patients">
             <button className="home-button">Patients</button>
           </Link>
           <Link to="/me">
-            <button>My Profile</button>
+            <button>Profile</button>
           </Link>
         </div>
         <hr />

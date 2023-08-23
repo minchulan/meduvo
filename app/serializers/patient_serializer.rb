@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: patients
+#
+#  id                                 :bigint           not null, primary key
+#  address                            :string
+#  allergies                          :string
+#  dob                                :date
+#  email                              :string
+#  first_name                         :string
+#  gender                             :string
+#  guardian                           :string
+#  language_preferences               :string
+#  last_name                          :string
+#  notes                              :text
+#  phone                              :string
+#  viewed_notice_of_privacy_practices :string
+#  created_at                         :datetime         not null
+#  updated_at                         :datetime         not null
+#
 class PatientSerializer < ActiveModel::Serializer
   attributes :id, :full_name, :first_name, :last_name, :guardian, :dob, :gender, :address, :email, :phone, :notes, :language_preferences, :allergies, :viewed_notice_of_privacy_practices
   

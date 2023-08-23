@@ -1,49 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { UserContext } from "./context/user"; 
 
 function UserPage() {
-  const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [errors, setErrors] = useState(false);
+  const { currentUser } = useContext(UserContext);
 
-  const params = useParams();
+  console.log(currentUser.appointments)
   const navigate = useNavigate();
-  const { id } = params;
-
-  useEffect(() => {
-    fetch(`/me`)
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error("Failed to fetch user data.");
-        }
-      })
-      .then((user) => {
-        console.log(user);
-        setUser(user);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setErrors(error.message);
-      });
-  }, [id]);
 
   const goBack = () => {
     navigate(`/`);
   };
 
-  if (loading) return <h1>Loading...</h1>;
-  if (errors) return <h1>{errors}</h1>;
-
   // Sort appointments by date in ascending order
-  const sortedAppointments = user.appointments.sort(
+  const sortedAppointments = currentUser.appointments.sort(
     (a, b) => new Date(a.date) - new Date(b.date)
   );
 
+  if(!currentUser) <h2>Loading user data...</h2>
+
   return (
     <div>
-      <h1>{user.name}</h1>
       <h2>My Appointments</h2>
       <ul className="appointments-list">
         {sortedAppointments.map((appointment) => (
@@ -60,11 +37,9 @@ function UserPage() {
                   - {appointment.patient.dob}
                 </p>
                 <p>
-                  {appointment.name} - {appointment.category}
+                  {appointment.name} : {appointment.category}
                 </p>
                 <p>Scheduled Date: {appointment.date}</p>
-                <p>Site Location: {appointment.location}</p>
-                <p>Description: {appointment.description}</p>
               </div>
             </Link>
           </li>

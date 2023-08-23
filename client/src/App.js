@@ -50,11 +50,7 @@ const App = ({onDelete}) => {
           element={<AppointmentDetails />}
         />
         <Route exact path="/appointments" element={<AppointmentList />} />
-        <Route
-          exact
-          path="/appointments/:appointmentId"
-          element={<AppointmentDetails />}
-        />
+        
         <Route path="/me" element={<UserPage />} />
 
 

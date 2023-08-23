@@ -1,30 +1,32 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { UserContext } from "./context/user"; 
+import { UserContext } from "./context/user";
 import EditPatient from "./EditPatient";
 import AppointmentCard from "./AppointmentCard";
 
-const PatientDetails = ({onDelete}) => {
+const PatientDetails = ({ onDelete }) => {
   const [patient, setPatient] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const { id } = useParams();
-  const { updatePatient, setErrors } = useContext(UserContext);
+  const { updatePatient, errors, setErrors } = useContext(UserContext);
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     //GET to '/patients/:id'
-    fetch(`/patients/${id}`)
-      .then((resp) => { 
-        if (resp.ok) {
-          resp.json().then(data => { 
-            console.log(data)
-            setPatient(data)
-          })
-        } else {
-          resp.json().then(data => setErrors(data.errors))
-        }
-      });
+    fetch(`/patients/${id}`).then((resp) => {
+      if (resp.ok) {
+        resp.json().then((data) => {
+          console.log(data);
+          setPatient(data);
+        });
+      } else {
+        resp.json().then((data) => {
+          console.log(data.errors);
+          setErrors(data.errors); // Set errors using setErrors from UserContext
+        });
+      }
+    });
   }, [id, setErrors]);
 
   const handleEditPatientClick = () => {
@@ -55,13 +57,12 @@ const PatientDetails = ({onDelete}) => {
     navigate(`/patients`);
   };
 
-  if (patient === null) {
-    return <div>Loading patient details...</div>;
-  }
-
   if (patient) {
     return (
       <div className="patient-details">
+        {errors.map((error, index) => (
+          <h2 key={index}>{error}</h2>
+        ))}
         {isEditing ? (
           <EditPatient patient={patient} onUpdate={handlePatientUpdate} />
         ) : (
@@ -103,6 +104,21 @@ const PatientDetails = ({onDelete}) => {
               {patient.notes}
             </div>
             <br />
+            <ul>
+              <b>Providers:</b>
+              {patient.users.length > 0 ? (
+                patient.users.map((user) => (
+                  <li key={user.id}>
+                    <div>
+                      <a href={`mailto:${user.email}`}>{user.email}</a>
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <li>N/A</li>
+              )}
+            </ul>
+            <br />
             <button className="edit-button" onClick={handleEditPatientClick}>
               📝 Edit Patient
             </button>
@@ -135,8 +151,8 @@ const PatientDetails = ({onDelete}) => {
                   <AppointmentCard appointment={appointment} />
                 </li>
               ))}
-              </ul>
-              <br />
+            </ul>
+            <br />
             <button
               className="small-button"
               onClick={() => navigate(`/patients/${id}/appointments/new`)}
@@ -171,7 +187,7 @@ const PatientDetails = ({onDelete}) => {
     );
   }
 
-  return <div>Loading patient details...</div>;
+  return <div>Loading...</div>;
 };
 
 export default PatientDetails;

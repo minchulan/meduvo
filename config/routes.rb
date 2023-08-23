@@ -1,3 +1,6 @@
+# == Route Map
+#
+
 Rails.application.routes.draw do
 
   resources :appointments, only: [:index] # perhaps admin users can see all appointments? 

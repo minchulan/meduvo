@@ -1,5 +1,4 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
 
 const AppointmentCard = ({ appointment, onDelete, onUpdate }) => {
   const renderCategory = (category) => {

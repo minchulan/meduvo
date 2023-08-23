@@ -12,3 +12,5 @@ class UserAppointmentSerializer < ActiveModel::Serializer
     self.object.date.strftime('%m-%d-%Y')
   end 
 end
+
+# to invoke methods, must add to the list of attributes in line 2. 

@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: appointments
+#
+#  id          :bigint           not null, primary key
+#  category    :string
+#  date        :date
+#  description :text
+#  location    :string
+#  name        :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  patient_id  :integer
+#  user_id     :integer
+#
 class Appointment < ApplicationRecord
   belongs_to :user
   belongs_to :patient 

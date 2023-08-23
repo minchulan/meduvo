@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 const UserContext = createContext();
 
-
-
 function UserProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [errors, setErrors] = useState([]);
@@ -30,7 +28,7 @@ function UserProvider({ children }) {
         } else {
           setLoggedIn(true); // if user is loggedIn
           setCurrentUser(data); // set to state
-          fetchPatients();
+          fetchPatients(); // grab all the patients
           setErrors([]);
         }
       })
@@ -39,6 +37,8 @@ function UserProvider({ children }) {
         console.error("Fetching user data error:", error);
       });
   }, []);
+
+  console.log("current user", currentUser);
 
   const fetchPatients = () => {
     fetch("/patients").then((resp) => {
@@ -68,6 +68,7 @@ function UserProvider({ children }) {
           setLoggedIn(true);
           navigate("/me");
         } else {
+          console.log(data.errors);
           setErrors([data.errors]);
         }
       })
@@ -93,26 +94,26 @@ function UserProvider({ children }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user),
-    })
-      .then((res) => {
-        console.log(res);
-        if (res.ok) {
-          return res.json();
-        } else {
-          res.json().then((errors) => {
-            console.error(errors);
-          });
-        }
-      })
-      .then((data) => {
-        setCurrentUser(data);
-        setLoggedIn(true);
-        navigate(`/`);
-      })
-      .catch((error) => {
-        console.error("Signup error:", error);
-        setErrors(["An error occurred during signup. Please try again."]);
-      });
+    }).then((res) => {
+      if (res.ok) {
+        res.json().then((data) => {
+          setCurrentUser(data);
+          setLoggedIn(true);
+          navigate(`/me`);
+        });
+      } else {
+        res.json().then((data) => {
+          if (data && data.errors) {
+            const errorMessages = Object.entries(data.errors).map(
+              ([key, value]) => `${key} : ${value}`
+            );
+            setErrors(errorMessages);
+          } else {
+            setErrors(["An error occurred during signup. Please try again."]);
+          }
+        });
+      }
+    });
   };
 
   // ADD PATIENT
@@ -121,22 +122,41 @@ function UserProvider({ children }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patient),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error("Failed to add patient.");
-        }
-      })
-      .then((data) => {
-        setPatients((patients) => [...patients, data]);
-        navigate(`/patients/${data.id}`);
-      })
-      .catch((error) => {
-        setErrors([error.message]);
-      });
+    }).then((res) => {
+      if (res.ok) {
+        res.json().then((data) => {
+          setPatients((patients) => [...patients, data]);
+          navigate(`/patients/${data.id}`);
+        });
+      } else {
+        res.json().then((data) => {
+          setErrors(data.errors);
+        });
+      }
+    });
   };
+
+  // const addPatient = (patient) => {
+  //   fetch("/patients", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(patient),
+  //   })
+  //     .then((res) => {
+  //       if (res.ok) {
+  //         return res.json();
+  //       } else {
+  //         throw new Error("Failed to add patient.");
+  //       }
+  //     })
+  //     .then((data) => {
+  //       setPatients((patients) => [...patients, data]);
+  //       navigate(`/patients/${data.id}`);
+  //     })
+  //     .catch((error) => {
+  //       setErrors([error.message]);
+  //     });
+  // };
 
   // UPDATE PATIENT
   const updatePatient = (id, formData) => {
@@ -147,50 +167,75 @@ function UserProvider({ children }) {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to update patient.");
-        }
-
-        return response.json();
-      })
-      .then((editedPatient) => {
-        setPatients((patients) =>
-          patients.map((patient) =>
-            patient.id === id ? { ...patient, ...editedPatient } : patient
-          )
-        );
-
-        return editedPatient;
-      })
-      .then((editedPatient) => {
-        navigate(`/patients/${editedPatient.id}`);
-      })
-      .catch((error) => {
-        setErrors([error.message]);
-        throw error;
-      });
+    }).then((res) => {
+      if (res.ok) {
+        res.json().then((data) => {
+          setPatients(patients => patients.map((patient) => patient.id === id ? { ...patient, ...data } : patient ));
+        })
+      } else {
+        res.json().then(data => setErrors(data.errors))
+      }
+    });
   };
+
+  //     .then((editedPatient) => {
+  //       setPatients((patients) =>
+  //         patients.map((patient) =>
+  //           patient.id === id ? { ...patient, ...editedPatient } : patient
+  //         )
+  //       );
+  // const updatePatient = (id, formData) => {
+  //   console.log("Updating patient with ID:", id);
+  //   console.log("Form data:", formData);
+
+  //   return fetch(`/patients/${id}`, {
+  //     method: "PATCH",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(formData),
+  //   })
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error("Failed to update patient.");
+  //       }
+
+  //       return response.json();
+  //     })
+  //     .then((editedPatient) => {
+  //       setPatients((patients) =>
+  //         patients.map((patient) =>
+  //           patient.id === id ? { ...patient, ...editedPatient } : patient
+  //         )
+  //       );
+
+  //       return editedPatient;
+  //     })
+  //     .then((editedPatient) => {
+  //       navigate(`/patients/${editedPatient.id}`);
+  //     })
+  //     .catch((error) => {
+  //       setErrors([error.message]);
+  //       throw error;
+  //     });
+  // };
 
   // DELETE PATIENT
   const deletePatient = (id) => {
     fetch(`/patients/${id}`, {
       method: "DELETE",
-    }).then((res) => {
-      if (res.ok) {
+    })
+      .then((res) => {
+        if (res.ok) {
         // Update the patients list in the context
-        setPatients((prevPatients) =>
-          prevPatients.filter((patient) => patient.id !== id)
-        );
-        navigate(`/patients`);
-      } else {
-        res.json().then((data) => setErrors(data.errors));
-      }
-    });
+          setPatients((prevPatients) =>
+            prevPatients.filter((patient) => patient.id !== id)
+          )
+          navigate(`/patients`);
+        } else {
+          res.json().then((data) => setErrors(data.errors));
+        } 
+      }); 
   };
 
-  // ADD APPOINTMENT
   // ADD APPOINTMENT
   const addAppointment = (id, appointmentData) => {
     console.log("Patient ID:", id); // Log the patient ID

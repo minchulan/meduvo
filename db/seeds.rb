@@ -98,9 +98,39 @@ p6 = Patient.create(
   notes: Faker::Lorem.sentence
 )
 
+p7 = Patient.create(
+  first_name: Faker::Name.first_name,
+  last_name: Faker::Name.last_name,
+  guardian: Faker::Name.name,
+  gender: ['Male', 'Female'].sample,
+  dob: Faker::Date.birthday(min_age: 18, max_age: 65),
+  address: Faker::Address.full_address,
+  phone: Faker::PhoneNumber.phone_number,
+  email: Faker::Internet.unique.email,
+  language_preferences: ['English', 'Spanish', 'French'].sample,
+  allergies: Faker::Lorem.words(number: rand(1..5)).join(', '),
+  viewed_notice_of_privacy_practices: Faker::Boolean.boolean,
+  notes: Faker::Lorem.sentence
+)
+
+p8 = Patient.create(
+  first_name: Faker::Name.first_name,
+  last_name: Faker::Name.last_name,
+  guardian: Faker::Name.name,
+  gender: ['Male', 'Female'].sample,
+  dob: Faker::Date.birthday(min_age: 18, max_age: 65),
+  address: Faker::Address.full_address,
+  phone: Faker::PhoneNumber.phone_number,
+  email: Faker::Internet.unique.email,
+  language_preferences: ['English', 'Spanish', 'French'].sample,
+  allergies: Faker::Lorem.words(number: rand(1..5)).join(', '),
+  viewed_notice_of_privacy_practices: Faker::Boolean.boolean,
+  notes: Faker::Lorem.sentence
+)
+
 # Create users
-u1 = User.create(username: "minchulan", email: "itsminchul@gmail.com", password: "password123", admin: false)
-u2 = User.create(username: "guest", email: "email@gmail.com", password: "password123", admin: false)
+u1 = User.create(username: "minchulan", email: "itsminchul@gmail.com", password: "password", admin: false)
+u2 = User.create(username: "guest", email: "email@gmail.com", password: "password", admin: false)
 admin = User.create(
   username: 'admin',
   email: 'admin@example.com',
@@ -119,8 +149,26 @@ u1.appointments.create(
   date: Faker::Time.between(from: DateTime.now - 30.days, to: DateTime.now + 30.days)
 )
 
+u1.appointments.create(
+  patient: p6,
+  name: Faker::Lorem.words(number: rand(2..4)).join(' '),
+  category: ['immunization', 'mtm', 'msc'].sample,
+  location: Faker::Address.full_address,
+  description: Faker::Lorem.paragraph(sentence_count: rand(2..6)),
+  date: Faker::Time.between(from: DateTime.now - 30.days, to: DateTime.now + 30.days)
+)
+
 u2.appointments.create(
   patient: p2,
+  name: Faker::Lorem.words(number: rand(2..4)).join(' '),
+  category: ['immunization', 'mtm', 'msc'].sample,
+  location: Faker::Address.full_address,
+  description: Faker::Lorem.paragraph(sentence_count: rand(2..6)),
+  date: Faker::Time.between(from: DateTime.now - 30.days, to: DateTime.now + 30.days)
+)
+
+u2.appointments.create(
+  patient: p7,
   name: Faker::Lorem.words(number: rand(2..4)).join(' '),
   category: ['immunization', 'mtm', 'msc'].sample,
   location: Faker::Address.full_address,
@@ -155,7 +203,6 @@ admin.appointments.create(
   date: Faker::Time.between(from: DateTime.now - 30.days, to: DateTime.now + 30.days)
 )
 
-
 admin.appointments.create(
   patient: p4,
   name: Faker::Lorem.words(number: rand(2..4)).join(' '),
@@ -176,6 +223,15 @@ admin.appointments.create(
 
 admin.appointments.create(
   patient: p6,
+  name: Faker::Lorem.words(number: rand(2..4)).join(' '),
+  category: ['immunization', 'mtm', 'msc'].sample,
+  location: Faker::Address.full_address,
+  description: Faker::Lorem.paragraph(sentence_count: rand(2..6)),
+  date: Faker::Time.between(from: DateTime.now - 30.days, to: DateTime.now + 30.days)
+)
+
+admin.appointments.create(
+  patient: p8,
   name: Faker::Lorem.words(number: rand(2..4)).join(' '),
   category: ['immunization', 'mtm', 'msc'].sample,
   location: Faker::Address.full_address,

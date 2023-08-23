@@ -18,7 +18,7 @@ const initialPatientState = {
 };
 
 const PatientList = ({ onDelete }) => {
-  const { patients, currentUser, addPatient } = useContext(UserContext);
+  const { patients, addPatient, errors } = useContext(UserContext);
   const [showForm, setShowForm] = useState(false);
   const [patientFormData, setPatientFormData] = useState(initialPatientState);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -35,15 +35,18 @@ const PatientList = ({ onDelete }) => {
       })
     : [];
 
-  const patientCards =
+  const patientCards = patients ? (
     filteredPatients.length > 0 ? (
       filteredPatients.map((patient) => (
         <PatientCard key={patient.id} patient={patient} onDelete={onDelete} />
       ))
     ) : (
-      <div>Patient not found.</div>
-    );
-  
+        <div>Patient not found.</div>
+    )
+  ) : (
+      <div>Loading patients...</div>
+  )
+
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -91,12 +94,7 @@ const PatientList = ({ onDelete }) => {
 
   return (
     <div className="patient-list">
-      {currentUser && (
-        <h5 className="signed-in-user">
-          Signed in: <em>{currentUser.email}</em>
-        </h5>
-      )}
-      <br />
+      {errors.map((error, index) => (<h2 key={index}>{error}</h2>))}
       <h2>Patient List</h2>
       <div className="search-container">
         <input
@@ -268,7 +266,7 @@ const PatientList = ({ onDelete }) => {
             className="form-cancel"
             onClick={() => {
               setShowForm(false);
-              setPatientFormData(initialPatientState); 
+              setPatientFormData(initialPatientState);
             }}
             style={{ marginLeft: "10px" }}
           >
@@ -280,7 +278,7 @@ const PatientList = ({ onDelete }) => {
           className="small-button"
           onClick={() => {
             setShowForm(true);
-            setPatientFormData(initialPatientState); 
+            setPatientFormData(initialPatientState);
           }}
         >
           Add patient
