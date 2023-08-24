@@ -12,7 +12,7 @@ class PatientsController < ApplicationController
 
   def show #get '/patients/:id'
     find_patient_by_id
-    render json: @patient, status: :ok 
+    render json: @patient, serializer: PatientSerializer, status: :ok 
   end
 
   def update #patch '/patients/:id'

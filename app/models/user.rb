@@ -23,6 +23,7 @@ class User < ApplicationRecord
   # password_confirmation=
   # authenticate 
   validates :email, presence: true
+  validates :password, length: { minimum: 4 }, allow_nil: true
   
 end
 

@@ -9,6 +9,7 @@ function UserProvider({ children }) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [showForm, setShowForm] = useState(true);
   const navigate = useNavigate();
 
   // GET '/me', to: 'users#show'
@@ -104,17 +105,18 @@ function UserProvider({ children }) {
       } else {
         res.json().then((data) => {
           if (data && data.errors) {
-            const errorMessages = Object.entries(data.errors).map(
-              ([key, value]) => `${key} : ${value}`
-            );
-            setErrors(errorMessages);
+            // Display specific backend errors
+            setErrors(data.errors);
           } else {
+            // Generic error message
             setErrors(["An error occurred during signup. Please try again."]);
           }
+          setShowForm(true);
         });
       }
     });
   };
+
 
   // ADD PATIENT
   const addPatient = (patient) => {
@@ -178,46 +180,6 @@ function UserProvider({ children }) {
     });
   };
 
-  //     .then((editedPatient) => {
-  //       setPatients((patients) =>
-  //         patients.map((patient) =>
-  //           patient.id === id ? { ...patient, ...editedPatient } : patient
-  //         )
-  //       );
-  // const updatePatient = (id, formData) => {
-  //   console.log("Updating patient with ID:", id);
-  //   console.log("Form data:", formData);
-
-  //   return fetch(`/patients/${id}`, {
-  //     method: "PATCH",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(formData),
-  //   })
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         throw new Error("Failed to update patient.");
-  //       }
-
-  //       return response.json();
-  //     })
-  //     .then((editedPatient) => {
-  //       setPatients((patients) =>
-  //         patients.map((patient) =>
-  //           patient.id === id ? { ...patient, ...editedPatient } : patient
-  //         )
-  //       );
-
-  //       return editedPatient;
-  //     })
-  //     .then((editedPatient) => {
-  //       navigate(`/patients/${editedPatient.id}`);
-  //     })
-  //     .catch((error) => {
-  //       setErrors([error.message]);
-  //       throw error;
-  //     });
-  // };
-
   // DELETE PATIENT
   const deletePatient = (id) => {
     fetch(`/patients/${id}`, {
@@ -278,17 +240,10 @@ function UserProvider({ children }) {
         addAppointment,
         errors,
         setErrors,
+        showForm,
       }}
     >
-      {errors && errors.length > 0 ? (
-        <div>
-          {errors.map((error, index) => (
-            <h2 key={index}>{error}</h2>
-          ))}
-        </div>
-      ) : (
-        children
-      )}
+      {children}
     </UserContext.Provider>
   );
 }
@@ -296,6 +251,47 @@ function UserProvider({ children }) {
 export { UserContext, UserProvider };
 
 // must listen for the status... (status.ok) so frontend knows what happened in the backend. if anything is outside of 200 range, we will return something that's not okay. if outside that range, go into our errors and render our errors. 
+
+  
+    //     .then((editedPatient) => {
+  //       setPatients((patients) =>
+  //         patients.map((patient) =>
+  //           patient.id === id ? { ...patient, ...editedPatient } : patient
+  //         )
+  //       );
+  // const updatePatient = (id, formData) => {
+  //   console.log("Updating patient with ID:", id);
+  //   console.log("Form data:", formData);
+
+  //   return fetch(`/patients/${id}`, {
+  //     method: "PATCH",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(formData),
+  //   })
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error("Failed to update patient.");
+  //       }
+
+  //       return response.json();
+  //     })
+  //     .then((editedPatient) => {
+  //       setPatients((patients) =>
+  //         patients.map((patient) =>
+  //           patient.id === id ? { ...patient, ...editedPatient } : patient
+  //         )
+  //       );
+
+  //       return editedPatient;
+  //     })
+  //     .then((editedPatient) => {
+  //       navigate(`/patients/${editedPatient.id}`);
+  //     })
+  //     .catch((error) => {
+  //       setErrors([error.message]);
+  //       throw error;
+  //     });
+  // };
 
   /*
   .then(res => {

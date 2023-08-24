@@ -17,7 +17,6 @@ class ApplicationController < ActionController::API
   end
 
   def render_unprocessable_entity(invalid)
-    # byebug 
     render json: { errors: invalid.record.errors.full_messages }, status: :unprocessable_entity
   end
 

@@ -7,7 +7,6 @@ const AppointmentDetails = ({ onUpdate, onDelete }) => {
   const { currentUser } = useContext(UserContext);
   const navigate = useNavigate();
 
-
   // Find the appointment object based on the appointmentId
   const appointment = currentUser.appointments.find(
     (appointment) => appointment.id === parseInt(appointmentId)
@@ -20,6 +19,8 @@ const AppointmentDetails = ({ onUpdate, onDelete }) => {
   if (!appointment) {
     return <div>Loading appointment details...</div>;
   }
+
+  console.log(appointment)
 
   return (
     <div>

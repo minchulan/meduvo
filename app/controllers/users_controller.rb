@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   end
 
   def create #post '/signup'
-    new_user = User.create!(user_params) # create new user 
+    new_user = User.create!(user_params) 
     render json: new_user, status: :ok 
   end
 

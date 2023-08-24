@@ -17,12 +17,10 @@ const PatientDetails = ({ onDelete }) => {
     fetch(`/patients/${id}`).then((resp) => {
       if (resp.ok) {
         resp.json().then((data) => {
-          console.log(data);
           setPatient(data);
         });
       } else {
         resp.json().then((data) => {
-          console.log(data.errors);
           setErrors(data.errors); // Set errors using setErrors from UserContext
         });
       }
@@ -56,6 +54,8 @@ const PatientDetails = ({ onDelete }) => {
   const goBack = () => {
     navigate(`/patients`);
   };
+
+  console.log(patient)
 
   if (patient) {
     return (
@@ -106,11 +106,11 @@ const PatientDetails = ({ onDelete }) => {
             <br />
             <ul>
               <b>Providers:</b>
-              {patient.users.length > 0 ? (
-                patient.users.map((user) => (
-                  <li key={user.id}>
+              {patient.unique_provider_emails.length > 0 ? (
+                patient.unique_provider_emails.map((email) => (
+                  <li key={email}>
                     <div>
-                      <a href={`mailto:${user.email}`}>{user.email}</a>
+                      <a href={`mailto:${email}`}>{email}</a>
                     </div>
                   </li>
                 ))

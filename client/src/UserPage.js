@@ -5,7 +5,6 @@ import { UserContext } from "./context/user";
 function UserPage() {
   const { currentUser } = useContext(UserContext);
 
-  console.log(currentUser.appointments)
   const navigate = useNavigate();
 
   const goBack = () => {
@@ -19,6 +18,7 @@ function UserPage() {
 
   if(!currentUser) <h2>Loading user data...</h2>
 
+  console.log(currentUser)
   return (
     <div>
       <h2>My Appointments</h2>

@@ -46,7 +46,14 @@ const PatientList = ({ onDelete }) => {
   ) : (
       <div>Loading patients...</div>
   )
-
+    filteredPatients.length > 0 ? (
+      filteredPatients.map((patient) => (
+        <PatientCard key={patient.id} patient={patient} onDelete={onDelete} />
+      ))
+    ) : (
+      <div>Patient not found.</div>
+    );
+  
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -94,17 +101,17 @@ const PatientList = ({ onDelete }) => {
 
   return (
     <div className="patient-list">
-      {errors.map((error, index) => (<h2 key={index}>{error}</h2>))}
-      <h2>Patient List</h2>
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search patients..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="search-input"
-        />
-      </div>
+      {/* {errors && Object.keys(errors).length > 0 && (
+        <div className="error-container">
+          {Object.values(errors).map((errorMessages, index) => (
+            <div key={index} className="error-message">
+              {errorMessages.map((error, innerIndex) => (
+                <div key={innerIndex}>{error}</div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )} */}
       {showForm ? (
         <form onSubmit={handleSubmit} className="form-container">
           <label htmlFor="first_name" className="form-label">

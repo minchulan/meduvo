@@ -62,3 +62,5 @@ const AppointmentList = () => {
 };
 
 export default AppointmentList;
+
+//  if the currently logged-in user's ID matches the patient's ID associated with the appointments. If they match, you can show the edit option; otherwise, hide it.
