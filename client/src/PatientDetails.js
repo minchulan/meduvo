@@ -8,16 +8,20 @@ const PatientDetails = ({ onDelete }) => {
   const [patient, setPatient] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const { id } = useParams();
-  const { updatePatient, errors, setErrors } = useContext(UserContext);
+  const { currentUser, setAppointments, updatePatient, errors, setErrors } = useContext(UserContext);
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
+
+  console.log(currentUser)
 
   useEffect(() => {
     //GET to '/patients/:id'
     fetch(`/patients/${id}`).then((resp) => {
       if (resp.ok) {
         resp.json().then((data) => {
+          console.log(data.appointments)
           setPatient(data);
+          setAppointments(data.appointments);
         });
       } else {
         resp.json().then((data) => {
@@ -25,7 +29,7 @@ const PatientDetails = ({ onDelete }) => {
         });
       }
     });
-  }, [id, setErrors]);
+  }, [id, setAppointments, setErrors]);
 
   const handleEditPatientClick = () => {
     setIsEditing(true);
@@ -55,9 +59,8 @@ const PatientDetails = ({ onDelete }) => {
     navigate(`/patients`);
   };
 
-  console.log(patient)
 
-  if (patient) {
+  if (patient && currentUser) {
     return (
       <div className="patient-details">
         {errors.map((error, index) => (

@@ -14,8 +14,8 @@ class AppointmentsController < ApplicationController
   def create #post '/patients/:patient_id/appointments' 
     if params[:patient_id]
       patient = Patient.find(params[:patient_id])
-      appointment = patient.appointments.build(appointment_params)
-      if appointment.save
+      appointment = @current_user.appointments.create(appointment_params)
+      if appointment.valid?
         render json: appointment, status: :created
       else
         render json: { errors: appointment.errors.full_messages }, status: :unprocessable_entity
@@ -47,7 +47,7 @@ class AppointmentsController < ApplicationController
   private
 
   def appointment_params
-    params.require(:appointment).permit(:name, :category, :location, :date, :description, :patient_id)
+    params.permit(:name, :category, :location, :date, :description, :patient_id)
   end
 
   def find_user_appointment_by_id

@@ -31,6 +31,7 @@ const NewAppointment = ({ submitButtonStyle }) => {
     addAppointment(patientId, appointmentData);
   };
 
+
   const handleChange = (e) => {
     const key = e.target.id;
     setNewAppointmentFormData({
@@ -69,9 +70,6 @@ const NewAppointment = ({ submitButtonStyle }) => {
       <br />
       <h2>New Appointment</h2>
       <form onSubmit={handleSubmitNewAppointment} className="appointment-form">
-        {/* Remove this hidden input, it's not needed */}
-        {/* <input type="hidden" name="appointment[patient_id]" value={patientId} /> */}
-
         <input
           type="text"
           id="name"

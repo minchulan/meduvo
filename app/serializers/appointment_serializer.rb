@@ -14,7 +14,7 @@
 #  user_id     :integer
 #
 class AppointmentSerializer < ActiveModel::Serializer
-  attributes :id, :patient_id, :category, :name, :location, :description, :date 
+  attributes :id, :patient_id, :user_id, :category, :name, :location, :description, :date 
   
   belongs_to :user
   belongs_to :patient

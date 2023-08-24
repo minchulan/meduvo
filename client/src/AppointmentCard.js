@@ -1,8 +1,34 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
 
 const AppointmentCard = ({ appointment, onDelete, onUpdate }) => {
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, updateAppointment } = useContext(UserContext);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedAppointment, setEditedAppointment] = useState({
+    // Initialize the form fields with existing data
+    name: appointment.name,
+    date: appointment.date,
+    location: appointment.location,
+    // ... add other fields as needed
+  });
+
+  const handleEditButtonClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+  };
+
+  const handleUpdateAppointment = () => {
+    const updatedData = {
+      ...appointment,
+      ...editedAppointment,
+    };
+    updateAppointment(appointment.id, updatedData).then(() => {
+      setIsEditing(false);
+    });
+  };
 
   // Check if the current user is authorized to edit/delete this appointment
   const isAuthorized = currentUser.appointments.some(
@@ -37,7 +63,7 @@ const AppointmentCard = ({ appointment, onDelete, onUpdate }) => {
           <div className="card-actions">
             <button
               className="edit-button"
-              onClick={() => onUpdate(appointment.id)}
+              onClick={handleUpdateAppointment}
             >
               Edit
             </button>

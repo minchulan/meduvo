@@ -18,7 +18,6 @@ function UserPage() {
 
   if(!currentUser) <h2>Loading user data...</h2>
 
-  console.log(currentUser)
   return (
     <div>
       <h2>My Appointments</h2>

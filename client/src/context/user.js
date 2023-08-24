@@ -129,7 +129,7 @@ function UserProvider({ children }) {
         res.json().then((data) => {
           setPatients((patients) => [...patients, data]);
           navigate(`/patients/${data.id}`);
-        });
+        })
       } else {
         res.json().then((data) => {
           setErrors(data.errors);
@@ -137,28 +137,6 @@ function UserProvider({ children }) {
       }
     });
   };
-
-  // const addPatient = (patient) => {
-  //   fetch("/patients", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(patient),
-  //   })
-  //     .then((res) => {
-  //       if (res.ok) {
-  //         return res.json();
-  //       } else {
-  //         throw new Error("Failed to add patient.");
-  //       }
-  //     })
-  //     .then((data) => {
-  //       setPatients((patients) => [...patients, data]);
-  //       navigate(`/patients/${data.id}`);
-  //     })
-  //     .catch((error) => {
-  //       setErrors([error.message]);
-  //     });
-  // };
 
   // UPDATE PATIENT
   const updatePatient = (id, formData) => {
@@ -200,29 +178,67 @@ function UserProvider({ children }) {
 
   // ADD APPOINTMENT
   const addAppointment = (id, appointmentData) => {
-    console.log("Patient ID:", id); // Log the patient ID
-    console.log("Appointment Data:", appointmentData); // Log the appointmentData
+    // Convert the date to ISO 8601 format (YYYY-MM-DD)
+    const isoDate = new Date(appointmentData.date).toISOString().split("T")[0];
+
+    const modifiedAppointmentData = {
+      ...appointmentData,
+      date: isoDate, // Replace the date field with ISO 8601 format
+    };
 
     fetch(`/patients/${id}/appointments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(appointmentData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to add appointment.");
-        }
-        return response.json();
-      })
-      .then((newAppointment) => {
-        setAppointments([...appointments, newAppointment]);
-        console.log("New Appointment:", newAppointment);
-        navigate(`/patients/${id}`);
-      })
-      .catch((error) => {
-        setErrors(["Failed to add appointment. Please try again later."]);
-      });
+      body: JSON.stringify(modifiedAppointmentData),
+    }).then((res) => {
+      if (res.ok) {
+        res.json().then((data) => {
+          setAppointments((appointments) => [...appointments, data]);
+          navigate(`/patients/${id}`);
+        });
+      } else {
+        res.json().then((data) => {
+          setErrors(data.errors);
+        });
+      }
+    });
   };
+
+  // UPDATE APPOINTMENT
+  const updateAppointment = (id, appointmentData) => {
+    // Convert the date to ISO 8601 format (YYYY-MM-DD)
+    const isoDate = new Date(appointmentData.date).toISOString().split("T")[0];
+
+    const modifiedAppointmentDate = {
+      ...appointmentData,
+      date: isoDate,
+    };
+
+    return fetch(`/appointments/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(modifiedAppointmentDate),
+    }).then((res) => {
+      if (res.ok) {
+        res.json().then((updatedAppointment) => {
+          setAppointments((prevAppointments) =>
+            prevAppointments.map((appointment) =>
+              appointment.id === updatedAppointment.id
+                ? { ...appointment, ...updatedAppointment }
+                : appointment
+            )
+          );
+          navigate(`/patients/${id}`);
+        });
+      } else {
+        return res.json().then((data) => {
+          setErrors(data.errors);
+          throw new Error("Failed to update appointment.");
+        });
+      }
+    });
+  };
+
 
   return (
     <UserContext.Provider
@@ -238,6 +254,9 @@ function UserProvider({ children }) {
         deletePatient,
         updatePatient,
         addAppointment,
+        updateAppointment,
+        appointments,
+        setAppointments,
         errors,
         setErrors,
         showForm,
