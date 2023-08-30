@@ -20,8 +20,6 @@ function UserProvider({ children }) {
     })
       .then((resp) => resp.json())
       .then((data) => {
-        console.log("Fetched logged-in user's data:", data);
-        console.log("Fetched user's appointments:", data.appointments);
         if (data.error) {
           setLoggedIn(false);
           setCurrentUser(null);
@@ -39,14 +37,10 @@ function UserProvider({ children }) {
       });
   }, []);
 
-  console.log("current user", currentUser);
-
   const fetchPatients = () => {
     fetch("/patients").then((resp) => {
       if (resp.ok) {
-        console.log(resp);
         resp.json().then((data) => {
-          console.log(data);
           setPatients(data);
         });
       } else {
@@ -117,7 +111,6 @@ function UserProvider({ children }) {
     });
   };
 
-
   // ADD PATIENT
   const addPatient = (patient) => {
     fetch("/patients", {
@@ -129,7 +122,7 @@ function UserProvider({ children }) {
         res.json().then((data) => {
           setPatients((patients) => [...patients, data]);
           navigate(`/patients/${data.id}`);
-        })
+        });
       } else {
         res.json().then((data) => {
           setErrors(data.errors);
@@ -140,20 +133,23 @@ function UserProvider({ children }) {
 
   // UPDATE PATIENT
   const updatePatient = (id, formData) => {
-    console.log("Updating patient with ID:", id);
-    console.log("Form data:", formData);
-
     return fetch(`/patients/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     }).then((res) => {
       if (res.ok) {
-        res.json().then((data) => {
-          setPatients(patients => patients.map((patient) => patient.id === id ? { ...patient, ...data } : patient ));
-        })
+        return res.json().then((data) => {
+          setPatients((patients) =>
+            patients.map((patient) =>
+              patient.id === id ? { ...patient, ...data } : patient
+            )
+          );
+        });
       } else {
-        res.json().then(data => setErrors(data.errors))
+        return res.json().then((data) => {
+          throw new Error(data.errors); // Throw an error with the error message
+        });
       }
     });
   };
@@ -162,28 +158,27 @@ function UserProvider({ children }) {
   const deletePatient = (id) => {
     fetch(`/patients/${id}`, {
       method: "DELETE",
-    })
-      .then((res) => {
-        if (res.ok) {
+    }).then((res) => {
+      if (res.ok) {
         // Update the patients list in the context
-          setPatients((prevPatients) =>
-            prevPatients.filter((patient) => patient.id !== id)
-          )
-          navigate(`/patients`);
-        } else {
-          res.json().then((data) => setErrors(data.errors));
-        } 
-      }); 
+        setPatients((prevPatients) =>
+          prevPatients.filter((patient) => patient.id !== id)
+        );
+        navigate(`/patients`);
+      } else {
+        res.json().then((data) => setErrors(data.errors));
+      }
+    });
   };
 
   // ADD APPOINTMENT
   const addAppointment = (id, appointmentData) => {
-    // Convert the date to ISO 8601 format (YYYY-MM-DD)
+    // Convert date to ISO 8601 format (YYYY-MM-DD) to map date structure in Rails
     const isoDate = new Date(appointmentData.date).toISOString().split("T")[0];
 
     const modifiedAppointmentData = {
       ...appointmentData,
-      date: isoDate, // Replace the date field with ISO 8601 format
+      date: isoDate,
     };
 
     fetch(`/patients/${id}/appointments`, {
@@ -205,40 +200,64 @@ function UserProvider({ children }) {
   };
 
   // UPDATE APPOINTMENT
-  const updateAppointment = (id, appointmentData) => {
+  const updateAppointment = (patientId, appointmentId, appointmentData) => {
     // Convert the date to ISO 8601 format (YYYY-MM-DD)
     const isoDate = new Date(appointmentData.date).toISOString().split("T")[0];
-
-    const modifiedAppointmentDate = {
+    
+    const modifiedAppointmentData = {
       ...appointmentData,
       date: isoDate,
     };
 
-    return fetch(`/appointments/${id}`, {
+    return fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
+      // Use the correct URL format
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(modifiedAppointmentDate),
+      body: JSON.stringify(modifiedAppointmentData),
     }).then((res) => {
       if (res.ok) {
-        res.json().then((updatedAppointment) => {
-          setAppointments((prevAppointments) =>
-            prevAppointments.map((appointment) =>
-              appointment.id === updatedAppointment.id
-                ? { ...appointment, ...updatedAppointment }
-                : appointment
-            )
-          );
-          navigate(`/patients/${id}`);
-        });
+        return res.json();
       } else {
         return res.json().then((data) => {
-          setErrors(data.errors);
-          throw new Error("Failed to update appointment.");
+          throw new Error(data.errors);
         });
       }
     });
   };
 
+  // const updateAppointment = (id, patient_id, appointmentData) => {
+  //   // Convert the date to ISO 8601 format (YYYY-MM-DD)
+  //   const isoDate = new Date(appointmentData.date).toISOString().split("T")[0];
+
+  //   const modifiedAppointmentDate = {
+  //     ...appointmentData,
+  //     date: isoDate,
+  //   };
+
+  //   return fetch(`/appointments/${id}`, {
+  //     method: "PATCH",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(modifiedAppointmentDate),
+  //   }).then((res) => {
+  //     if (res.ok) {
+  //       res.json().then((updatedAppointment) => {
+  //         setAppointments((prevAppointments) =>
+  //           prevAppointments.map((appointment) =>
+  //             appointment.id === updatedAppointment.id
+  //               ? { ...appointment, ...updatedAppointment }
+  //               : appointment
+  //           )
+  //         );
+  //         navigate(`/patients/${id}`);
+  //       });
+  //     } else {
+  //       return res.json().then((data) => {
+  //         setErrors(data.errors);
+  //         throw new Error("Failed to update appointment.");
+  //       });
+  //     }
+  //   });
+  // };
 
   return (
     <UserContext.Provider
@@ -268,6 +287,12 @@ function UserProvider({ children }) {
 }
 
 export { UserContext, UserProvider };
+  
+//create piece of state [currentUser] that mimics what we have in the backend re: `authenticate_user`. if we do have a current user let's update this piece of state. 
+// Which of the routes do we need to pass this currentUser to ? 
+  // signup '/signup'
+  // login '/login'
+  // user page '/users/:id'
 
 // must listen for the status... (status.ok) so frontend knows what happened in the backend. if anything is outside of 200 range, we will return something that's not okay. if outside that range, go into our errors and render our errors. 
 

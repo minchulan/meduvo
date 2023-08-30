@@ -1,41 +1,26 @@
-import React, { useState, useContext } from "react";
+import React, { useContext, useState } from "react";
 import { UserContext } from "./context/user";
+import EditAppointment from "./EditAppointment";
 
 const AppointmentCard = ({ appointment, onDelete, onUpdate }) => {
   const { currentUser, updateAppointment } = useContext(UserContext);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedAppointment, setEditedAppointment] = useState({
-    // Initialize the form fields with existing data
-    name: appointment.name,
-    date: appointment.date,
-    location: appointment.location,
-    // ... add other fields as needed
-  });
 
-  const handleEditButtonClick = () => {
+  const { patient_id } = appointment;
+
+  const handleAppointmentEditFlag = () => {
     setIsEditing(true);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-  };
-
-  const handleUpdateAppointment = () => {
     const updatedData = {
       ...appointment,
-      ...editedAppointment,
     };
-    updateAppointment(appointment.id, updatedData).then(() => {
+    updateAppointment(patient_id, appointment.id, updatedData).then(() => {
       setIsEditing(false);
-    });
+    })
   };
 
-  // Check if the current user is authorized to edit/delete this appointment
   const isAuthorized = currentUser.appointments.some(
     (userAppointment) => userAppointment.id === appointment.id
   );
-
-  console.log("isAuthorized:", isAuthorized)
 
   const renderCategory = (category) => {
     switch (category) {
@@ -50,30 +35,40 @@ const AppointmentCard = ({ appointment, onDelete, onUpdate }) => {
     }
   };
 
+  const renderActions = () => {
+    if (isAuthorized) {
+      return (
+        <div className="card-actions">
+          <button className="edit-button" onClick={handleAppointmentEditFlag}>
+            Edit
+          </button>
+          <button
+            className="delete-button"
+            onClick={() => onDelete(appointment.id)}
+          >
+            Delete
+          </button>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
   return (
     <article className="appointment-card">
       <div className="card-content">
-        <h2>{renderCategory(appointment.category)}</h2>
-        <h3>{appointment.name}</h3>
-        <time>Date: {appointment.date}</time>
-        <p>Location: {appointment.location}</p>
-        <p>Details: {appointment.description}</p>
-
-        {isAuthorized && (
-          <div className="card-actions">
-            <button
-              className="edit-button"
-              onClick={handleUpdateAppointment}
-            >
-              Edit
-            </button>
-            <button
-              className="delete-button"
-              onClick={() => onDelete(appointment.id)}
-            >
-              Delete
-            </button>
-          </div>
+        {isEditing ? (
+          <EditAppointment appointment={appointment} onUpdate={onUpdate} />
+        ) : (
+          <>
+            <h2>{renderCategory(appointment.category)}</h2>
+            <h3>{appointment.name}</h3>
+            <time>Date: {appointment.date}</time>
+            <p>Location: {appointment.location}</p>
+            <p>Details: {appointment.description}</p>
+            {renderActions()}
+          </>
         )}
       </div>
     </article>

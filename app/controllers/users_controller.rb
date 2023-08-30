@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :find_user, only: [:show, :update, :destroy]
-  skip_before_action :authorize_user, only: [:create] 
+  skip_before_action :authorize_user, only: [:create]
 
   def index #get '/users'
     users = User.all 
@@ -41,3 +41,7 @@ class UsersController < ApplicationController
     render_not_found unless @user 
   end 
 end
+
+
+
+# skip before action: we need to let them sign up to our application, same applies for user logging in. 

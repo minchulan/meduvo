@@ -34,7 +34,7 @@ const Signup = () => {
     if (errors && errors.length > 0) {
       setTimeout(() => {
         setErrors([]); // Clear the errors after 5 seconds
-      }, 4000);
+      }, 3000);
     }
   };
 
@@ -109,3 +109,9 @@ const Signup = () => {
 };
 
 export default Signup;
+
+/*
+signup flow: user fills out the form and submits. we call signup over in context, where it sends a fetch request to our server (post request). if everything goes good, we get our user back. 
+
+our current user is keeping track of our newly created user.
+*/

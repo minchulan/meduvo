@@ -3,7 +3,7 @@ import { UserContext } from "./context/user";
 import { useNavigate } from "react-router-dom";
 
 const EditPatient = ({ patient, onUpdate }) => {
-  const { errors } = useContext(UserContext);
+  const { setErrors } = useContext(UserContext);
 
   // Format DOB to "YYYY-MM-DD"
   const formattedDOB = patient.dob
@@ -18,6 +18,7 @@ const EditPatient = ({ patient, onUpdate }) => {
   };
 
   const handleChange = (e) => {
+    setErrors([]);
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -31,8 +32,6 @@ const EditPatient = ({ patient, onUpdate }) => {
 
   return (
     <div className="edit-patient">
-      {errors && errors.map((error) => <h2>{error}</h2>)}
-      <hr />
       <form onSubmit={handleFormSubmit}>
         <div>
           <label htmlFor="first_name">First Name: </label>

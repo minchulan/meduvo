@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import logo from "./asset/logo.png";
 
 const Navbar = () => {
-  const { logout, loggedIn } = useContext(UserContext);
+  const { logout, loggedIn, currentUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -19,7 +19,7 @@ const Navbar = () => {
           <img src={logo} alt="Meduvo Logo" />
         </NavLink>
       </nav>
-      {loggedIn ? (
+      {currentUser && loggedIn ? (
         <>
           <NavLink to="/">Home</NavLink>
           <NavLink to="/patients">Patients</NavLink>
@@ -44,3 +44,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

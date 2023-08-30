@@ -8,18 +8,16 @@ const PatientDetails = ({ onDelete }) => {
   const [patient, setPatient] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const { id } = useParams();
-  const { currentUser, setAppointments, updatePatient, errors, setErrors } = useContext(UserContext);
+  const { currentUser, setAppointments, updatePatient, updateAppointment, errors, setErrors } = useContext(UserContext);
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
-
-  console.log(currentUser)
 
   useEffect(() => {
     //GET to '/patients/:id'
     fetch(`/patients/${id}`).then((resp) => {
       if (resp.ok) {
         resp.json().then((data) => {
-          console.log(data.appointments)
+          console.log(data);
           setPatient(data);
           setAppointments(data.appointments);
         });
@@ -29,43 +27,52 @@ const PatientDetails = ({ onDelete }) => {
         });
       }
     });
-  }, [id, setAppointments, setErrors]);
+  }, [id, setPatient, setAppointments, setErrors]);
 
-  const handleEditPatientClick = () => {
+  const handleEditPatient = () => {
     setIsEditing(true);
   };
 
-  const handleDeleteClick = () => {
+  const handleDeletePatient = () => {
     setConfirmDelete(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDeletePatient = () => {
     onDelete(id);
     setConfirmDelete(false);
   };
 
   const handlePatientUpdate = (updatedPatient) => {
     updatePatient(updatedPatient.id, updatedPatient)
-      .then(() => {
-        setPatient(updatedPatient);
-        setIsEditing(false);
-      })
-      .catch((error) => {
-        console.error("Error updating patient:", error);
-      });
+    setIsEditing(false);
+  };
+
+  const handleAppointmentUpdate = (appointmentId, updatedData) => {
+    updateAppointment(patient.id, appointmentId, updatedData)
+    setIsEditing(false);
+  };
+
+  const handleAppointmentDelete = () => {
+
   };
 
   const goBack = () => {
     navigate(`/patients`);
   };
 
+  const ephemeralErrors = () => {
+    if (errors && errors.length > 0) {
+      setTimeout(() => {
+        setErrors([]); // Clear the errors after 5 seconds
+      }, 3000);
+    }
+  };
+
+  ephemeralErrors();
 
   if (patient && currentUser) {
     return (
       <div className="patient-details">
-        {errors.map((error, index) => (
-          <h2 key={index}>{error}</h2>
-        ))}
         {isEditing ? (
           <EditPatient patient={patient} onUpdate={handlePatientUpdate} />
         ) : (
@@ -122,7 +129,7 @@ const PatientDetails = ({ onDelete }) => {
               )}
             </ul>
             <br />
-            <button className="edit-button" onClick={handleEditPatientClick}>
+            <button className="edit-button" onClick={handleEditPatient}>
               📝 Edit Patient
             </button>
             {confirmDelete ? (
@@ -130,7 +137,7 @@ const PatientDetails = ({ onDelete }) => {
                 <p>Are you sure you want to delete this patient?</p>
                 <button
                   className="delete-confirm"
-                  onClick={handleConfirmDelete}
+                  onClick={handleConfirmDeletePatient}
                 >
                   Confirm
                 </button>
@@ -142,18 +149,26 @@ const PatientDetails = ({ onDelete }) => {
                 </button>
               </div>
             ) : (
-              <button className="delete-button" onClick={handleDeleteClick}>
+              <button className="delete-button" onClick={handleDeletePatient}>
                 🗑️ Delete
               </button>
             )}
             <hr />
             <h2>Appointment(s)</h2>
             <ul>
-              {patient.appointments.map((appointment) => (
-                <li key={appointment.id}>
-                  <AppointmentCard appointment={appointment} />
-                </li>
-              ))}
+              {patient && patient.appointments ? (
+                patient.appointments.map((appointment) => (
+                  <li key={appointment.id}>
+                    <AppointmentCard
+                      appointment={appointment}
+                      onDelete={handleAppointmentDelete}
+                      onUpdate={handleAppointmentUpdate}
+                    />
+                  </li>
+                ))
+              ) : (
+                <p>No appointments available.</p>
+              )}
             </ul>
             <br />
             <button
@@ -184,6 +199,15 @@ const PatientDetails = ({ onDelete }) => {
             <br />
             <br />
             <br />
+          </div>
+        )}
+        {errors && errors.length > 0 && (
+          <div className="error-container">
+            {errors.map((error, index) => (
+              <div key={index} className="error-message">
+                {error}
+              </div>
+            ))}
           </div>
         )}
       </div>

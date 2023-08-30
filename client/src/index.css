@@ -164,7 +164,7 @@ a:hover {
 }
 
 
-/* Signup page styles */
+/* Sign up page styles */
 .signup {
   max-width: 400px;
   margin: 0 auto;
@@ -774,7 +774,7 @@ button {
 }
 
 .confirmation-message {
-  color: green;
+  color: #28a745;
   font-weight: bold;
   margin-top: 10px;
 }
@@ -931,7 +931,7 @@ h2 {
 }
 
 .category-mtm {
-  background-color: #007bff;
+  background-color: blue;
   color: white;
   padding: 3px 6px;
   border-radius: 3px;
@@ -1026,6 +1026,145 @@ h2 {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
+
+
+
+/* User Page Styles  */
+/* UserPage.css */
+
+.user-page-container {
+  max-width: 2000px;
+  padding: 40px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.appointments-list {
+  list-style: none;
+  padding: 0;
+}
+
+.appointment-card {
+  background-color: #fff;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.go-back-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-account-section {
+  margin-top: 20px;
+}
+
+.delete-account-button {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.success-message {
+  color: #27ff5a;
+  margin-top: 10px;
+}
+
+
+
+/* Appointment Details */
+
+.category-mtm {
+  background-color: blue;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.category-msc {
+  background-color: #dc3545;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.category-immunization {
+  background-color: #28a745;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.category-common {
+  background-color: blue; 
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* UserPage.css */
+
+.appointment-details-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-detail {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.detail-label {
+  font-weight: bold;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.edit-button,
+.delete-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.go-back-button {
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
+
 
 
 

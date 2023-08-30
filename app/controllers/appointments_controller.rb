@@ -1,29 +1,28 @@
 class AppointmentsController < ApplicationController
   before_action :authorize_user
-  before_action :find_user_appointment_by_id, only: [:update, :destroy]
+  before_action :load_patient, only: [:index, :create]
+  before_action :load_appointment, only: [:show, :update, :destroy]
 
-  def index #get '/patients/:patient_id/appointments'   
-    if params[:patient_id]
-      patient = Patient.find(params[:patient_id])
-      render json: patient.appointments
-    else #get '/appointments
-      render json: Appointment.all 
-    end
-  end
- 
-  def create #post '/patients/:patient_id/appointments' 
-    if params[:patient_id]
-      patient = Patient.find(params[:patient_id])
-      appointment = @current_user.appointments.create(appointment_params)
-      if appointment.valid?
-        render json: appointment, status: :created
-      else
-        render json: { errors: appointment.errors.full_messages }, status: :unprocessable_entity
-      end
+  def index
+    if @patient
+      render json: @patient.appointments
+    else
+      render json: Appointment.all
     end
   end
 
-  def show #get '/appointments/:id' -OR- #get '/patients/
+  def create
+    appointment = @current_user.appointments.build(appointment_params)
+    @patient.appointments << appointment
+
+    if appointment.save
+      render json: appointment, status: :created
+    else
+      render json: { errors: appointment.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def show
     if @appointment
       render json: @appointment
     else
@@ -31,7 +30,7 @@ class AppointmentsController < ApplicationController
     end
   end
 
-  def update #patch '/appointments/:id'
+  def update
     if @appointment.update(appointment_params)
       render json: @appointment
     else
@@ -39,7 +38,7 @@ class AppointmentsController < ApplicationController
     end
   end
 
-  def destroy #delete '/appointments/:id'
+  def destroy
     @appointment.destroy
     head :no_content
   end
@@ -47,16 +46,21 @@ class AppointmentsController < ApplicationController
   private
 
   def appointment_params
-    params.permit(:name, :category, :location, :date, :description, :patient_id)
+    params.require(:appointment).permit(:id, :name, :category, :location, :date, :description, :patient_id, :user_id)
   end
 
-  def find_user_appointment_by_id
+  def load_patient
+    @patient = Patient.find_by_id(params[:patient_id])
+  end
+
+  def load_appointment
     @appointment = current_user.appointments.find_by_id(params[:id])
     unless @appointment
       render json: { error: "Appointment not found" }, status: :not_found
     end
   end
 end
+
 
 # nutshell: to handle a nested route, we need a conditional. Plus, must introspect on the params. If we have route param, we're coming from a nested route. If not, we're coming from a non-nested route. 
 
@@ -67,3 +71,9 @@ end
 # if we have a params patient id, then find the patient. Find will raise an exception, and we rescue it if it's even raised. Instead of saying Appointment.create, we say on the patient we found, get a list of appointments, create a new appointment. This will create an appointment and build the association between the two. hey patient you have a new appointment in town, also hey appointment your patient is the following. builds both of the communication line. 
 
 # I'm building an appointment within the context of a patient, which is effectively associating the appointment with that patient, and then saving the appointment.
+
+# The load_patient and load_appointment methods have been added as before_action callbacks to ensure consistent loading of patients and appointments based on the URL parameters.
+
+# The index action checks if the @patient is available and renders appointments associated with that patient if it exists. If not, it renders all appointments.
+
+# The show action now checks if the @appointment is available and renders the appointment details if found, or an error if not found.

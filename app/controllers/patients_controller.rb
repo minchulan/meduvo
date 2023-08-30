@@ -17,11 +17,8 @@ class PatientsController < ApplicationController
 
   def update #patch '/patients/:id'
     find_patient_by_id
-    if @patient.update(patient_params)
-      render json: @patient, status: :accepted 
-    else  
-      render json: { errors: @patient.errors.full_messages }, status: :unprocessable_entity
-    end 
+    @patient.update!(patient_params)
+    render json: @patient, status: :accepted 
   end
 
   def destroy #delete '/patients/:id'

@@ -11,28 +11,31 @@ const initialAppointmentState = {
 };
 
 const NewAppointment = ({ submitButtonStyle }) => {
-  const { addAppointment } = useContext(UserContext);
+  const { addAppointment, currentUser, errors, setErrors } = useContext(UserContext);
   const [newAppointmentFormData, setNewAppointmentFormData] = useState(
     initialAppointmentState
   );
 
   const { patientId } = useParams();
-  console.log(patientId);
 
   const { name, category, location, date, description } =
     newAppointmentFormData;
 
   const navigate = useNavigate();
 
+  // Create the appointment data with patient_id from the current user
   const handleSubmitNewAppointment = (e) => {
     e.preventDefault();
-    const appointmentData = {...newAppointmentFormData};
+    const appointmentData = {
+      ...newAppointmentFormData,
+      patient_id: currentUser.id, // use the patient ID from the current user
+    };
 
     addAppointment(patientId, appointmentData);
   };
 
-
   const handleChange = (e) => {
+    setErrors([]); // clear errors when user interacts with form
     const key = e.target.id;
     setNewAppointmentFormData({
       ...newAppointmentFormData,
@@ -65,10 +68,29 @@ const NewAppointment = ({ submitButtonStyle }) => {
     }
   };
 
+  const ephemeralErrors = () => {
+    if (errors && errors.length > 0) {
+      setTimeout(() => {
+        setErrors([]); // Clear the errors after 5 seconds
+      }, 3000);
+    }
+  };
+
+  ephemeralErrors();
+
   return (
     <div className="new-appointment-container">
       <br />
       <h2>New Appointment</h2>
+      {errors && errors.length > 0 && (
+        <div className="error-container">
+          {errors.map((error, index) => (
+            <div key={index} className="error-message">
+              {error}
+            </div>
+          ))}
+        </div>
+      )}
       <form onSubmit={handleSubmitNewAppointment} className="appointment-form">
         <input
           type="text"

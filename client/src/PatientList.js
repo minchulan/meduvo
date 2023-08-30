@@ -95,7 +95,7 @@ const PatientList = ({ onDelete }) => {
 
     setTimeout(() => {
       setShowConfirmation(false);
-    }, 5000); 
+    }, 3000); 
 
   };
 

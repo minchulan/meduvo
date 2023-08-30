@@ -6,13 +6,13 @@ class ApplicationController < ActionController::API
 
   before_action :authorize_user
 
-  def current_user
+  def current_user 
     @current_user ||= User.find_by_id(session[:user_id])
   end
 
   private
 
-  def authorize_user
+  def authorize_user #checking to see if user is logged in only
     render json: { errors: "Not Authorized" }, status: :unauthorized unless current_user
   end
 
@@ -24,6 +24,12 @@ class ApplicationController < ActionController::API
     render json: { errors: {error.model => "Not Found"} }, status: :not_found 
   end 
 end
+
+
+# 1) First implement a way to keep track of currently logged in user with method `current_user` - by using our user id from session hash ahd finding our user from the database. then caching it so we dont keep making calls to our database.
+# 2) Check to see if there is a current user with method `authorize_user`. If there is, we're good! If there is not, then send error message out saying user is not authorized. To actually implement and check this method, we need to also have the guard clause where we say here's where I want you to call this method .
+
+# think about: which parts of our app we don't want user access to unless they're logged in. 
 
 
 # parameter (error) lets us know which model errored out. 

@@ -3,10 +3,10 @@
 
 Rails.application.routes.draw do
 
-  resources :appointments, only: [:index] # perhaps admin users can see all appointments? 
+  resources :appointments, only: [:index, :destroy, :show] # perhaps admin users can see all appointments? 
 
   resources :patients do 
-    resources :appointments, shallow: true
+    resources :appointments, only: [:create, :index, :update]
   end
   
   resources :users, only: [:index, :update, :destroy]

@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 import Home from "./Home";
 import Login from "./Login";
 import Signup from "./Signup";
-import AppointmentList from "./AppointmentList";
+// import AppointmentList from "./AppointmentList";
 import AppointmentDetails from "./AppointmentDetails";
 import NewAppointment from "./NewAppointment";
 import PatientList from "./PatientList";
@@ -20,6 +20,7 @@ import Feature3 from "./Feature3";
 import Terms from "./Terms";
 import UserPage from "./UserPage";
 import NotFound from "./NotFound";
+import EditAppointment from "./EditAppointment";
 
 const App = ({onDelete}) => {
   const { deletePatient } = useContext(UserContext);
@@ -49,8 +50,8 @@ const App = ({onDelete}) => {
           path="/appointments/:appointmentId"
           element={<AppointmentDetails />}
         />
-        <Route exact path="/appointments" element={<AppointmentList />} />
-        
+        {/* <Route exact path="/appointments" element={<AppointmentList />} /> */}
+        <Route exact path="/appointments/:appointmentId/edit" element={<EditAppointment />} />
         <Route path="/me" element={<UserPage />} />
 
 

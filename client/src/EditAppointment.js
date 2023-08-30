@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { UserContext } from "./context/user";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditAppointment = ({ appointment, onUpdate }) => {
-  const [editedAppointment, setEditedAppointment] = useState({
-    ...appointment,
-  });
+  const [editedAppointment, setEditedAppointment] = useState({ ...appointment });
+  const { setErrors } = useContext(UserContext);
   const navigate = useNavigate();
   const { patientId } = useParams();
 
   const handleInputChange = (e) => {
+    setErrors([]);
     const key = e.target.id;
     setEditedAppointment({
       ...editedAppointment,
@@ -17,26 +18,26 @@ const EditAppointment = ({ appointment, onUpdate }) => {
   };
 
   const handleCategoryChange = (e) => {
+    setErrors([]);
     setEditedAppointment({
       ...editedAppointment,
       category: e.target.value,
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onUpdate(editedAppointment);
-    navigate(`/patients/${patientId}/appointments/${appointment.id}`);
+  const handleSaveClick = () => {
+    onUpdate(editedAppointment); // Pass the updated data to the parent component for handling
+    navigate(`/patients/${patientId}`);
   };
 
   const handleCancelClick = () => {
-    navigate(`/patients/${patientId}/appointments`);
+    navigate(`/patients/${patientId}`);
   };
 
   return (
     <div className="edit-appointment-container">
       <h2>Edit Appointment</h2>
-      <form className="edit-appointment-form" onSubmit={handleSubmit}>
+      <form className="edit-appointment-form">
         <div>
           <label htmlFor="category">Category:</label>
           <select
@@ -95,7 +96,9 @@ const EditAppointment = ({ appointment, onUpdate }) => {
             required
           />
         </div>
-        <button type="submit">Save Changes</button>
+        <button type="button" onClick={handleSaveClick}>
+          Save Changes
+        </button>
         <button
           type="button"
           onClick={handleCancelClick}
@@ -120,3 +123,9 @@ const cancelButtonStyle = {
 };
 
 export default EditAppointment;
+
+
+/*
+This component contains the form for editing appointment details 
+The EditAppointment component handles input changes, saving changes, and canceling the edit. 
+*/

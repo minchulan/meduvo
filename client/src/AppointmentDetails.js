@@ -1,78 +1,78 @@
-import React, { useContext } from "react";
-import { UserContext } from "./context/user"; 
+import React, { useContext, useState } from "react";
+import { UserContext } from "./context/user";
 import { useParams, useNavigate } from "react-router-dom";
+import EditAppointment from "./EditAppointment";
 
-const AppointmentDetails = ({ onUpdate, onDelete }) => {
+const AppointmentDetails = ({ onDelete }) => {
   const { appointmentId } = useParams();
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, updateAppointment } = useContext(UserContext);
   const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(false);
 
-  // Find the appointment object based on the appointmentId
+
   const appointment = currentUser.appointments.find(
     (appointment) => appointment.id === parseInt(appointmentId)
   );
 
-    const goBack = () => {
-      navigate(-1);
-    };
+  const handleUpdateAppointment = (updatedData) => {
+    updateAppointment(appointment.patient_id, appointment.id, updatedData)
+      .then(() => {
+        setIsEditing(false);
+      })
+      .catch((error) => {
+        console.error("Failed to update appointment:", error);
+        // You might also set error state here to display an error message to the user
+      });
+  };
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
 
   if (!appointment) {
     return <div>Loading appointment details...</div>;
   }
 
-  console.log(appointment)
-
   return (
-    <div>
+    <div className="appointment-details-container">
       <h2>Appointment Details</h2>
-      <p>
-        <b>Category:</b> {appointment.category}
-      </p>
-      <p>
-        <b>Name:</b> {appointment.name}
-      </p>
-      <p>
-        <b>Date:</b> {appointment.date}
-      </p>
-      <p>
-        <b>Location:</b> {appointment.location}
-      </p>
-      <p>
-        <b>Description:</b> {appointment.description}
-      </p>
-      <button className="edit-button" onClick={() => onUpdate(appointment.id)}>
-        Edit
-      </button>
-      <button
-        className="delete-button"
-        onClick={() => onDelete(appointment.id)}
-      >
-        Delete
-      </button>
-      <br />
-      <hr />
-      <br />
-      <button
-        className="go-back-button"
-        onClick={goBack}
-        style={{
-          backgroundColor: "#ffffff",
-          color: "#333333",
-          border: "1px solid #cccccc",
-          borderRadius: "5px",
-          padding: "10px 20px",
-          fontSize: "16px",
-          fontWeight: "bold",
-          cursor: "pointer",
-        }}
-      >
+      <div className="appointment-detail">
+        {isEditing ? (
+          <EditAppointment
+            appointment={appointment}
+            onUpdate={handleUpdateAppointment}
+            onCancel={() => setIsEditing(false)}
+          />
+        ) : (
+          <>
+            <p>Category: {appointment.category}</p>
+            <p>Name: {appointment.name}</p>
+            <p>Date: {appointment.date}</p>
+            <p>Location: {appointment.location}</p>
+            <p>Description: {appointment.description}</p>
+            <button className="edit-button" onClick={() => setIsEditing(true)}>
+              Edit
+            </button>
+            <button
+              className="delete-button"
+              onClick={() => onDelete(appointment.id)}
+            >
+              Delete
+            </button>
+          </>
+        )}
+      </div>
+      <button className="go-back-button" onClick={handleGoBack}>
         ◁ Go Back
       </button>
-      <br />
-      <br />
-      <br />
     </div>
   );
 };
 
 export default AppointmentDetails;
+
+/*
+This component displays the details of an appointment and allows for editing
+AppointmentDetails component fetches the appointment details based on the URL param, and then passes the appointment data to the EditAppointment component for editing. 
+
+*/
