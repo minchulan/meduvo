@@ -18,17 +18,17 @@ function UserProvider({ children }) {
       method: "GET",
       credentials: "include",
     })
-      .then((resp) => resp.json())
-      .then((data) => {
-        if (data.error) {
-          setLoggedIn(false);
-          setCurrentUser(null);
-          setErrors(["Authentication failed. Please login."]);
+      .then((resp) => {
+        if (resp.ok) {
+          resp.json().then((data) => {
+            setCurrentUser(data);
+            setLoggedIn(true);
+            fetchPatients();
+          })
         } else {
-          setLoggedIn(true); // if user is loggedIn
-          setCurrentUser(data); // set to state
-          fetchPatients(); // grab all the patients
-          setErrors([]);
+          setLoggedIn(false)
+          setCurrentUser(null)
+          setErrors(["Authentication failed. Please login."]);
         }
       })
       .catch((error) => {
@@ -44,7 +44,9 @@ function UserProvider({ children }) {
           setPatients(data);
         });
       } else {
-        resp.json().then((data) => setErrors(data.error));
+        resp.json().then((data) => {
+          setErrors(data.errors)
+        });
       }
     });
   };
@@ -174,11 +176,10 @@ function UserProvider({ children }) {
   // ADD APPOINTMENT
   const addAppointment = (id, appointmentData) => {
     // Convert date to ISO 8601 format (YYYY-MM-DD) to map date structure in Rails
-    const isoDate = new Date(appointmentData.date).toISOString().split("T")[0];
+    // const isoDate = new Date(appointmentData.date).toISOString().split("T")[0];
 
     const modifiedAppointmentData = {
       ...appointmentData,
-      date: isoDate,
     };
 
     fetch(`/patients/${id}/appointments`, {
@@ -203,7 +204,7 @@ function UserProvider({ children }) {
   const updateAppointment = (patientId, appointmentId, appointmentData) => {
     // Convert the date to ISO 8601 format (YYYY-MM-DD)
     const isoDate = new Date(appointmentData.date).toISOString().split("T")[0];
-    
+
     const modifiedAppointmentData = {
       ...appointmentData,
       date: isoDate,

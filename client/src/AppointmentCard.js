@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "./context/user";
-import EditAppointment from "./EditAppointment";
+import EditAppointment from "./EditAppointmentForm";
 
 const AppointmentCard = ({ appointment, onDelete, onUpdate }) => {
   const { currentUser, updateAppointment } = useContext(UserContext);
@@ -15,7 +15,7 @@ const AppointmentCard = ({ appointment, onDelete, onUpdate }) => {
     };
     updateAppointment(patient_id, appointment.id, updatedData).then(() => {
       setIsEditing(false);
-    })
+    });
   };
 
   const isAuthorized = currentUser.appointments.some(

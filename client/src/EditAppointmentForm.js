@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
 import { useNavigate, useParams } from "react-router-dom";
 
-const EditAppointment = ({ appointment, onUpdate }) => {
+const EditAppointmentForm = ({ appointment, onUpdate }) => {
   const [editedAppointment, setEditedAppointment] = useState({ ...appointment });
   const { setErrors } = useContext(UserContext);
   const navigate = useNavigate();
@@ -122,7 +122,7 @@ const cancelButtonStyle = {
   marginLeft: "10px",
 };
 
-export default EditAppointment;
+export default EditAppointmentForm;
 
 
 /*

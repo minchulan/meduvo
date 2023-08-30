@@ -1,14 +1,13 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "./context/user";
 import { useParams, useNavigate } from "react-router-dom";
-import EditAppointment from "./EditAppointment";
+import EditAppointment from "./EditAppointmentForm";
 
 const AppointmentDetails = ({ onDelete }) => {
   const { appointmentId } = useParams();
   const { currentUser, updateAppointment } = useContext(UserContext);
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-
 
   const appointment = currentUser.appointments.find(
     (appointment) => appointment.id === parseInt(appointmentId)

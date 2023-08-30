@@ -10,7 +10,7 @@ const initialAppointmentState = {
   description: "",
 };
 
-const NewAppointment = ({ submitButtonStyle }) => {
+const NewAppointmentForm = ({ submitButtonStyle }) => {
   const { addAppointment, currentUser, errors, setErrors } = useContext(UserContext);
   const [newAppointmentFormData, setNewAppointmentFormData] = useState(
     initialAppointmentState
@@ -170,4 +170,4 @@ const getLocationButtonStyle = {
   transition: "background-color 0.2s, color 0.2s",
 };
 
-export default NewAppointment;
+export default NewAppointmentForm;

@@ -26,6 +26,15 @@ class ApplicationController < ActionController::API
 end
 
 
+
+  # def render_unprocessable_entity(invalid)
+  #   errors_arr = invalid.record.errors.map{ |key,value| "#{key}" : "#{value}"}
+  #   render json: {errors: errors_arr}, status: :unprocessable_entity
+  # end 
+
+  #in frontend, can do setErrors(data.error) instead of setErrors([data.error])
+#render_unprocessable_entity method sends all of our errors to the frontend with status code 422 unprocessable entity. sends response with the errors that actually failed. handle the errors in our client.
+
 # 1) First implement a way to keep track of currently logged in user with method `current_user` - by using our user id from session hash ahd finding our user from the database. then caching it so we dont keep making calls to our database.
 # 2) Check to see if there is a current user with method `authorize_user`. If there is, we're good! If there is not, then send error message out saying user is not authorized. To actually implement and check this method, we need to also have the guard clause where we say here's where I want you to call this method .
 

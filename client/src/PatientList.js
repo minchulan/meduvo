@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "./context/user";
 import { useNavigate } from "react-router-dom";
 import PatientCard from "./PatientCard";
@@ -18,49 +18,22 @@ const initialPatientState = {
 };
 
 const PatientList = ({ onDelete }) => {
-  const { patients, addPatient, errors } = useContext(UserContext);
   const [showForm, setShowForm] = useState(false);
   const [patientFormData, setPatientFormData] = useState(initialPatientState);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); 
+  const [errorMessages, setErrorMessages] = useState([]);
+  const [showError, setShowError] = useState(false);
+  
+
+  const { patients, addPatient, errors } = useContext(UserContext);
+
   const navigate = useNavigate();
-
-  const { first_name, last_name, dob, address, phone, allergies, email, guardian, notes, viewed_notice_of_privacy_practices, language_preferences } = patientFormData
-
-  const filteredPatients = patients
-    ? patients.filter((patient) => {
-        const fullName =
-          `${patient.first_name} ${patient.last_name}`.toLowerCase();
-        return fullName.includes(searchQuery.toLowerCase());
-      })
-    : [];
-
-  const patientCards = patients ? (
-    filteredPatients.length > 0 ? (
-      filteredPatients.map((patient) => (
-        <PatientCard key={patient.id} patient={patient} onDelete={onDelete} />
-      ))
-    ) : (
-        <div>Patient not found.</div>
-    )
-  ) : (
-      <div>Loading patients...</div>
-  )
-    filteredPatients.length > 0 ? (
-      filteredPatients.map((patient) => (
-        <PatientCard key={patient.id} patient={patient} onDelete={onDelete} />
-      ))
-    ) : (
-      <div>Patient not found.</div>
-    );
   
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-  
-  const goBack = () => {
-    navigate(`/`);
-  };
+  const { first_name, last_name, dob, address, phone, allergies, email, guardian, notes, viewed_notice_of_privacy_practices, language_preferences } = patientFormData;
+
+  const patientCards = patients ? (patients.map((patient) => {
+    return <PatientCard key={patient.id} patient={patient} onDelete={onDelete} />
+  })) : (<div>Patient Not Found.</div>)
 
   const handleChange = (e) => {
     const key = e.target.id;
@@ -88,37 +61,37 @@ const PatientList = ({ onDelete }) => {
       language_preferences,
       viewed_notice_of_privacy_practices,
     });
-
     setShowConfirmation(true);
     setPatientFormData(initialPatientState); 
     setShowForm(false); 
-
     setTimeout(() => {
       setShowConfirmation(false);
     }, 3000); 
-
   };
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      setErrorMessages(errors);
+      setShowError(true);
+      const timeout = setTimeout(() => {
+        setShowError(false);
+        setErrorMessages([]);
+      }, 3000);
+      return () => clearTimeout(timeout); // Clear the timeout on component unmount
+    }
+  }, [errors]);
+
+  const goBack = () => (navigate(`/`));
 
   return (
     <div className="patient-list">
-      {/* {errors && Object.keys(errors).length > 0 && (
-        <div className="error-container">
-          {Object.values(errors).map((errorMessages, index) => (
-            <div key={index} className="error-message">
-              {errorMessages.map((error, innerIndex) => (
-                <div key={innerIndex}>{error}</div>
-              ))}
-            </div>
-          ))}
-        </div>
-      )} */}
+      {showError && errorMessages.map((error, index) => <h2 key={index} style={{ color: "red" }}>{error}</h2>)}
       {showForm ? (
         <form onSubmit={handleSubmit} className="form-container">
           <label htmlFor="first_name" className="form-label">
             First Name:
           </label>
           <input
-            required
             type="text"
             id="first_name"
             name="first_name"
@@ -132,7 +105,6 @@ const PatientList = ({ onDelete }) => {
             Last Name:
           </label>
           <input
-            required
             type="text"
             id="last_name"
             name="last_name"
@@ -159,7 +131,6 @@ const PatientList = ({ onDelete }) => {
             Date of Birth:
           </label>
           <input
-            required
             type="date"
             id="dob"
             name="dob"
@@ -172,7 +143,6 @@ const PatientList = ({ onDelete }) => {
             Phone Number:
           </label>
           <input
-            required
             type="tel"
             id="phone"
             name="phone"
@@ -186,7 +156,6 @@ const PatientList = ({ onDelete }) => {
             Email:
           </label>
           <input
-            required
             type="email"
             id="email"
             name="email"
@@ -200,7 +169,6 @@ const PatientList = ({ onDelete }) => {
             Address:
           </label>
           <input
-            required
             type="text"
             id="address"
             name="address"
@@ -214,7 +182,6 @@ const PatientList = ({ onDelete }) => {
             Allergies:
           </label>
           <input
-            required
             type="text"
             id="allergies"
             name="allergies"
@@ -228,7 +195,6 @@ const PatientList = ({ onDelete }) => {
             Language Preferences:
           </label>
           <input
-            required
             type="text"
             id="language_preferences"
             name="language_preferences"
@@ -242,7 +208,6 @@ const PatientList = ({ onDelete }) => {
             Quick notes:
           </label>
           <textarea
-            required
             id="notes"
             name="notes"
             placeholder="Add any pertinent patient information..."
@@ -293,7 +258,7 @@ const PatientList = ({ onDelete }) => {
       )}
       <br />
       <br />
-      {showConfirmation && (
+      {!showError && showConfirmation && (
         <div
           className="confirmation-message"
           style={{ fontSize: 18, color: "blue" }}

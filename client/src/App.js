@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 import { Routes, Route } from "react-router-dom";
-import { UserContext } from "./context/user"; 
+import { UserContext } from "./context/user";
 import Navbar from "./Navbar";
 import Home from "./Home";
 import Login from "./Login";
 import Signup from "./Signup";
 // import AppointmentList from "./AppointmentList";
 import AppointmentDetails from "./AppointmentDetails";
-import NewAppointment from "./NewAppointment";
+import NewAppointmentForm from "./NewAppointmentForm";
 import PatientList from "./PatientList";
 import PatientDetails from "./PatientDetails";
 import Footer from "./Footer";
@@ -20,9 +20,9 @@ import Feature3 from "./Feature3";
 import Terms from "./Terms";
 import UserPage from "./UserPage";
 import NotFound from "./NotFound";
-import EditAppointment from "./EditAppointment";
+import EditAppointmentForm from "./EditAppointmentForm";
 
-const App = ({onDelete}) => {
+const App = ({ onDelete }) => {
   const { deletePatient } = useContext(UserContext);
 
   const handleDeleteClick = (id) => {
@@ -37,13 +37,16 @@ const App = ({onDelete}) => {
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/signup" element={<Signup />} />
 
-
         <Route exact path="/patients" element={<PatientList />} />
-        <Route exact path="/patients/:id" element={<PatientDetails onDelete={handleDeleteClick} />} />
+        <Route
+          exact
+          path="/patients/:id"
+          element={<PatientDetails onDelete={handleDeleteClick} />}
+        />
         <Route
           exact
           path="/patients/:patientId/appointments/new"
-          element={<NewAppointment />}
+          element={<NewAppointmentForm />}
         />
         <Route
           exact
@@ -51,10 +54,12 @@ const App = ({onDelete}) => {
           element={<AppointmentDetails />}
         />
         {/* <Route exact path="/appointments" element={<AppointmentList />} /> */}
-        <Route exact path="/appointments/:appointmentId/edit" element={<EditAppointment />} />
+        <Route
+          exact
+          path="/appointments/:appointmentId/edit"
+          element={<EditAppointmentForm />}
+        />
         <Route path="/me" element={<UserPage />} />
-
-
 
         <Route exact path="/about" element={<About />} />
         <Route exact path="/contact" element={<Contact />} />
