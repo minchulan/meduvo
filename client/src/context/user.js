@@ -17,26 +17,23 @@ function UserProvider({ children }) {
     fetch("/me", {
       method: "GET",
       credentials: "include",
-    })
-      .then((resp) => {
-        if (resp.ok) {
-          resp.json().then((data) => {
-            setCurrentUser(data);
-            setLoggedIn(true);
-            fetchPatients();
-          })
-        } else {
-          setLoggedIn(false)
-          setCurrentUser(null)
-          setErrors(["Authentication failed. Please login."]);
-        }
-      })
-      .catch((error) => {
-        setErrors(["Failed to fetch user data. Please try again later."]);
-        console.error("Fetching user data error:", error);
-      });
-  }, []);
+    }).then((resp) => {
+      if (resp.ok) {
+        resp.json().then((data) => {
+          console.log(data);
+          setCurrentUser(data);
+          setLoggedIn(true);
+          fetchPatients();
+        });
+      } else {
+        setCurrentUser(null);
+        setLoggedIn(false);
+        setErrors(["Authentication failed. Please login."]);
+      }
+    });
+  }, [setPatients]);
 
+  // GET ALL PATIENTS
   const fetchPatients = () => {
     fetch("/patients").then((resp) => {
       if (resp.ok) {
@@ -45,7 +42,7 @@ function UserProvider({ children }) {
         });
       } else {
         resp.json().then((data) => {
-          setErrors(data.errors)
+          setErrors([data.errors]);
         });
       }
     });
@@ -57,22 +54,18 @@ function UserProvider({ children }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.errors) {
-          setCurrentUser(data);
+    }).then((res) => {
+      if (res.ok) {
+        res.json().then((user) => {
+          setCurrentUser(user);
           setLoggedIn(true);
+          fetchPatients();
           navigate("/me");
-        } else {
-          console.log(data.errors);
-          setErrors([data.errors]);
-        }
-      })
-      .catch((error) => {
-        console.error("Login error:", error);
-        setErrors(["An error occurred during login. Please try again."]);
-      });
+        });
+      } else {
+        res.json().then((data) => setErrors([data.errors]));
+      }
+    });
   };
 
   // LOGOUT
@@ -102,7 +95,7 @@ function UserProvider({ children }) {
         res.json().then((data) => {
           if (data && data.errors) {
             // Display specific backend errors
-            setErrors(data.errors);
+            setErrors([data.errors]);
           } else {
             // Generic error message
             setErrors(["An error occurred during signup. Please try again."]);
@@ -113,27 +106,29 @@ function UserProvider({ children }) {
     });
   };
 
-  // ADD PATIENT
+  // ADD A PATIENT
   const addPatient = (patient) => {
     fetch("/patients", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patient),
-    }).then((res) => {
-      if (res.ok) {
-        res.json().then((data) => {
+    }).then((resp) => {
+      if (resp.ok) {
+        resp.json().then((data) => {
           setPatients((patients) => [...patients, data]);
           navigate(`/patients/${data.id}`);
         });
       } else {
-        res.json().then((data) => {
+        // first thing is to figure out how to retain my errors that occur: set state to an array
+        resp.json().then((data) => {
+          console.log(data);
           setErrors(data.errors);
         });
       }
     });
   };
 
-  // UPDATE PATIENT
+  // UPDATE A PATIENT
   const updatePatient = (id, formData) => {
     return fetch(`/patients/${id}`, {
       method: "PATCH",
@@ -142,123 +137,97 @@ function UserProvider({ children }) {
     }).then((res) => {
       if (res.ok) {
         return res.json().then((data) => {
+          // Update state with the new data
           setPatients((patients) =>
             patients.map((patient) =>
-              patient.id === id ? { ...patient, ...data } : patient
+              patient.id === id ? { ...patient, data } : patient
             )
           );
+          return data; // Return the response data
         });
       } else {
         return res.json().then((data) => {
-          throw new Error(data.errors); // Throw an error with the error message
+          setErrors([data.errors]); // Throw an error with the error message
         });
       }
     });
   };
 
-  // DELETE PATIENT
+  // DELETE A PATIENT
   const deletePatient = (id) => {
     fetch(`/patients/${id}`, {
       method: "DELETE",
     }).then((res) => {
       if (res.ok) {
-        // Update the patients list in the context
+        // If the delete request is successful, filter out the deleted patient
         setPatients((prevPatients) =>
           prevPatients.filter((patient) => patient.id !== id)
         );
+        // fetch patients again to ensure consistency (this allows me to not have to refresh page to see that the deleted patient was removed)
+        fetchPatients();
         navigate(`/patients`);
       } else {
-        res.json().then((data) => setErrors(data.errors));
+        // If the request fails, handle the error
+        res.json().then((data) => {
+          // Use setErrors to update the error state
+          setErrors([data.errors]);
+        });
       }
     });
   };
 
-  // ADD APPOINTMENT
+  // ADD AN APPOINTMENT
   const addAppointment = (id, appointmentData) => {
-    // Convert date to ISO 8601 format (YYYY-MM-DD) to map date structure in Rails
-    // const isoDate = new Date(appointmentData.date).toISOString().split("T")[0];
-
-    const modifiedAppointmentData = {
-      ...appointmentData,
-    };
-
     fetch(`/patients/${id}/appointments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(modifiedAppointmentData),
+      body: JSON.stringify(appointmentData),
     }).then((res) => {
+      console.log(res);
       if (res.ok) {
         res.json().then((data) => {
-          setAppointments((appointments) => [...appointments, data]);
+          console.log(data);
+          setAppointments((prevAppointments) => [...prevAppointments, data]);
           navigate(`/patients/${id}`);
         });
       } else {
         res.json().then((data) => {
-          setErrors(data.errors);
+          setErrors([data.errors]);
         });
       }
     });
   };
 
-  // UPDATE APPOINTMENT
+  // UPDATE AN APPOINTMENT
   const updateAppointment = (patientId, appointmentId, appointmentData) => {
-    // Convert the date to ISO 8601 format (YYYY-MM-DD)
-    const isoDate = new Date(appointmentData.date).toISOString().split("T")[0];
-
-    const modifiedAppointmentData = {
-      ...appointmentData,
-      date: isoDate,
-    };
-
     return fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
-      // Use the correct URL format
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(modifiedAppointmentData),
+      body: JSON.stringify(appointmentData),
     }).then((res) => {
       if (res.ok) {
-        return res.json();
+        return res.json().then((data) => {
+          // Update state with the new data
+          setAppointments((appointments) =>
+            appointments.map((appointment) =>
+              appointment.id === appointmentId
+                ? { ...appointment, ...data }
+                : appointment
+            )
+          );
+          return data;
+        });
       } else {
         return res.json().then((data) => {
-          throw new Error(data.errors);
+          setErrors([data.errors]);
+          throw new Error("Appointment update failed.");
         });
       }
     });
   };
 
-  // const updateAppointment = (id, patient_id, appointmentData) => {
-  //   // Convert the date to ISO 8601 format (YYYY-MM-DD)
-  //   const isoDate = new Date(appointmentData.date).toISOString().split("T")[0];
-
-  //   const modifiedAppointmentDate = {
-  //     ...appointmentData,
-  //     date: isoDate,
-  //   };
-
-  //   return fetch(`/appointments/${id}`, {
-  //     method: "PATCH",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(modifiedAppointmentDate),
-  //   }).then((res) => {
-  //     if (res.ok) {
-  //       res.json().then((updatedAppointment) => {
-  //         setAppointments((prevAppointments) =>
-  //           prevAppointments.map((appointment) =>
-  //             appointment.id === updatedAppointment.id
-  //               ? { ...appointment, ...updatedAppointment }
-  //               : appointment
-  //           )
-  //         );
-  //         navigate(`/patients/${id}`);
-  //       });
-  //     } else {
-  //       return res.json().then((data) => {
-  //         setErrors(data.errors);
-  //         throw new Error("Failed to update appointment.");
-  //       });
-  //     }
-  //   });
-  // };
+  // DELETE AN APPOINTMENT
+  const deleteAppointment = () => {};
 
   return (
     <UserContext.Provider
@@ -271,12 +240,13 @@ function UserProvider({ children }) {
         patients,
         setPatients,
         addPatient,
-        deletePatient,
         updatePatient,
-        addAppointment,
-        updateAppointment,
+        deletePatient,
         appointments,
         setAppointments,
+        addAppointment,
+        updateAppointment,
+        deleteAppointment,
         errors,
         setErrors,
         showForm,
@@ -288,57 +258,68 @@ function UserProvider({ children }) {
 }
 
 export { UserContext, UserProvider };
-  
-//create piece of state [currentUser] that mimics what we have in the backend re: `authenticate_user`. if we do have a current user let's update this piece of state. 
-// Which of the routes do we need to pass this currentUser to ? 
-  // signup '/signup'
-  // login '/login'
-  // user page '/users/:id'
-
-// must listen for the status... (status.ok) so frontend knows what happened in the backend. if anything is outside of 200 range, we will return something that's not okay. if outside that range, go into our errors and render our errors. 
 
   
-    //     .then((editedPatient) => {
-  //       setPatients((patients) =>
-  //         patients.map((patient) =>
-  //           patient.id === id ? { ...patient, ...editedPatient } : patient
-  //         )
-  //       );
-  // const updatePatient = (id, formData) => {
-  //   console.log("Updating patient with ID:", id);
-  //   console.log("Form data:", formData);
+  
+  
+//-------------------------------------------------------------------------
 
-  //   return fetch(`/patients/${id}`, {
-  //     method: "PATCH",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(formData),
-  //   })
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         throw new Error("Failed to update patient.");
-  //       }
+//create piece of state [currentUser] that mimics what we have in the backend re: `authenticate_user`. if we do have a current user let's update this piece of state.
+// Which of the routes do we need to pass this currentUser to ?
+// signup '/signup'
+// login '/login'
+// user page '/users/:id'
 
-  //       return response.json();
-  //     })
-  //     .then((editedPatient) => {
-  //       setPatients((patients) =>
-  //         patients.map((patient) =>
-  //           patient.id === id ? { ...patient, ...editedPatient } : patient
-  //         )
-  //       );
+// must listen for the status... (status.ok) so frontend knows what happened in the backend. if anything is outside of 200 range, we will return something that's not okay. if outside that range, go into our errors and render our errors.
 
-  //       return editedPatient;
-  //     })
-  //     .then((editedPatient) => {
-  //       navigate(`/patients/${editedPatient.id}`);
-  //     })
-  //     .catch((error) => {
-  //       setErrors([error.message]);
-  //       throw error;
-  //     });
-  // };
+//     .then((editedPatient) => {
+//       setPatients((patients) =>
+//         patients.map((patient) =>
+//           patient.id === id ? { ...patient, ...editedPatient } : patient
+//         )
+//       );
+// const updatePatient = (id, formData) => {
+//   console.log("Updating patient with ID:", id);
+//   console.log("Form data:", formData);
 
-  /*
+//   return fetch(`/patients/${id}`, {
+//     method: "PATCH",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(formData),
+//   })
+//     .then((response) => {
+//       if (!response.ok) {
+//         throw new Error("Failed to update patient.");
+//       }
+
+//       return response.json();
+//     })
+//     .then((editedPatient) => {
+//       setPatients((patients) =>
+//         patients.map((patient) =>
+//           patient.id === id ? { ...patient, ...editedPatient } : patient
+//         )
+//       );
+
+//       return editedPatient;
+//     })
+//     .then((editedPatient) => {
+//       navigate(`/patients/${editedPatient.id}`);
+//     })
+//     .catch((error) => {
+//       setErrors([error.message]);
+//       throw error;
+//     });
+// };
+
+/*
+
+DELETE PATIENT: The key change here is that we update the patients state immediately by filtering out the deleted patient when the response is successful (res.ok).
+
+UPDATE PATIENT: The fetch request is made to the server to update the patient's data.
+If the request is successful (res.ok is true), the new data received from the server is used to update the React state using setPatients. We use map to iterate through the current patients array, find the patient with the matching id, and merge the new data into that patient object.
+If the request fails, it throws an error with the error message from the server response.
+This approach ensures that the React state is updated only when the server successfully processes the update request, making it consistent with the server data.
   .then(res => {
     if(res.ok){
       deletePatient(patient.id)
@@ -349,72 +330,72 @@ export { UserContext, UserProvider };
   })
   */
 
-  // ADD APPOINTMENT
-  // const addAppointment = async (patientId, appointmentData) => {
-  //   console.log(patientId);
-  //   console.log(appointmentData);
-  //   try {
-  //     const response = await fetch(`/patients/${patientId}/appointments`, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(appointmentData),
-  //     });
+// ADD APPOINTMENT
+// const addAppointment = async (patientId, appointmentData) => {
+//   console.log(patientId);
+//   console.log(appointmentData);
+//   try {
+//     const response = await fetch(`/patients/${patientId}/appointments`, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(appointmentData),
+//     });
 
-  //     if (!response.ok) {
-  //       throw new Error("Failed to add appointment.");
-  //     }
+//     if (!response.ok) {
+//       throw new Error("Failed to add appointment.");
+//     }
 
-  //     const newAppointment = await response.json();
-  //     setAppointments([...appointments, newAppointment]);
-  //     console.log("New Appointment:", newAppointment);
-  //   } catch (error) {
-  //     setErrors(["Failed to add appointment. Please try again later."]);
-  //   }
-  // };
+//     const newAppointment = await response.json();
+//     setAppointments([...appointments, newAppointment]);
+//     console.log("New Appointment:", newAppointment);
+//   } catch (error) {
+//     setErrors(["Failed to add appointment. Please try again later."]);
+//   }
+// };
 
-  // UPDATE APPOINTMENT
-  // const updateAppointment = (patientId, appointmentId, updatedData) => {
-  //   console.log("Updating appointment with ID:", appointmentId);
-  //   console.log("Updated appointment data:", updatedData);
+// UPDATE APPOINTMENT
+// const updateAppointment = (patientId, appointmentId, updatedData) => {
+//   console.log("Updating appointment with ID:", appointmentId);
+//   console.log("Updated appointment data:", updatedData);
 
-  //   return fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
-  //     method: "PATCH",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(updatedData),
-  //   })
-  //     .then((resp) => {
-  //       if (!resp.ok) {
-  //         throw new Error("Failed to update appointment.");
-  //       }
-  //       return resp.json();
-  //     })
-  //     .then((editedAppointment) => {
-  //       setAppointments((appointments) =>
-  //         appointments.map((appointment) =>
-  //           appointment.id === appointmentId
-  //             ? { ...appointment, ...editedAppointment }
-  //             : appointment
-  //         )
-  //       );
-  //       return editedAppointment;
-  //     })
-  //     .catch((error) => {
-  //       setErrors([error.message]);
-  //       throw error;
-  //     });
-  // };
+//   return fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
+//     method: "PATCH",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(updatedData),
+//   })
+//     .then((resp) => {
+//       if (!resp.ok) {
+//         throw new Error("Failed to update appointment.");
+//       }
+//       return resp.json();
+//     })
+//     .then((editedAppointment) => {
+//       setAppointments((appointments) =>
+//         appointments.map((appointment) =>
+//           appointment.id === appointmentId
+//             ? { ...appointment, ...editedAppointment }
+//             : appointment
+//         )
+//       );
+//       return editedAppointment;
+//     })
+//     .catch((error) => {
+//       setErrors([error.message]);
+//       throw error;
+//     });
+// };
 
-  // DELETE APPOINTMENT
-  // const deleteAppointment = (patientId, appointmentId) => {
-  //   fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
-  //     method: "DELETE",
-  //   }).then(() => {
-  //     setAppointments((appointments) =>
-  //       appointments.filter((appointment) => appointment.id !== appointmentId)
-  //     );
-  //   });
-  // };
+// DELETE APPOINTMENT
+// const deleteAppointment = (patientId, appointmentId) => {
+//   fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
+//     method: "DELETE",
+//   }).then(() => {
+//     setAppointments((appointments) =>
+//       appointments.filter((appointment) => appointment.id !== appointmentId)
+//     );
+//   });
+// };
 
-          // addAppointment,
-        // deleteAppointment,
-        // updateAppointment,
+// addAppointment,
+// deleteAppointment,
+// updateAppointment,

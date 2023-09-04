@@ -17,22 +17,21 @@ const initialPatientState = {
   language_preferences: ""
 };
 
-const PatientList = ({ onDelete }) => {
+const PatientList = () => {
   const [showForm, setShowForm] = useState(false);
   const [patientFormData, setPatientFormData] = useState(initialPatientState);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [errorMessages, setErrorMessages] = useState([]);
   const [showError, setShowError] = useState(false);
   
-
-  const { patients, addPatient, errors } = useContext(UserContext);
+  const { currentUser, patients, addPatient, errors } = useContext(UserContext);
 
   const navigate = useNavigate();
   
   const { first_name, last_name, dob, address, phone, allergies, email, guardian, notes, viewed_notice_of_privacy_practices, language_preferences } = patientFormData;
 
   const patientCards = patients ? (patients.map((patient) => {
-    return <PatientCard key={patient.id} patient={patient} onDelete={onDelete} />
+    return <PatientCard key={patient.id} patient={patient} />
   })) : (<div>Patient Not Found.</div>)
 
   const handleChange = (e) => {
@@ -46,27 +45,49 @@ const PatientList = ({ onDelete }) => {
     });
   };
 
+  // ADD PATIENT 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addPatient({
-      first_name,
-      last_name,
-      dob,
-      allergies,
-      address,
-      email,
-      phone,
-      notes,
-      guardian,
-      language_preferences,
-      viewed_notice_of_privacy_practices,
-    });
-    setShowConfirmation(true);
-    setPatientFormData(initialPatientState); 
-    setShowForm(false); 
-    setTimeout(() => {
-      setShowConfirmation(false);
-    }, 3000); 
+
+    // Check if the current user is an admin 
+    if (currentUser && currentUser.admin) {
+      // User is authorized, proceed with patient creation 
+      addPatient({
+        first_name,
+        last_name,
+        dob,
+        allergies,
+        address,
+        email,
+        phone,
+        notes,
+        guardian,
+        language_preferences,
+        viewed_notice_of_privacy_practices,
+      });
+      setShowConfirmation(true);
+      setPatientFormData(initialPatientState);
+      setShowForm(false);
+
+      // Clear any previous errors immediately 
+      setShowError(false);
+      setErrorMessages([]);
+
+      // Set a timer to clear the confirmation message after 2 seconds  
+      setTimeout(() => {
+        setShowConfirmation(false);
+      }, 2000);
+    } else {
+      // User is not authorized, show an error message 
+      setErrorMessages(["You do not have admin permissions to create a patient."]);
+      setShowError(true);
+
+      // Set a timer to clear the error message after 2 seconds
+      setTimeout(() => {
+        setShowError(false);
+        setErrorMessages([]);
+      }, 2000);
+    }
   };
 
   useEffect(() => {
@@ -76,7 +97,7 @@ const PatientList = ({ onDelete }) => {
       const timeout = setTimeout(() => {
         setShowError(false);
         setErrorMessages([]);
-      }, 3000);
+      }, 2000);
       return () => clearTimeout(timeout); // Clear the timeout on component unmount
     }
   }, [errors]);
@@ -292,3 +313,58 @@ const PatientList = ({ onDelete }) => {
 };
 
 export default PatientList;
+
+
+//--------------------------------------
+
+/*
+    // Client-side Validation checks
+    const validationErrors = [];
+    if (!first_name.trim()) {
+      validationErrors.push("First Name is required.");
+    }
+    if (!last_name.trim()) {
+      validationErrors.push("Last Name is required.");
+    }
+    if (!dob) {
+      validationErrors.push("Date of Birth is required.");
+    }
+    if (!email.trim()) {
+      validationErrors.push("Email is required.");
+    }
+    if (!phone.trim()) {
+      validationErrors.push("Phone Number is required.");
+    }
+
+    if (validationErrors.length > 0) {
+      setErrorMessages(validationErrors);
+      setShowError(true);
+
+      setTimeout(() => {
+        setShowError(false);
+        setErrorMessages([]);
+      }, 2000);
+    } else {
+      // No validation errors, proceed with adding the patient
+      addPatient({
+        first_name,
+        last_name,
+        dob,
+        allergies,
+        address,
+        email,
+        phone,
+        notes,
+        guardian,
+        language_preferences,
+        viewed_notice_of_privacy_practices,
+      });
+      setShowConfirmation(true);
+      setPatientFormData(initialPatientState);
+      setShowForm(false);
+      setErrorMessages([]); // Clear any previous errors
+      setTimeout(() => {
+        setShowConfirmation(false);
+      }, 2000);
+    }
+    */

@@ -1,15 +1,24 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "./context/user";
-import EditPatient from "./EditPatient";
+import EditPatient from "./EditPatientForm";
 import AppointmentCard from "./AppointmentCard";
 
-const PatientDetails = ({ onDelete }) => {
+const PatientDetails = () => {
   const [patient, setPatient] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const { id } = useParams();
-  const { currentUser, setAppointments, updatePatient, updateAppointment, errors, setErrors } = useContext(UserContext);
   const [isEditing, setIsEditing] = useState(false);
+
+  const { id } = useParams();
+
+  const {
+    currentUser,
+    deletePatient,
+    updatePatient,
+    setAppointments,
+    setErrors,
+  } = useContext(UserContext);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,58 +26,71 @@ const PatientDetails = ({ onDelete }) => {
     fetch(`/patients/${id}`).then((resp) => {
       if (resp.ok) {
         resp.json().then((data) => {
-          console.log(data);
           setPatient(data);
           setAppointments(data.appointments);
         });
       } else {
         resp.json().then((data) => {
-          setErrors(data.errors); // Set errors using setErrors from UserContext
+          setErrors(data.errors);
+          const timeoutId = setTimeout(() => {
+            setErrors([]);
+          }, 3000);
+
+          // Cleanup function to clear the timeout when the component unmounts
+          return () => clearTimeout(timeoutId);
         });
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, setPatient, setAppointments, setErrors]);
 
-  const handleEditPatient = () => {
-    setIsEditing(true);
-  };
-
+  // DELETE PATIENT
   const handleDeletePatient = () => {
     setConfirmDelete(true);
   };
 
   const handleConfirmDeletePatient = () => {
-    onDelete(id);
+    deletePatient(id);
     setConfirmDelete(false);
   };
 
+
+  const handleEditPatient = () => {
+    setIsEditing(true);
+  };
+
+  // UPDATE PATIENT 
   const handlePatientUpdate = (updatedPatient) => {
-    updatePatient(updatedPatient.id, updatedPatient)
-    setIsEditing(false);
+    updatePatient(updatedPatient.id, updatedPatient).then(() => {
+      setIsEditing(false);
+
+      // Pass the updated patient information to the PatientCard component
+      if (patient.id === updatedPatient.id) {
+        setPatient(updatedPatient);
+      }
+    });
   };
 
-  const handleAppointmentUpdate = (appointmentId, updatedData) => {
-    updateAppointment(patient.id, appointmentId, updatedData)
-    setIsEditing(false);
+  // ADD APPOINTMENT => navigates to `NewAppointmentForm` component.
+  const handleCreateAppointment = () => {
+    navigate(`/patients/${id}/appointments/new`);
   };
 
+  // DELETE APPOINTMENT
   const handleAppointmentDelete = () => {
-
+    // render logic to delete appointment
   };
+
+  // // UPDATE APPOINTMENT
+  // const handleAppointmentUpdate = (updatedAppointment) => {
+  //   // Call the updateAppointment function with the updated appointment
+  //   updateAppointment(patient.id, updatedAppointment.id, updatedAppointment)
+  // };
+
 
   const goBack = () => {
     navigate(`/patients`);
   };
-
-  const ephemeralErrors = () => {
-    if (errors && errors.length > 0) {
-      setTimeout(() => {
-        setErrors([]); // Clear the errors after 5 seconds
-      }, 3000);
-    }
-  };
-
-  ephemeralErrors();
 
   if (patient && currentUser) {
     return (
@@ -116,7 +138,8 @@ const PatientDetails = ({ onDelete }) => {
             <br />
             <ul>
               <b>Providers:</b>
-              {patient.unique_provider_emails.length > 0 ? (
+              {patient.unique_provider_emails &&
+              patient.unique_provider_emails.length > 0 ? (
                 patient.unique_provider_emails.map((email) => (
                   <li key={email}>
                     <div>
@@ -154,15 +177,15 @@ const PatientDetails = ({ onDelete }) => {
               </button>
             )}
             <hr />
+
             <h2>Appointment(s)</h2>
             <ul>
-              {patient && patient.appointments ? (
+              {currentUser && patient && patient.appointments ? (
                 patient.appointments.map((appointment) => (
                   <li key={appointment.id}>
                     <AppointmentCard
                       appointment={appointment}
                       onDelete={handleAppointmentDelete}
-                      onUpdate={handleAppointmentUpdate}
                     />
                   </li>
                 ))
@@ -171,10 +194,7 @@ const PatientDetails = ({ onDelete }) => {
               )}
             </ul>
             <br />
-            <button
-              className="small-button"
-              onClick={() => navigate(`/patients/${id}/appointments/new`)}
-            >
+            <button className="small-button" onClick={handleCreateAppointment}>
               Create Appointment
             </button>
             <br />
@@ -201,15 +221,6 @@ const PatientDetails = ({ onDelete }) => {
             <br />
           </div>
         )}
-        {errors && errors.length > 0 && (
-          <div className="error-container">
-            {errors.map((error, index) => (
-              <div key={index} className="error-message">
-                {error}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     );
   }
@@ -218,3 +229,9 @@ const PatientDetails = ({ onDelete }) => {
 };
 
 export default PatientDetails;
+
+
+//--------------------------------
+/*
+setPatient(updatedPatient) is used to update the patient state in the PatientDetails component with the newly updated information. This change will trigger a re-render of the PatientCard component, and it will display the updated first name and last name.
+*/

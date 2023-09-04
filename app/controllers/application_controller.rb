@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::API
   include ActionController::Cookies #extended the middleware in our ApplicationController
-
   rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity 
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found 
 
@@ -10,11 +9,11 @@ class ApplicationController < ActionController::API
     @current_user ||= User.find_by_id(session[:user_id])
   end
 
-  private
-
   def authorize_user #checking to see if user is logged in only
-    render json: { errors: "Not Authorized" }, status: :unauthorized unless current_user
+    render json: { errors: { User: "Not Authorized" } }, status: :unauthorized unless current_user
   end
+
+  private
 
   def render_unprocessable_entity(invalid)
     render json: { errors: invalid.record.errors.full_messages }, status: :unprocessable_entity
@@ -26,6 +25,7 @@ class ApplicationController < ActionController::API
 end
 
 
+# `current_user` method: using find_by instead of find! to get that nil value 
 
   # def render_unprocessable_entity(invalid)
   #   errors_arr = invalid.record.errors.map{ |key,value| "#{key}" : "#{value}"}

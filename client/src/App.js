@@ -18,11 +18,11 @@ import Feature1 from "./Feature1";
 import Feature2 from "./Feature2";
 import Feature3 from "./Feature3";
 import Terms from "./Terms";
-import UserPage from "./UserPage";
+import Profile from "./Profile";
 import NotFound from "./NotFound";
 import EditAppointmentForm from "./EditAppointmentForm";
 
-const App = ({ onDelete }) => {
+const App = ({ onDelete, appointments }) => {
   const { deletePatient } = useContext(UserContext);
 
   const handleDeleteClick = (id) => {
@@ -41,7 +41,7 @@ const App = ({ onDelete }) => {
         <Route
           exact
           path="/patients/:id"
-          element={<PatientDetails onDelete={handleDeleteClick} />}
+          element={<PatientDetails appointments={appointments} onDelete={handleDeleteClick} />}
         />
         <Route
           exact
@@ -59,7 +59,7 @@ const App = ({ onDelete }) => {
           path="/appointments/:appointmentId/edit"
           element={<EditAppointmentForm />}
         />
-        <Route path="/me" element={<UserPage />} />
+        <Route path="/me" element={<Profile />} />
 
         <Route exact path="/about" element={<About />} />
         <Route exact path="/contact" element={<Contact />} />

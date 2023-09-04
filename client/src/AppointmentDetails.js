@@ -1,32 +1,32 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "./context/user";
 import { useParams, useNavigate } from "react-router-dom";
 import EditAppointment from "./EditAppointmentForm";
 
-const AppointmentDetails = ({ onDelete }) => {
+const AppointmentDetails = () => {
   const { appointmentId } = useParams();
-  const { currentUser, updateAppointment } = useContext(UserContext);
+  const { currentUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [appointment, setAppointment] = useState(null);
 
-  const appointment = currentUser.appointments.find(
-    (appointment) => appointment.id === parseInt(appointmentId)
-  );
-
-  const handleUpdateAppointment = (updatedData) => {
-    updateAppointment(appointment.patient_id, appointment.id, updatedData)
-      .then(() => {
-        setIsEditing(false);
-      })
-      .catch((error) => {
-        console.error("Failed to update appointment:", error);
-        // You might also set error state here to display an error message to the user
-      });
-  };
+  useEffect(() => {
+    // Find the appointment from currentUser when currentUser is available
+    if (currentUser) {
+      const foundAppointment = currentUser.appointments.find(
+        (appointment) => appointment.id === parseInt(appointmentId)
+      );
+      setAppointment(foundAppointment);
+    }
+  }, [currentUser, appointmentId]);
 
   const handleGoBack = () => {
     navigate(-1);
   };
+
+  if (!currentUser) {
+    return <div>Loading user data...</div>;
+  }
 
   if (!appointment) {
     return <div>Loading appointment details...</div>;
@@ -39,7 +39,6 @@ const AppointmentDetails = ({ onDelete }) => {
         {isEditing ? (
           <EditAppointment
             appointment={appointment}
-            onUpdate={handleUpdateAppointment}
             onCancel={() => setIsEditing(false)}
           />
         ) : (
@@ -49,15 +48,6 @@ const AppointmentDetails = ({ onDelete }) => {
             <p>Date: {appointment.date}</p>
             <p>Location: {appointment.location}</p>
             <p>Description: {appointment.description}</p>
-            <button className="edit-button" onClick={() => setIsEditing(true)}>
-              Edit
-            </button>
-            <button
-              className="delete-button"
-              onClick={() => onDelete(appointment.id)}
-            >
-              Delete
-            </button>
           </>
         )}
       </div>

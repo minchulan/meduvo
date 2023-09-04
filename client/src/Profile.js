@@ -1,17 +1,22 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { UserContext } from "./context/user"; 
+import { UserContext } from "./context/user";
 
-function UserPage() {
+function Profile() {
   const { currentUser, logout } = useContext(UserContext);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const navigate = useNavigate();
 
-  const goBack = () => {
-    navigate(`/`);
-  };
+  useEffect(() => {
+    // Check if currentUser is available before accessing appointments
+    if (currentUser) {
+      setSelectedCategory("all");
+    }
+  }, [currentUser]);
+
+  const goBack = () => navigate(-1);
 
   const handleDeleteAccount = () => {
     const confirmation = window.confirm(
@@ -21,8 +26,8 @@ function UserPage() {
       fetch(`/users/${currentUser.id}`, {
         method: "DELETE",
       })
-        .then(function (response) {
-          if (response.ok) {
+        .then((resp) => {
+          if (resp.ok) {
             setDeleteSuccess(true);
             logout();
             navigate("/");
@@ -30,7 +35,7 @@ function UserPage() {
             console.error("Account deletion failed.");
           }
         })
-        .catch(function (error) {
+        .catch((error) => {
           console.error("Error occurred during account deletion:", error);
         });
     }
@@ -40,15 +45,22 @@ function UserPage() {
     setSelectedCategory(category);
   };
 
+  const sortedAppointments = [...(currentUser?.appointments || [])].sort(
+    (a, b) =>
+      a.patient.name.toLowerCase().localeCompare(b.patient.name.toLowerCase())
+  );
+
   const filteredAppointments =
     selectedCategory === "all"
-      ? currentUser.appointments
-      : currentUser.appointments.filter(
+      ? sortedAppointments
+      : sortedAppointments.filter(
           (appointment) =>
             appointment.category.toLowerCase() === selectedCategory
         );
 
-  if (!currentUser) <h2>Loading user data...</h2>;
+  if (!currentUser) {
+    return <h2>Loading...</h2>;
+  }
 
   return (
     <div className="user-page-container">
@@ -80,27 +92,37 @@ function UserPage() {
         </button>
       </div>
       <ul className="appointments-list">
-        {filteredAppointments.map((appointment) => (
-          <li className="appointment-card" key={appointment.id}>
-            <Link
-              to={`/appointments/${appointment.id}`}
-              className="appointment-link"
+        {filteredAppointments.length > 0 ? (
+          // Map over appointments only if currentUser and currentUser.appointments exist
+          filteredAppointments.map((appointment) => (
+            <li
+              className="appointment-card"
+              key={appointment.id}
             >
-              <div className="appointment-details">
-                <p>
-                  <span className="patient-name">
-                    {appointment.patient.name}
-                  </span>{" "}
-                  ({appointment.patient.dob})
-                </p>
-                <p className={`category-${appointment.category.toLowerCase()}`}>
-                  {appointment.category}
-                </p>
-                <p>Scheduled: {appointment.date}</p>
-              </div>
-            </Link>
-          </li>
-        ))}
+              <Link
+                to={`/appointments/${appointment.id}`}
+                className="appointment-link"
+              >
+                <div className="appointment-details">
+                  <p>
+                    <span className="patient-name">
+                      {appointment.patient.name}
+                    </span>{" "}
+                    ({appointment.patient.dob})
+                  </p>
+                  <p
+                    className={`category-${appointment.category.toLowerCase()}`}
+                  >
+                    {appointment.category}
+                  </p>
+                  <p>Scheduled: {appointment.date}</p>
+                </div>
+              </Link>
+            </li>
+          ))
+        ) : (
+          <li>No appointments available.</li>
+        )}
       </ul>
       <br />
       <button className="go-back-button" onClick={goBack}>
@@ -119,10 +141,14 @@ function UserPage() {
   );
 }
 
-export default UserPage;
-
+export default Profile;
 
 /*
+
+use the useEffect hook to set the initial category filter (selectedCategory) to "all" only when currentUser is available. Additionally, we check if currentUser and currentUser.appointments exist before filtering and mapping the appointments.
+
+filteredAppointments is a variable that contains an array of appointments based on certain conditions. If currentUser and currentUser.appointments are both truthy and selectedCategory is "all", it returns all appointments. Otherwise, it filters appointments based on the selected category. If currentUser or currentUser.appointments is falsy, it returns an empty array to avoid errors.
+
   // Sort appointments by date in ascending order
   const sortedAppointments = currentUser.appointments.sort(
     (a, b) => new Date(a.date) - new Date(b.date)

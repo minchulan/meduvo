@@ -11,7 +11,8 @@ const initialAppointmentState = {
 };
 
 const NewAppointmentForm = ({ submitButtonStyle }) => {
-  const { addAppointment, currentUser, errors, setErrors } = useContext(UserContext);
+  const { addAppointment, currentUser, errors, setErrors } =
+    useContext(UserContext);
   const [newAppointmentFormData, setNewAppointmentFormData] = useState(
     initialAppointmentState
   );
@@ -23,15 +24,14 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
 
   const navigate = useNavigate();
 
-  // Create the appointment data with patient_id from the current user
   const handleSubmitNewAppointment = (e) => {
     e.preventDefault();
     const appointmentData = {
       ...newAppointmentFormData,
-      patient_id: currentUser.id, // use the patient ID from the current user
+      patient_id: currentUser.id,
     };
-
-    addAppointment(patientId, appointmentData);
+    addAppointment(patientId, appointmentData)
+    navigate(`/patients/${patientId}`);
   };
 
   const handleChange = (e) => {
@@ -70,9 +70,7 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
 
   const ephemeralErrors = () => {
     if (errors && errors.length > 0) {
-      setTimeout(() => {
-        setErrors([]); // Clear the errors after 5 seconds
-      }, 3000);
+      setErrors([]); // Clear the errors immediately on focus
     }
   };
 
@@ -98,6 +96,7 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
           placeholder="Name of appointment"
           value={name}
           onChange={handleChange}
+          onFocus={() => setErrors([])} // Clear errors on focus
         />
         <select id="category" value={category} onChange={handleChange}>
           <option value="disabled"> All Categories</option>
@@ -105,13 +104,13 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
           <option value="Immunization">Immunization</option>
           <option value="MTM">MTM</option>
         </select>
-
         <input
           type="date"
           id="date"
           placeholder="Date"
           value={date}
           onChange={handleChange}
+          onFocus={() => setErrors([])} // Clear errors on focus
         />
         <input
           type="text"
@@ -119,11 +118,11 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
           placeholder="Location"
           value={location}
           onChange={handleChange}
+          onFocus={() => setErrors([])} // Clear errors on focus
         />
         <button onClick={handleGetLocation} style={getLocationButtonStyle}>
           📍 Get Location
         </button>
-
         <br />
         <br />
         <textarea
@@ -132,6 +131,7 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
           placeholder="Description"
           value={description}
           onChange={handleChange}
+          onFocus={() => setErrors([])} // Clear errors on focus
         />
         <button type="submit" style={submitButtonStyle}>
           Add Appointment

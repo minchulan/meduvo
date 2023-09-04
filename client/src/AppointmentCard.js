@@ -1,26 +1,12 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "./context/user";
-import EditAppointment from "./EditAppointmentForm";
+import EditAppointmentForm from "./EditAppointmentForm";
 
-const AppointmentCard = ({ appointment, onDelete, onUpdate }) => {
-  const { currentUser, updateAppointment } = useContext(UserContext);
+const AppointmentCard = ({ appointment, onDelete }) => {
+  const { currentUser } = useContext(UserContext);
   const [isEditing, setIsEditing] = useState(false);
 
-  const { patient_id } = appointment;
-
-  const handleAppointmentEditFlag = () => {
-    setIsEditing(true);
-    const updatedData = {
-      ...appointment,
-    };
-    updateAppointment(patient_id, appointment.id, updatedData).then(() => {
-      setIsEditing(false);
-    });
-  };
-
-  const isAuthorized = currentUser.appointments.some(
-    (userAppointment) => userAppointment.id === appointment.id
-  );
+  console.log({ appointment });
 
   const renderCategory = (category) => {
     switch (category) {
@@ -35,31 +21,23 @@ const AppointmentCard = ({ appointment, onDelete, onUpdate }) => {
     }
   };
 
-  const renderActions = () => {
-    if (isAuthorized) {
-      return (
-        <div className="card-actions">
-          <button className="edit-button" onClick={handleAppointmentEditFlag}>
-            Edit
-          </button>
-          <button
-            className="delete-button"
-            onClick={() => onDelete(appointment.id)}
-          >
-            Delete
-          </button>
-        </div>
-      );
-    } else {
-      return null;
-    }
+  // Handle setting the editing flag to true
+  const handleAppointmentEditFlag = () => {
+    setIsEditing(isEditing => !isEditing); //toggle
   };
 
+  // Check if the current user is the owner of the appointment
+  const isCurrentUser = appointment.user_id === currentUser.id;
+
+  // Render the AppointmentCard component
   return (
     <article className="appointment-card">
       <div className="card-content">
         {isEditing ? (
-          <EditAppointment appointment={appointment} onUpdate={onUpdate} />
+          <EditAppointmentForm
+            appointment={appointment}
+            setIsEditing={setIsEditing}
+          />
         ) : (
           <>
             <h2>{renderCategory(appointment.category)}</h2>
@@ -67,9 +45,21 @@ const AppointmentCard = ({ appointment, onDelete, onUpdate }) => {
             <time>Date: {appointment.date}</time>
             <p>Location: {appointment.location}</p>
             <p>Details: {appointment.description}</p>
-            {renderActions()}
           </>
         )}
+        {isCurrentUser ? (
+          <div className="card-actions">
+            <button className="edit-button" onClick={handleAppointmentEditFlag}>
+              Edit
+            </button>
+            <button
+              className="delete-button"
+              onClick={() => onDelete(appointment.id)}
+            >
+              Delete
+            </button>
+          </div>
+        ) : null}
       </div>
     </article>
   );
@@ -78,6 +68,20 @@ const AppointmentCard = ({ appointment, onDelete, onUpdate }) => {
 export default AppointmentCard;
 
 /*
+ 1) functional component called AppointmentCard. It takes three props as input: appointment, onDelete, and onUpdate.
+2) accessing the current user over in UserContext. Use the useContext hook to access the `currentUser` from the `UserContext`. 
+3) Initialized a state variable `isEditing` to false. Variable is used to determine whether the user is currently editing the appointment. 
+4) Defined a function called `renderCategory`
+    This function takes a `category` as input and returns a JSX element representing the category based on the switch statement. It's used to display the category of the appointment. 
+5) Defined a function called `handleAppointmentEditFlag`, which sets `isEditing` to true when called. It handles the editing of appointments. 
+6) I check to see if the current user is the owner of the appointment. If yes, display edit and delete buttons. If no, do not display anything. 
+    This function returns JSX based on whether the current user is the owner of the appointment. If the user is the owner, it renders "Edit" and "Delete" buttons.
+7) conditionally renders the appointment details or an editing form based on the value of isEditing. It also displays the category, name, date, location, and description of the appointment and the action buttons if the user is the owner.
+
+
+  // const isAuthorized = currentUser.appointments.some(
+  //   (userAppointment) => userAppointment.id === appointment.id
+  // );
 currentUser.appointments: This is an array of appointments belonging to the current user. Each appointment is an object with various properties, including an id.
 some(...):  It's used to check if at least one element in the array satisfies a certain condition.
 

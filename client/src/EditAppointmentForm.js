@@ -1,43 +1,56 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "./context/user";
-import { useNavigate, useParams } from "react-router-dom";
 
-const EditAppointmentForm = ({ appointment, onUpdate }) => {
-  const [editedAppointment, setEditedAppointment] = useState({ ...appointment });
-  const { setErrors } = useContext(UserContext);
-  const navigate = useNavigate();
-  const { patientId } = useParams();
+const EditAppointmentForm = ({ appointment, setIsEditing }) => {
+  // Create a state variable to hold the edited appointment data
+  const [editedAppointment, setEditedAppointment] = useState(appointment);
+  const { updateAppointment } = useContext(UserContext);
+
+  // Use useEffect to update the editedAppointment state when the appointment prop changes
+  useEffect(() => {
+    setEditedAppointment(appointment);
+  }, [appointment]);
 
   const handleInputChange = (e) => {
-    setErrors([]);
     const key = e.target.id;
+    let value = e.target.value;
+
+    // Update the editedAppointment state with the changed value
     setEditedAppointment({
       ...editedAppointment,
-      [key]: e.target.value,
+      [key]: value,
     });
   };
 
   const handleCategoryChange = (e) => {
-    setErrors([]);
+    const category = e.target.value;
+
+    // Update the editedAppointment state with the changed category
     setEditedAppointment({
       ...editedAppointment,
-      category: e.target.value,
+      category,
     });
   };
 
-  const handleSaveClick = () => {
-    onUpdate(editedAppointment); // Pass the updated data to the parent component for handling
-    navigate(`/patients/${patientId}`);
-  };
+  console.log(editedAppointment);
 
-  const handleCancelClick = () => {
-    navigate(`/patients/${patientId}`);
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    // Call the updateAppointment function over in UserContext with the updated data
+    updateAppointment(
+      editedAppointment.patientId,
+      editedAppointment.id,
+      editedAppointment
+    ).then((data) => {
+      // Handle success
+      setIsEditing(false);
+    });
   };
 
   return (
     <div className="edit-appointment-container">
       <h2>Edit Appointment</h2>
-      <form className="edit-appointment-form">
+      <form className="edit-appointment-form" onSubmit={handleFormSubmit}>
         <div>
           <label htmlFor="category">Category:</label>
           <select
@@ -45,6 +58,7 @@ const EditAppointmentForm = ({ appointment, onUpdate }) => {
             name="category"
             value={editedAppointment.category}
             onChange={handleCategoryChange}
+            autoComplete="off"
             required
           >
             <option value="">All Categories</option>
@@ -61,6 +75,7 @@ const EditAppointmentForm = ({ appointment, onUpdate }) => {
             name="name"
             value={editedAppointment.name}
             onChange={handleInputChange}
+            autoComplete="off"
             required
           />
         </div>
@@ -72,6 +87,7 @@ const EditAppointmentForm = ({ appointment, onUpdate }) => {
             name="date"
             value={editedAppointment.date}
             onChange={handleInputChange}
+            autoComplete="off"
             required
           />
         </div>
@@ -83,6 +99,7 @@ const EditAppointmentForm = ({ appointment, onUpdate }) => {
             name="location"
             value={editedAppointment.location}
             onChange={handleInputChange}
+            autoComplete="off"
             required
           />
         </div>
@@ -93,39 +110,24 @@ const EditAppointmentForm = ({ appointment, onUpdate }) => {
             name="description"
             value={editedAppointment.description}
             onChange={handleInputChange}
+            autoComplete="off"
             required
           />
         </div>
-        <button type="button" onClick={handleSaveClick}>
-          Save Changes
-        </button>
-        <button
-          type="button"
-          onClick={handleCancelClick}
-          style={cancelButtonStyle}
-        >
-          Cancel
-        </button>
+        <input type="submit" value="Save" />
       </form>
     </div>
   );
 };
 
-const cancelButtonStyle = {
-  backgroundColor: "#ffffff",
-  color: "#333333",
-  border: "none",
-  borderRadius: "3px",
-  padding: "10px 20px",
-  fontSize: "16px",
-  cursor: "pointer",
-  marginLeft: "10px",
-};
-
 export default EditAppointmentForm;
-
 
 /*
 This component contains the form for editing appointment details 
 The EditAppointment component handles input changes, saving changes, and canceling the edit. 
+    // Format the date as 'mm/dd/yyyy' before sending it to the server
+    // const formattedDate = editedAppointment.date.split("-").reverse().join("/");
+    // const updatedAppointment = { ...editedAppointment, date: formattedDate };
+    // const updatedAppointment = { ...editedAppointment };
+
 */

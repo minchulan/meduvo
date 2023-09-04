@@ -9,6 +9,7 @@ class UsersController < ApplicationController
 
   def show #get '/me'
     render json: @user, status: :ok 
+    # check to see if user id exists in session, call User.find(session[:user_id]). @user = current_user. 
   end
 
   def create #post '/signup'
@@ -42,6 +43,11 @@ class UsersController < ApplicationController
   end 
 end
 
+  # def current_user 
+  #   @current_user ||= User.find_by_id(session[:user_id])
+  # end
 
 
-# skip before action: we need to let them sign up to our application, same applies for user logging in. 
+# skip before action: we need to let them sign up to our application, same applies for user logging in.
+
+# whenever we make a request to anyone else's account, it just shows our currently logged in user's account. 

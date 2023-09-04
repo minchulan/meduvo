@@ -2,6 +2,7 @@ class AppointmentsController < ApplicationController
   before_action :authorize_user
   before_action :load_patient, only: [:index, :create]
   before_action :load_appointment, only: [:show, :update, :destroy]
+  before_action :is_owner?, only: [:update, :destroy]
 
   def index
     if @patient
@@ -15,7 +16,7 @@ class AppointmentsController < ApplicationController
     appointment = @current_user.appointments.build(appointment_params)
     @patient.appointments << appointment
 
-    if appointment.save
+    if appointment.valid?
       render json: appointment, status: :created
     else
       render json: { errors: appointment.errors.full_messages }, status: :unprocessable_entity
@@ -59,6 +60,11 @@ class AppointmentsController < ApplicationController
       render json: { error: "Appointment not found" }, status: :not_found
     end
   end
+
+  def is_owner? 
+    permitted = @appointment.user_id == current_user.id 
+    render json: {errors: {User: "does not own this appointment."}}, status: :forbidden unless permitted 
+  end 
 end
 
 
@@ -77,3 +83,5 @@ end
 # The index action checks if the @patient is available and renders appointments associated with that patient if it exists. If not, it renders all appointments.
 
 # The show action now checks if the @appointment is available and renders the appointment details if found, or an error if not found.
+
+#before it tries to run the update method, it's going to check to see if it's the owner...meaning, is it the currently logged in user's appointment(s). If it's not, then render some errors out. 
