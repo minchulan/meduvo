@@ -89,11 +89,7 @@ const Login = () => {
       <hr />
       {errors && errors.length > 0 && (
         <div className="error-container">
-          {errors.map((error, index) => (
-            <div key={index} className="error-message">
-              {error}
-            </div>
-          ))}
+          {errors}
         </div>
       )}
     </div>

@@ -9,9 +9,10 @@ const EditPatientForm = ({ patient, onUpdate }) => {
     : "";
   const [formData, setFormData] = useState({ ...patient, dob: formattedDOB });
   const [isLoading, setIsLoading] = useState(false);
+  const [editErrors, setEditErrors] = useState([]);
 
   const navigate = useNavigate();
-  const { setErrors } = useContext(UserContext);
+  const { errors, setErrors } = useContext(UserContext);
 
   const handleChange = (e) => {
     setErrors([]);
@@ -33,6 +34,11 @@ const EditPatientForm = ({ patient, onUpdate }) => {
   return (
     <div className="edit-patient">
       <form onSubmit={handleSubmit}>
+        {errors.map((error, index) => (
+            <h2 key={index} style={{ color: "red" }}>
+              {error}
+            </h2>
+          ))}
         <br />
         {isLoading ? (
           <p>Loading...</p>

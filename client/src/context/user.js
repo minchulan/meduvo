@@ -31,7 +31,7 @@ function UserProvider({ children }) {
         setErrors(["Authentication failed. Please login."]);
       }
     });
-  }, [setPatients]);
+  }, [setPatients, setAppointments]);
 
   // GET ALL PATIENTS
   const fetchPatients = () => {
@@ -42,11 +42,13 @@ function UserProvider({ children }) {
         });
       } else {
         resp.json().then((data) => {
-          setErrors([data.errors]);
+          setErrors(data.error);
         });
       }
     });
   };
+
+  // GET ALL APPOINTMENTS 
 
   // LOGIN
   const login = (user) => {
@@ -63,7 +65,7 @@ function UserProvider({ children }) {
           navigate("/me");
         });
       } else {
-        res.json().then((data) => setErrors([data.errors]));
+        res.json().then((data) => setErrors(data.errors));
       }
     });
   };
@@ -95,7 +97,7 @@ function UserProvider({ children }) {
         res.json().then((data) => {
           if (data && data.errors) {
             // Display specific backend errors
-            setErrors([data.errors]);
+            setErrors(data.errors);
           } else {
             // Generic error message
             setErrors(["An error occurred during signup. Please try again."]);
@@ -121,8 +123,7 @@ function UserProvider({ children }) {
       } else {
         // first thing is to figure out how to retain my errors that occur: set state to an array
         resp.json().then((data) => {
-          console.log(data);
-          setErrors(data.errors);
+          setErrors(Object.entries(data.errors).map((error) => `${error[0]} ${error[1]}`))
         });
       }
     });
@@ -147,7 +148,11 @@ function UserProvider({ children }) {
         });
       } else {
         return res.json().then((data) => {
-          setErrors([data.errors]); // Throw an error with the error message
+          setErrors(
+            Object.entries(data.errors).map(
+              (error) => `${error[0]} ${error[1]}`
+            )
+          ); // Throw an error with the error message
         });
       }
     });
@@ -227,7 +232,27 @@ function UserProvider({ children }) {
   };
 
   // DELETE AN APPOINTMENT
-  const deleteAppointment = () => {};
+  const deleteAppointment = ( appointmentId) => {
+        fetch(`/appointments/${appointmentId}`, {
+          method: "DELETE",
+        }).then((res) => {
+          if (res.ok) {
+            // If the delete request is successful, filter out the deleted appointment
+            setAppointments((prevAppointments) =>
+              prevAppointments.filter((appointment) => appointment.id !== appointmentId)
+            );
+            // fetch patients again to ensure consistency (this allows me to not have to refresh page to see that the deleted patient was removed)
+            navigate(`/patients`);
+          } else {
+            // If the request fails, handle the error
+            res.json().then((data) => {
+              // Use setErrors to update the error state
+              setErrors([data.errors]);
+            });
+          }
+        });
+
+  };
 
   return (
     <UserContext.Provider

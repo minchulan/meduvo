@@ -16,6 +16,7 @@ const PatientDetails = () => {
     deletePatient,
     updatePatient,
     setAppointments,
+    errors,
     setErrors,
   } = useContext(UserContext);
 

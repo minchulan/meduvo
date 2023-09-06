@@ -94,13 +94,7 @@ const Signup = () => {
           </small>
           <hr />
           {errors && errors.length > 0 && (
-            <div className="error-container">
-              {errors.map((error, index) => (
-                <div key={index} className="error-message">
-                  {error}
-                </div>
-              ))}
-            </div>
+            <div className="error-container">{errors}</div>
           )}
         </>
       )}

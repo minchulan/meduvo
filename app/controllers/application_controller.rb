@@ -24,7 +24,7 @@ class ApplicationController < ActionController::API
   end 
 end
 
-
+# errors are encapsulated as an array. set error state to an empty array in frontend.
 # `current_user` method: using find_by instead of find! to get that nil value 
 
   # def render_unprocessable_entity(invalid)

@@ -2,11 +2,9 @@ import React, { useContext, useState } from "react";
 import { UserContext } from "./context/user";
 import EditAppointmentForm from "./EditAppointmentForm";
 
-const AppointmentCard = ({ appointment, onDelete }) => {
-  const { currentUser } = useContext(UserContext);
+const AppointmentCard = ({ appointment }) => {
+  const { currentUser, deleteAppointment } = useContext(UserContext);
   const [isEditing, setIsEditing] = useState(false);
-
-  console.log({ appointment });
 
   const renderCategory = (category) => {
     switch (category) {
@@ -24,6 +22,10 @@ const AppointmentCard = ({ appointment, onDelete }) => {
   // Handle setting the editing flag to true
   const handleAppointmentEditFlag = () => {
     setIsEditing(isEditing => !isEditing); //toggle
+  };
+
+  const handleDeleteAppointment = () => {
+    deleteAppointment(appointment.id)
   };
 
   // Check if the current user is the owner of the appointment
@@ -50,13 +52,13 @@ const AppointmentCard = ({ appointment, onDelete }) => {
         {isCurrentUser ? (
           <div className="card-actions">
             <button className="edit-button" onClick={handleAppointmentEditFlag}>
-              Edit
+              ✏️
             </button>
             <button
               className="delete-button"
-              onClick={() => onDelete(appointment.id)}
+              onClick={handleDeleteAppointment}
             >
-              Delete
+              🗑️
             </button>
           </div>
         ) : null}

@@ -106,7 +106,9 @@ const PatientList = () => {
 
   return (
     <div className="patient-list">
-      {showError && errorMessages.map((error, index) => <h2 key={index} style={{ color: "red" }}>{error}</h2>)}
+      {errors && errors.length > 0 && (
+        <div className="error-container">{errors}</div>
+      )}
       {showForm ? (
         <form onSubmit={handleSubmit} className="form-container">
           <label htmlFor="first_name" className="form-label">

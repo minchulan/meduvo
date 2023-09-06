@@ -32,8 +32,6 @@ const EditAppointmentForm = ({ appointment, setIsEditing }) => {
     });
   };
 
-  console.log(editedAppointment);
-
   const handleFormSubmit = (e) => {
     e.preventDefault();
     // Call the updateAppointment function over in UserContext with the updated data
