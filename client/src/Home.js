@@ -97,12 +97,3 @@ const Home = () => {
 };
 
 export default Home;
-
-//---------------------------------------------------
-
-/*
-Home page is an instructional landing page 
-Click `Patients` button to get all of the patients.
-Click `Profile` to get to your Appointments portfolio.
-
-*/

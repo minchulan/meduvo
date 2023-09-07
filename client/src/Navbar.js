@@ -44,10 +44,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-/*
-protect client-side routes from unauthorized user. The nav links rendered are different based on if a user is logged in or not. 
-  - If user is logged in, Navbar renders rest of our router: Home, Patients, and Profile nav links. 
-
-  - If user is not logged in, Navbar renders Login, as well as Signup and Contact us nav links. 
-*/

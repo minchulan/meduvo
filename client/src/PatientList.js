@@ -48,10 +48,7 @@ const PatientList = () => {
   // ADD PATIENT 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Check if the current user is an admin 
     if (currentUser && currentUser.admin) {
-      // User is authorized, proceed with patient creation 
       addPatient({
         first_name,
         last_name,
@@ -68,21 +65,14 @@ const PatientList = () => {
       setShowConfirmation(true);
       setPatientFormData(initialPatientState);
       setShowForm(false);
-
-      // Clear any previous errors immediately 
       setShowError(false);
       setErrorMessages([]);
-
-      // Set a timer to clear the confirmation message after 2 seconds  
       setTimeout(() => {
         setShowConfirmation(false);
       }, 2000);
     } else {
-      // User is not authorized, show an error message 
       setErrorMessages(["You do not have admin permissions to create a patient."]);
       setShowError(true);
-
-      // Set a timer to clear the error message after 2 seconds
       setTimeout(() => {
         setShowError(false);
         setErrorMessages([]);
@@ -98,7 +88,7 @@ const PatientList = () => {
         setShowError(false);
         setErrorMessages([]);
       }, 2000);
-      return () => clearTimeout(timeout); // Clear the timeout on component unmount
+      return () => clearTimeout(timeout);
     }
   }, [errors]);
 
@@ -315,58 +305,3 @@ const PatientList = () => {
 };
 
 export default PatientList;
-
-
-//--------------------------------------
-
-/*
-    // Client-side Validation checks
-    const validationErrors = [];
-    if (!first_name.trim()) {
-      validationErrors.push("First Name is required.");
-    }
-    if (!last_name.trim()) {
-      validationErrors.push("Last Name is required.");
-    }
-    if (!dob) {
-      validationErrors.push("Date of Birth is required.");
-    }
-    if (!email.trim()) {
-      validationErrors.push("Email is required.");
-    }
-    if (!phone.trim()) {
-      validationErrors.push("Phone Number is required.");
-    }
-
-    if (validationErrors.length > 0) {
-      setErrorMessages(validationErrors);
-      setShowError(true);
-
-      setTimeout(() => {
-        setShowError(false);
-        setErrorMessages([]);
-      }, 2000);
-    } else {
-      // No validation errors, proceed with adding the patient
-      addPatient({
-        first_name,
-        last_name,
-        dob,
-        allergies,
-        address,
-        email,
-        phone,
-        notes,
-        guardian,
-        language_preferences,
-        viewed_notice_of_privacy_practices,
-      });
-      setShowConfirmation(true);
-      setPatientFormData(initialPatientState);
-      setShowForm(false);
-      setErrorMessages([]); // Clear any previous errors
-      setTimeout(() => {
-        setShowConfirmation(false);
-      }, 2000);
-    }
-    */

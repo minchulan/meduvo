@@ -11,7 +11,6 @@ const AppointmentDetails = () => {
   const [appointment, setAppointment] = useState(null);
 
   useEffect(() => {
-    // Find the appointment from currentUser when currentUser is available
     if (currentUser) {
       const foundAppointment = currentUser.appointments.find(
         (appointment) => appointment.id === parseInt(appointmentId)
@@ -59,9 +58,3 @@ const AppointmentDetails = () => {
 };
 
 export default AppointmentDetails;
-
-/*
-This component displays the details of an appointment and allows for editing
-AppointmentDetails component fetches the appointment details based on the URL param, and then passes the appointment data to the EditAppointment component for editing. 
-
-*/

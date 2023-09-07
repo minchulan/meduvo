@@ -10,7 +10,6 @@ function Profile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if currentUser is available before accessing appointments
     if (currentUser) {
       setSelectedCategory("all");
     }
@@ -93,7 +92,6 @@ function Profile() {
       </div>
       <ul className="appointments-list">
         {filteredAppointments.length > 0 ? (
-          // Map over appointments only if currentUser and currentUser.appointments exist
           filteredAppointments.map((appointment) => (
             <li
               className="appointment-card"
@@ -142,19 +140,3 @@ function Profile() {
 }
 
 export default Profile;
-
-/*
-
-use the useEffect hook to set the initial category filter (selectedCategory) to "all" only when currentUser is available. Additionally, we check if currentUser and currentUser.appointments exist before filtering and mapping the appointments.
-
-filteredAppointments is a variable that contains an array of appointments based on certain conditions. If currentUser and currentUser.appointments are both truthy and selectedCategory is "all", it returns all appointments. Otherwise, it filters appointments based on the selected category. If currentUser or currentUser.appointments is falsy, it returns an empty array to avoid errors.
-
-  // Sort appointments by date in ascending order
-  const sortedAppointments = currentUser.appointments.sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
-  );
-
-  filterAppointmentsByCategory, is responsible for updating the selectedCategory state with the category that is passed as an argument when one of the filter buttons is clicked
-
-  filteredAppointments array will be displayed based on the selected category - ternary operator to check whether the selectedCategory is "all". If it is, it simply assigns the original currentUser.appointments array to filteredAppointments, showing all appointments. If the selectedCategory is not "all", it performs a filter operation on the currentUser.appointments array. It uses the filter function to iterate through each appointment and checks if the appointment.category (converted to lowercase) matches the selectedCategory. Only appointments with a matching category will be included in the filteredAppointments array.
-*/

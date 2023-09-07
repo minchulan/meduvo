@@ -1,7 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-
 const PatientCard = ({ patient }) => {
   const { id, first_name, last_name, dob } = patient;
 

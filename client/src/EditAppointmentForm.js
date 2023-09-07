@@ -24,11 +24,11 @@ const EditAppointmentForm = ({ appointment, onUpdate }) => {
 
 const handleFormSubmit = (e) => {
   e.preventDefault();
-  // Format the date as 'yyyy-MM-dd'
+
   const formattedDate = new Date(editedAppointment.date)
     .toISOString()
     .slice(0, 10);
-  // Update the editedAppointment with the formatted date
+
   const updatedAppointment = { ...editedAppointment, date: formattedDate };
 
   onUpdate(updatedAppointment);
@@ -108,13 +108,3 @@ const handleFormSubmit = (e) => {
 };
 
 export default EditAppointmentForm;
-
-/*
-This component contains the form for editing appointment details 
-The EditAppointment component handles input changes, saving changes, and canceling the edit. 
-    // Format the date as 'mm/dd/yyyy' before sending it to the server
-    // const formattedDate = editedAppointment.date.split("-").reverse().join("/");
-    // const updatedAppointment = { ...editedAppointment, date: formattedDate };
-    // const updatedAppointment = { ...editedAppointment };
-
-*/

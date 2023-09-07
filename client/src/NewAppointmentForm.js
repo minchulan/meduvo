@@ -111,7 +111,7 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
           placeholder="Date"
           value={date}
           onChange={handleChange}
-          onFocus={() => setErrors([])} // Clear errors on focus
+          onFocus={() => setErrors([])}
           autoComplete="off"
         />
         <input
@@ -120,7 +120,7 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
           placeholder="Location"
           value={location}
           onChange={handleChange}
-          onFocus={() => setErrors([])} // Clear errors on focus
+          onFocus={() => setErrors([])}
           autoComplete="off"
         />
         <button onClick={handleGetLocation} style={getLocationButtonStyle}>
@@ -134,7 +134,7 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
           placeholder="Description"
           value={description}
           onChange={handleChange}
-          onFocus={() => setErrors([])} // Clear errors on focus
+          onFocus={() => setErrors([])}
           autoComplete="off"
         />
         <button type="submit" style={submitButtonStyle}>
