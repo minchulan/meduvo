@@ -19,10 +19,10 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
 
   const { patientId } = useParams();
 
+  const navigate = useNavigate();
+
   const { name, category, location, date, description } =
     newAppointmentFormData;
-
-  const navigate = useNavigate();
 
   const handleSubmitNewAppointment = (e) => {
     e.preventDefault();
@@ -31,7 +31,7 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
       patient_id: currentUser.id,
     };
     addAppointment(patientId, appointmentData)
-    navigate(`/patients/${patientId}`);
+    navigate(`/patients`);
   };
 
   const handleChange = (e) => {
@@ -97,6 +97,7 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
           value={name}
           onChange={handleChange}
           onFocus={() => setErrors([])} // Clear errors on focus
+          autoComplete="off"
         />
         <select id="category" value={category} onChange={handleChange}>
           <option value="disabled"> All Categories</option>
@@ -111,6 +112,7 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
           value={date}
           onChange={handleChange}
           onFocus={() => setErrors([])} // Clear errors on focus
+          autoComplete="off"
         />
         <input
           type="text"
@@ -119,6 +121,7 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
           value={location}
           onChange={handleChange}
           onFocus={() => setErrors([])} // Clear errors on focus
+          autoComplete="off"
         />
         <button onClick={handleGetLocation} style={getLocationButtonStyle}>
           📍 Get Location
@@ -132,6 +135,7 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
           value={description}
           onChange={handleChange}
           onFocus={() => setErrors([])} // Clear errors on focus
+          autoComplete="off"
         />
         <button type="submit" style={submitButtonStyle}>
           Add Appointment

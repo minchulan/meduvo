@@ -34,11 +34,11 @@ const EditPatientForm = ({ patient, onUpdate }) => {
   return (
     <div className="edit-patient">
       <form onSubmit={handleSubmit}>
-        {errors.map((error, index) => (
+        {errors ? errors.map((error, index) => (
             <h2 key={index} style={{ color: "red" }}>
               {error}
             </h2>
-          ))}
+          )) : null}
         <br />
         {isLoading ? (
           <p>Loading...</p>

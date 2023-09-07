@@ -16,7 +16,6 @@ const PatientDetails = () => {
     deletePatient,
     updatePatient,
     setAppointments,
-    errors,
     setErrors,
   } = useContext(UserContext);
 
@@ -55,12 +54,7 @@ const PatientDetails = () => {
     setConfirmDelete(false);
   };
 
-
-  const handleEditPatient = () => {
-    setIsEditing(true);
-  };
-
-  // UPDATE PATIENT 
+  // UPDATE PATIENT
   const handlePatientUpdate = (updatedPatient) => {
     updatePatient(updatedPatient.id, updatedPatient).then(() => {
       setIsEditing(false);
@@ -70,6 +64,10 @@ const PatientDetails = () => {
         setPatient(updatedPatient);
       }
     });
+  };
+  
+  const handleEditPatient = () => {
+    setIsEditing(true);
   };
 
   // ADD APPOINTMENT => navigates to `NewAppointmentForm` component.
@@ -81,13 +79,6 @@ const PatientDetails = () => {
   const handleAppointmentDelete = () => {
     // render logic to delete appointment
   };
-
-  // // UPDATE APPOINTMENT
-  // const handleAppointmentUpdate = (updatedAppointment) => {
-  //   // Call the updateAppointment function with the updated appointment
-  //   updateAppointment(patient.id, updatedAppointment.id, updatedAppointment)
-  // };
-
 
   const goBack = () => {
     navigate(`/patients`);
@@ -187,6 +178,8 @@ const PatientDetails = () => {
                     <AppointmentCard
                       appointment={appointment}
                       onDelete={handleAppointmentDelete}
+                      patient={patient}
+                      setPatient={setPatient}
                     />
                   </li>
                 ))

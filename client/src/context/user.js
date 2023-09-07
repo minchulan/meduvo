@@ -20,7 +20,6 @@ function UserProvider({ children }) {
     }).then((resp) => {
       if (resp.ok) {
         resp.json().then((data) => {
-          console.log(data);
           setCurrentUser(data);
           setLoggedIn(true);
           fetchPatients();
@@ -191,7 +190,6 @@ function UserProvider({ children }) {
       console.log(res);
       if (res.ok) {
         res.json().then((data) => {
-          console.log(data);
           setAppointments((prevAppointments) => [...prevAppointments, data]);
           navigate(`/patients/${id}`);
         });
@@ -232,7 +230,7 @@ function UserProvider({ children }) {
   };
 
   // DELETE AN APPOINTMENT
-  const deleteAppointment = ( appointmentId) => {
+  const deleteAppointment = (appointmentId) => {
         fetch(`/appointments/${appointmentId}`, {
           method: "DELETE",
         }).then((res) => {
@@ -288,6 +286,16 @@ export { UserContext, UserProvider };
   
   
 //-------------------------------------------------------------------------
+
+  // we need to create an array of errors. but we're getting an object due to our backend.
+  // data
+  // {errors: Array(2)}
+  // data.errors
+  // ["Title cant be blank", "Budget is not a number"]
+  // so we can't set our errors to that object yet. We need to flatten the object first. We need to use Object.entries(data.errors): => [Array(2), Array(2)]
+  // Bc we have an array, we want to produce a string of those error messages. Map over the errors, and produce a string from each one of these elements inside of the array.
+
+
 
 //create piece of state [currentUser] that mimics what we have in the backend re: `authenticate_user`. if we do have a current user let's update this piece of state.
 // Which of the routes do we need to pass this currentUser to ?

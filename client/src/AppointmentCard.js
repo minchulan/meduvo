@@ -2,8 +2,8 @@ import React, { useContext, useState } from "react";
 import { UserContext } from "./context/user";
 import EditAppointmentForm from "./EditAppointmentForm";
 
-const AppointmentCard = ({ appointment }) => {
-  const { currentUser, deleteAppointment } = useContext(UserContext);
+const AppointmentCard = ({ appointment, patient, setPatient }) => {
+  const { currentUser, deleteAppointment, updateAppointment } = useContext(UserContext);
   const [isEditing, setIsEditing] = useState(false);
 
   const renderCategory = (category) => {
@@ -21,17 +21,31 @@ const AppointmentCard = ({ appointment }) => {
 
   // Handle setting the editing flag to true
   const handleAppointmentEditFlag = () => {
-    setIsEditing(isEditing => !isEditing); //toggle
+    setIsEditing((isEditing) => !isEditing); //toggle
+  };
+
+  // UPDATE APPOINTMENT
+  const handleAppointmentUpdate = (updatedAppointment, patientId) => {
+    updateAppointment(patientId, updatedAppointment.id, updatedAppointment).then(() => {
+      setIsEditing(false);
+      // Optionally, you can update the appointment in the state as well
+      const updatedAppointments = patient.appointments.map((app) =>
+        app.id === updatedAppointment.id ? updatedAppointment : app
+      );
+      setPatient((prevPatient) => ({
+        ...prevPatient,
+        appointments: updatedAppointments,
+      }));
+    });
   };
 
   const handleDeleteAppointment = () => {
-    deleteAppointment(appointment.id)
+    deleteAppointment(appointment.id);
   };
 
   // Check if the current user is the owner of the appointment
   const isCurrentUser = appointment.user_id === currentUser.id;
 
-  // Render the AppointmentCard component
   return (
     <article className="appointment-card">
       <div className="card-content">
@@ -39,6 +53,7 @@ const AppointmentCard = ({ appointment }) => {
           <EditAppointmentForm
             appointment={appointment}
             setIsEditing={setIsEditing}
+            onUpdate={handleAppointmentUpdate}
           />
         ) : (
           <>
@@ -54,10 +69,7 @@ const AppointmentCard = ({ appointment }) => {
             <button className="edit-button" onClick={handleAppointmentEditFlag}>
               ✏️
             </button>
-            <button
-              className="delete-button"
-              onClick={handleDeleteAppointment}
-            >
+            <button className="delete-button" onClick={handleDeleteAppointment}>
               🗑️
             </button>
           </div>

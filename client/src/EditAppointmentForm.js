@@ -1,21 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
-import { UserContext } from "./context/user";
+import React, { useState } from "react";
 
-const EditAppointmentForm = ({ appointment, setIsEditing }) => {
-  // Create a state variable to hold the edited appointment data
+const EditAppointmentForm = ({ appointment, onUpdate }) => {
   const [editedAppointment, setEditedAppointment] = useState(appointment);
-  const { updateAppointment } = useContext(UserContext);
-
-  // Use useEffect to update the editedAppointment state when the appointment prop changes
-  useEffect(() => {
-    setEditedAppointment(appointment);
-  }, [appointment]);
 
   const handleInputChange = (e) => {
     const key = e.target.id;
     let value = e.target.value;
 
-    // Update the editedAppointment state with the changed value
     setEditedAppointment({
       ...editedAppointment,
       [key]: value,
@@ -25,25 +16,23 @@ const EditAppointmentForm = ({ appointment, setIsEditing }) => {
   const handleCategoryChange = (e) => {
     const category = e.target.value;
 
-    // Update the editedAppointment state with the changed category
     setEditedAppointment({
       ...editedAppointment,
       category,
     });
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    // Call the updateAppointment function over in UserContext with the updated data
-    updateAppointment(
-      editedAppointment.patientId,
-      editedAppointment.id,
-      editedAppointment
-    ).then((data) => {
-      // Handle success
-      setIsEditing(false);
-    });
-  };
+const handleFormSubmit = (e) => {
+  e.preventDefault();
+  // Format the date as 'yyyy-MM-dd'
+  const formattedDate = new Date(editedAppointment.date)
+    .toISOString()
+    .slice(0, 10);
+  // Update the editedAppointment with the formatted date
+  const updatedAppointment = { ...editedAppointment, date: formattedDate };
+
+  onUpdate(updatedAppointment);
+};
 
   return (
     <div className="edit-appointment-container">
