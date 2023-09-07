@@ -5,7 +5,6 @@ import Navbar from "./Navbar";
 import Home from "./Home";
 import Login from "./Login";
 import Signup from "./Signup";
-// import AppointmentList from "./AppointmentList";
 import AppointmentDetails from "./AppointmentDetails";
 import NewAppointmentForm from "./NewAppointmentForm";
 import PatientList from "./PatientList";
@@ -53,7 +52,6 @@ const App = ({ onDelete, appointments }) => {
           path="/appointments/:appointmentId"
           element={<AppointmentDetails />}
         />
-        {/* <Route exact path="/appointments" element={<AppointmentList />} /> */}
         <Route
           exact
           path="/appointments/:appointmentId/edit"

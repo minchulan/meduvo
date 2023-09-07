@@ -27,7 +27,6 @@ class UsersController < ApplicationController
 
   def destroy #delete '/users/:id'
     @user.destroy
-    session.delete(:user_id) #log out our user by removing the id from our sessions hash / forgets our user.
     head :no_content
   end
 

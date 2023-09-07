@@ -259,15 +259,19 @@ const PatientList = () => {
           </button>
         </form>
       ) : (
-        <button
-          className="small-button"
-          onClick={() => {
-            setShowForm(true);
-            setPatientFormData(initialPatientState);
-          }}
-        >
-          Add patient
-        </button>
+        // Conditionally render the "Add patient" button based on admin status
+        currentUser &&
+        currentUser.admin && (
+          <button
+            className="small-button"
+            onClick={() => {
+              setShowForm(true);
+              setPatientFormData(initialPatientState);
+            }}
+          >
+            Add patient
+          </button>
+        )
       )}
       <br />
       <br />
