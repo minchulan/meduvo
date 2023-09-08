@@ -3,9 +3,7 @@ class User < ApplicationRecord
   has_many :patients, through: :appointments
 
   has_secure_password
-  # password=
-  # password_confirmation=
-  # authenticate 
+
   validates :email, presence: true
   validates :password, length: { minimum: 4 }, allow_nil: true
   

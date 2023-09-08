@@ -8,7 +8,6 @@ function UserProvider({ children }) {
   const [errors, setErrors] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [patients, setPatients] = useState([]);
-  const [appointments, setAppointments] = useState([]);
   const [showForm, setShowForm] = useState(true);
   const navigate = useNavigate();
 
@@ -30,7 +29,7 @@ function UserProvider({ children }) {
         setErrors(["Authentication failed. Please login."]);
       }
     });
-  }, [setPatients, setAppointments]);
+  }, [setPatients]);
 
   // GET ALL PATIENTS
   const fetchPatients = () => {
@@ -92,11 +91,7 @@ function UserProvider({ children }) {
         });
       } else {
         res.json().then((data) => {
-          if (data && data.errors) {
-            setErrors(data.errors);
-          } else {
-            setErrors(["An error occurred during signup. Please try again."]);
-          }
+          setErrors(data.errors);
           setShowForm(true);
         });
       }
@@ -117,7 +112,7 @@ function UserProvider({ children }) {
         });
       } else {
         resp.json().then((data) => {
-          setErrors(Object.entries(data.errors).map((error) => `${error[0]} ${error[1]}`))
+          setErrors(Object.entries(data.errors).map((e) => `${e[0]} ${e[1]}`));
         });
       }
     });
@@ -125,7 +120,7 @@ function UserProvider({ children }) {
 
   // UPDATE A PATIENT
   const updatePatient = (id, formData) => {
-    return fetch(`/patients/${id}`, {
+    fetch(`/patients/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
@@ -140,7 +135,7 @@ function UserProvider({ children }) {
           return data;
         });
       } else {
-        return res.json().then((data) => {
+        res.json().then((data) => {
           setErrors(
             Object.entries(data.errors).map(
               (error) => `${error[0]} ${error[1]}`
@@ -179,12 +174,21 @@ function UserProvider({ children }) {
     }).then((res) => {
       if (res.ok) {
         res.json().then((data) => {
-          setAppointments((prevAppointments) => [...prevAppointments, data]);
+          // Update the patient's appointments
+          setPatients((prevPatients) =>
+            prevPatients.map((patient) =>
+              patient.id === id
+                ? { ...patient, appointments: [...patient.appointments, data] }
+                : patient
+            )
+          );
+
+          // navigate to patient details page
           navigate(`/patients/${id}`);
         });
       } else {
         res.json().then((data) => {
-          setErrors([data.errors]);
+          setErrors(Object.entries(data.errors).map((e) => `${e[0]} ${e[1]}`));
         });
       }
     });
@@ -196,45 +200,54 @@ function UserProvider({ children }) {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(appointmentData),
-    }).then((res) => {
-      if (res.ok) {
-        return res.json().then((data) => {
-          // Update state with the new data
-          setAppointments((appointments) =>
-            appointments.map((appointment) =>
-              appointment.id === appointmentId
-                ? { ...appointment, ...data }
-                : appointment
-            )
-          );
-          return data;
-        });
-      } else {
-        return res.json().then((data) => {
-          setErrors([data.errors]);
-          throw new Error("Appointment update failed.");
-        });
-      }
-    });
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json().then((data) => {
+            // Update state with the new data
+            setPatients((prevPatients) =>
+              prevPatients.map((patient) => {
+                if (patient.id === patientId) {
+                  // Find the appointment to update
+                  const updatedAppointments = patient.appointments.map(
+                    (appointment) =>
+                      appointment.id === appointmentId
+                        ? { ...appointment, ...data }
+                        : appointment
+                  );
+                  // Return the patient with the updated appointments
+                  return { ...patient, appointments: updatedAppointments };
+                }
+                return patient;
+              })
+            );
+            return data;
+          });
+        } else {
+          return res.json().then((data) => {
+            setErrors(data.errors);
+          });
+        }
+      })
   };
 
   // DELETE AN APPOINTMENT
   const deleteAppointment = (appointmentId) => {
-        fetch(`/appointments/${appointmentId}`, {
-          method: "DELETE",
-        }).then((res) => {
-          if (res.ok) {
-
-            setAppointments((prevAppointments) =>
-              prevAppointments.filter((appointment) => appointment.id !== appointmentId)
-            );
-            navigate(`/patients`);
-          } else {
-            res.json().then((data) => {
-              setErrors([data.errors]);
-            });
-          }
+    fetch(`/appointments/${appointmentId}`, {
+      method: "DELETE",
+    }).then((res) => {
+      if (res.ok) {
+        setPatients((patient) => {
+          patient.appointments.map((appointment) => {
+            return appointment.id !== appointmentId
+          })
+        })
+      } else {
+        res.json().then((data) => {
+          setErrors([data.errors]);
         });
+      }
+    });
   };
 
   return (
@@ -250,8 +263,6 @@ function UserProvider({ children }) {
         addPatient,
         updatePatient,
         deletePatient,
-        appointments,
-        setAppointments,
         addAppointment,
         updateAppointment,
         deleteAppointment,

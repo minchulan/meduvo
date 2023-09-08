@@ -10,7 +10,7 @@ const initialAppointmentState = {
   description: "",
 };
 
-const NewAppointmentForm = ({ submitButtonStyle }) => {
+const NewAppointmentForm = ({ submitButtonStyle, onAppointmentAdded }) => {
   const { addAppointment, currentUser, errors, setErrors } =
     useContext(UserContext);
   const [newAppointmentFormData, setNewAppointmentFormData] = useState(
@@ -30,8 +30,11 @@ const NewAppointmentForm = ({ submitButtonStyle }) => {
       ...newAppointmentFormData,
       patient_id: currentUser.id,
     };
-    addAppointment(patientId, appointmentData)
-    navigate(`/patients`);
+    addAppointment(patientId, appointmentData, (newAppointment) => {
+      // Call the callback to pass the new appointment data to the parent component
+      onAppointmentAdded(newAppointment);
+      navigate(`/patients`);
+  });
   };
 
   const handleChange = (e) => {

@@ -5,10 +5,11 @@ class PatientsController < ApplicationController
   
   def index #get '/patients'
     render json: Patient.all, status: :ok 
+    # render json: Patient.all.to_json(include: :appointment)
   end
 
   def create #post '/patients'
-    patient = Patient.create!(patient_params)
+    patient = Patient.create!(patient_params) # creating an instance of Patient Class 
     render json: patient, status: :created 
   end
 
@@ -42,6 +43,8 @@ class PatientsController < ApplicationController
   end 
 end 
 
+
+# see everyones patients, and in my own profile see only my patients 
 # methods that invoke our validations: `save`, `create`, `valid?`
 # `create` is two in one => new and save 
 

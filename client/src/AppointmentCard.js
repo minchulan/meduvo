@@ -3,7 +3,7 @@ import { UserContext } from "./context/user";
 import EditAppointmentForm from "./EditAppointmentForm";
 
 const AppointmentCard = ({ appointment, patient, setPatient }) => {
-  const { currentUser, deleteAppointment, updateAppointment } = useContext(UserContext);
+  const { currentUser, appointments, setAppointments, deleteAppointment, updateAppointment } = useContext(UserContext);
   const [isEditing, setIsEditing] = useState(false);
 
   const renderCategory = (category) => {
@@ -24,16 +24,19 @@ const AppointmentCard = ({ appointment, patient, setPatient }) => {
   };
 
   // UPDATE APPOINTMENT
-  const handleAppointmentUpdate = (updatedAppointment, patientId) => {
-    updateAppointment(patientId, updatedAppointment.id, updatedAppointment).then(() => {
+  const handleAppointmentUpdate = (updatedAppointmentData, patientId) => {
+    updateAppointment(patientId, updatedAppointmentData.id, updatedAppointmentData).then(() => {
       setIsEditing(false);
-      const updatedAppointments = patient.appointments.map((app) =>
-        app.id === updatedAppointment.id ? updatedAppointment : app
-      );
-      setPatient((prevPatient) => ({
-        ...prevPatient,
-        appointments: updatedAppointments,
-      }));
+      const updatedAppointments = patient.appointments.map((appointment) => {
+        if (appointment.id === updatedAppointmentData.id) {
+          return updatedAppointmentData;
+        } else {
+          return appointment;
+        }
+      })
+
+      setAppointments([...appointments, updatedAppointments]);
+      setPatient((prevPatient) => ({ ...prevPatient, appointments: updatedAppointments }));
     });
   };
 

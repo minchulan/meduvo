@@ -21,7 +21,7 @@ import Profile from "./Profile";
 import NotFound from "./NotFound";
 import EditAppointmentForm from "./EditAppointmentForm";
 
-const App = ({ onDelete, appointments }) => {
+const App = ({ appointments }) => {
   const { deletePatient } = useContext(UserContext);
 
   const handleDeleteClick = (id) => {

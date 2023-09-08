@@ -9,10 +9,10 @@ function Profile() {
 
   const navigate = useNavigate();
 
+  // tell user in context that you have a new appointment 
+  
   useEffect(() => {
-    if (currentUser) {
-      setSelectedCategory("all");
-    }
+    setSelectedCategory("all");
   }, [currentUser]);
 
   const goBack = () => navigate(-1);

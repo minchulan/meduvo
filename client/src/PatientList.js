@@ -21,10 +21,9 @@ const PatientList = () => {
   const [showForm, setShowForm] = useState(false);
   const [patientFormData, setPatientFormData] = useState(initialPatientState);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [errorMessages, setErrorMessages] = useState([]);
   const [showError, setShowError] = useState(false);
   
-  const { currentUser, patients, addPatient, errors } = useContext(UserContext);
+  const { currentUser, patients, addPatient, errors, setErrors } = useContext(UserContext);
 
   const navigate = useNavigate();
   
@@ -66,31 +65,31 @@ const PatientList = () => {
       setPatientFormData(initialPatientState);
       setShowForm(false);
       setShowError(false);
-      setErrorMessages([]);
+      setErrors([]);
       setTimeout(() => {
         setShowConfirmation(false);
       }, 2000);
     } else {
-      setErrorMessages(["You do not have admin permissions to create a patient."]);
+      setErrors(["You do not have admin permissions to create a patient."]);
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
-        setErrorMessages([]);
+        setErrors([]);
       }, 2000);
     }
   };
 
   useEffect(() => {
-    if (errors.length > 0) {
-      setErrorMessages(errors);
+    if (errors && errors.length > 0) {
+      setErrors(errors);
       setShowError(true);
       const timeout = setTimeout(() => {
         setShowError(false);
-        setErrorMessages([]);
+        setErrors([]);
       }, 2000);
       return () => clearTimeout(timeout);
     }
-  }, [errors]);
+  }, [errors, setErrors]);
 
   const goBack = () => (navigate(`/`));
 
@@ -204,7 +203,7 @@ const PatientList = () => {
             onChange={handleChange}
             className="form-input"
           />
-          <label htmlFor="language-preferences" className="form-label">
+          <label htmlFor="language_preferences" className="form-label">
             Language Preferences:
           </label>
           <input

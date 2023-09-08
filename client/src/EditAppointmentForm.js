@@ -24,13 +24,8 @@ const EditAppointmentForm = ({ appointment, onUpdate }) => {
 
 const handleFormSubmit = (e) => {
   e.preventDefault();
-
-  const formattedDate = new Date(editedAppointment.date)
-    .toISOString()
-    .slice(0, 10);
-
+  const formattedDate = new Date(editedAppointment.date).toISOString().slice(0, 10);
   const updatedAppointment = { ...editedAppointment, date: formattedDate };
-
   onUpdate(updatedAppointment);
 };
 
