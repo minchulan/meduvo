@@ -34,8 +34,6 @@ const AppointmentCard = ({ appointment, patient, setPatient }) => {
           return appointment;
         }
       })
-
-      setAppointments([...appointments, updatedAppointments]);
       setPatient((prevPatient) => ({ ...prevPatient, appointments: updatedAppointments }));
     });
   };

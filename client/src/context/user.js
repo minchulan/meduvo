@@ -200,54 +200,57 @@ function UserProvider({ children }) {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(appointmentData),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json().then((data) => {
-            // Update state with the new data
-            setPatients((prevPatients) =>
-              prevPatients.map((patient) => {
-                if (patient.id === patientId) {
-                  // Find the appointment to update
-                  const updatedAppointments = patient.appointments.map(
-                    (appointment) =>
-                      appointment.id === appointmentId
-                        ? { ...appointment, ...data }
-                        : appointment
-                  );
-                  // Return the patient with the updated appointments
-                  return { ...patient, appointments: updatedAppointments };
-                }
-                return patient;
-              })
-            );
-            return data;
-          });
-        } else {
-          return res.json().then((data) => {
-            setErrors(data.errors);
-          });
-        }
-      })
+    }).then((res) => {
+      if (res.ok) {
+        return res.json().then((data) => {
+          // Update state with the new data
+          setPatients((prevPatients) =>
+            prevPatients.map((patient) => {
+              if (patient.id === patientId) {
+                // Find the appointment to update
+                const updatedAppointments = patient.appointments.map(
+                  (appointment) =>
+                    appointment.id === appointmentId
+                      ? { ...appointment, ...data }
+                      : appointment
+                );
+                // Return the patient with the updated appointments
+                return { ...patient, appointments: updatedAppointments };
+              }
+              return patient;
+            })
+          );
+          return data;
+        });
+      } else {
+        return res.json().then((data) => {
+          setErrors(data.errors);
+        });
+      }
+    });
   };
 
   // DELETE AN APPOINTMENT
   const deleteAppointment = (appointmentId) => {
     fetch(`/appointments/${appointmentId}`, {
       method: "DELETE",
-    }).then((res) => {
-      if (res.ok) {
-        setPatients((patient) => {
-          patient.appointments.map((appointment) => {
-            return appointment.id !== appointmentId
-          })
-        })
-      } else {
-        res.json().then((data) => {
-          setErrors([data.errors]);
-        });
-      }
-    });
+    })
+      .then((res) => {
+        if (res.ok) {
+          setPatients((prevPatients) =>
+            prevPatients.map((patient) => ({
+              ...patient,
+              appointments: patient.appointments.filter(
+                (appointment) => appointment.id !== appointmentId
+              ),
+            }))
+          );
+        } else {
+          res.json().then((data) => {
+            setErrors(data.errors);
+          });
+        }
+      })
   };
 
   return (
