@@ -17,7 +17,7 @@ const initialPatientState = {
   language_preferences: ""
 };
 
-const PatientList = ({onAddAppointment}) => {
+const PatientList = () => {
   const [showForm, setShowForm] = useState(false);
   const [patientFormData, setPatientFormData] = useState(initialPatientState);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -34,7 +34,6 @@ const PatientList = ({onAddAppointment}) => {
       key={patient.id}
       patient={patient}
       appointment={patient.appointments}
-      onAddAppointment={onAddAppointment}
     />
   ));
 
@@ -155,6 +154,7 @@ const PatientList = ({onAddAppointment}) => {
             value={dob}
             onChange={handleChange}
             className="form-input"
+            autoComplete="off"
           />
           <label htmlFor="phone" className="form-label">
             Phone Number:
@@ -205,31 +205,6 @@ const PatientList = ({onAddAppointment}) => {
             placeholder="E.g., Rash with penicillin"
             autoComplete="on"
             value={allergies}
-            onChange={handleChange}
-            className="form-input"
-          />
-          <label htmlFor="language_preferences" className="form-label">
-            Language Preferences:
-          </label>
-          {/* <input
-            type="text"
-            id="language_preferences"
-            name="language_preferences"
-            placeholder="E.g., Spanish"
-            autoComplete="on"
-            value={language_preferences}
-            onChange={handleChange}
-            className="form-input"
-          /> */}
-          <label htmlFor="notes" className="form-label">
-            Quick notes:
-          </label>
-          <textarea
-            id="notes"
-            name="notes"
-            placeholder="Add any pertinent patient information..."
-            autoComplete="on"
-            value={notes}
             onChange={handleChange}
             className="form-input"
           />
@@ -313,3 +288,12 @@ const PatientList = ({onAddAppointment}) => {
 };
 
 export default PatientList;
+
+
+/*
+  also possible to add fetchPatients() in this component, instead of in user context. then just have the provider provide fetchPatients and call it in this component upon mount with a useEffect. I.e.,
+      useEffect(() => {
+        fetchPatients()
+      }, [])
+
+*/

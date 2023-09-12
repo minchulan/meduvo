@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "./context/user";
 import { NavLink } from "react-router-dom";
 
@@ -12,6 +12,11 @@ const Signup = () => {
   const { signup, showForm, errors, setErrors } = useContext(UserContext);
 
   const { email, password } = formData;
+
+  useEffect(() => {
+    setErrors([]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleChange = (e) => {
     setFormData({

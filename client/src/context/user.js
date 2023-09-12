@@ -33,7 +33,23 @@ function UserProvider({ children }) {
 
   useEffect(() => {
     fetchUserData();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setCurrentUser, setPatients]);
+
+  // GET ALL PATIENTS
+  const fetchPatients = () => {
+    fetch("/patients").then((resp) => {
+      if (resp.ok) {
+        resp.json().then((data) => {
+          setPatients(data);
+        });
+      } else {
+        resp.json().then((data) => {
+          setErrors(data.error);
+        });
+      }
+    });
+  };
 
   // LOGIN
   const login = (user) => {
@@ -87,21 +103,6 @@ function UserProvider({ children }) {
     });
   };
 
-  // GET ALL PATIENTS
-  const fetchPatients = () => {
-    fetch("/patients").then((resp) => {
-      if (resp.ok) {
-        resp.json().then((data) => {
-          setPatients(data);
-        });
-      } else {
-        resp.json().then((data) => {
-          setErrors(data.error);
-        });
-      }
-    });
-  };
-
   // ADD A PATIENT
   const addPatient = (patient) => {
     fetch("/patients", {
@@ -131,8 +132,6 @@ function UserProvider({ children }) {
     }).then((res) => {
       if (res.ok) {
         return res.json().then((data) => {
-          console.log("Updated patient data:", data);
-          // Update the patient in the patients array with the new data
           setPatients((patients) =>
             patients.map((patient) =>
               patient.id === id ? { ...patient, ...data } : patient
@@ -183,7 +182,7 @@ function UserProvider({ children }) {
       if (resp.ok) {
         resp.json().then((data) => {
           const updatedPatients = patients.map((patient) => {
-            if (patient.id === id) {
+            if (patient.id === parseInt(id)) {
               return {
                 ...patient,
                 appointments: [...patient.appointments, data],
@@ -192,13 +191,20 @@ function UserProvider({ children }) {
             return patient;
           });
           setPatients(updatedPatients);
+          // add to user's appointments also
+          const updatedUser = {
+            ...currentUser,
+            appointments: [...currentUser.appointments, data],
+          };
+          setCurrentUser(updatedUser);
         });
       } else {
         resp.json().then((data) => {
-          setErrors(data.errors);
+          setErrors(
+            Object.entries(data.errors).map((e) => `${e[0]} : ${e[1]}`)
+          );
         });
       }
-      fetchPatients();
     });
   };
 
@@ -230,10 +236,24 @@ function UserProvider({ children }) {
             return patient;
           });
           setPatients(updatedPatients);
+
+          // Update currentUser to reflect the changes
+          const updatedUser = {
+            ...currentUser,
+            appointments: currentUser.appointments.map((appointment) => {
+              if (appointment.id === appointmentId) {
+                return { ...appointment, ...data };
+              }
+              return appointment;
+            }),
+          };
+          setCurrentUser(updatedUser);
         });
       } else {
         resp.json().then((data) => {
-          setErrors(data.errors);
+          setErrors(
+            Object.entries(data.errors).map((e) => `${e[0]} : ${e[1]}`)
+          );
         });
       }
     });
@@ -253,6 +273,15 @@ function UserProvider({ children }) {
             ),
           }))
         );
+
+        // Update currentUser to remove the deleted appointment
+        const updatedUser = {
+          ...currentUser,
+          appointments: currentUser.appointments.filter(
+            (appointment) => appointment.id !== appointmentId
+          ),
+        };
+        setCurrentUser(updatedUser);
       } else {
         res.json().then((data) => {
           setErrors(data.errors);
@@ -281,6 +310,7 @@ function UserProvider({ children }) {
         setErrors,
         showForm,
         fetchUserData,
+        fetchPatients,
       }}
     >
       {children}
@@ -289,3 +319,9 @@ function UserProvider({ children }) {
 }
 
 export { UserContext, UserProvider };
+
+
+/*
+
+
+*/

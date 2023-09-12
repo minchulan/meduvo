@@ -3,7 +3,7 @@ class UserAppointmentsSerializer < ActiveModel::Serializer
 
   def patient
     {
-      name: self.object.patient.full_name,
+      full_name: self.object.patient.full_name,
       dob: self.object.patient.dob.strftime('%m/%d/%Y'),
     }
   end 

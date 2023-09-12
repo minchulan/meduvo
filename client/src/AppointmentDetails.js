@@ -31,6 +31,8 @@ const AppointmentDetails = () => {
     return <div>Loading appointment details...</div>;
   }
 
+  console.log({appointment})
+
   return (
     <div className="appointment-details-container">
       <h2>Appointment Details</h2>

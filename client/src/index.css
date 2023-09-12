@@ -724,84 +724,7 @@ textarea.form-control {
   background-color: #badbff;
 }
 
-/* Appointment List  */
-/* AppointmentList.css */
-
-.appointment-list {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.filter-container {
-  margin-bottom: 20px;
-}
-
-label {
-  margin-right: 10px;
-}
-
-select {
-  padding: 8px;
-  font-size: 16px;
-}
-
-p {
-  font-size: 18px;
-}
-
-.form-buttons {
-  margin-top: 20px;
-}
-
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-right: 10px;
-}
-
-.add-appointment-button {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-}
-
-.confirmation-message {
-  color: #28a745;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-.link-button {
-  text-decoration: none;
-  color: #007bff;
-  margin-right: 10px;
-}
-
-.go-back-button {
-  background-color: #ffffff;
-  color: #333333;
-  border: 1px solid #cccccc;
-  border-radius: 5px;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.go-back-button:hover {
-  background-color: #f5f5f5;
-}
-
 /* Patient Appointments   */
-
 .patient-appointments-container {
   font-family: Arial, sans-serif;
   margin: 20px;
@@ -1030,8 +953,6 @@ h2 {
 
 
 /* User Page Styles  */
-/* UserPage.css */
-
 .user-page-container {
   max-width: 2000px;
   padding: 40px;
@@ -1084,7 +1005,6 @@ h2 {
 
 
 /* Appointment Details */
-
 .category-mtm {
   background-color: blue;
   color: white;

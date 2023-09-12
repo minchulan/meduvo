@@ -34,7 +34,6 @@ const NewAppointmentForm = ({ submitButtonStyle, onAddAppointment }) => {
 
   const handleSubmitNewAppointment = (e) => {
     e.preventDefault();
-    console.log("Patient ID:", patientId)
     const appointmentData = {
       ...newAppointmentFormData,
       patient_id: patientId,
@@ -89,7 +88,7 @@ const NewAppointmentForm = ({ submitButtonStyle, onAddAppointment }) => {
   return (
     <div className="new-appointment-container">
       <br />
-      <h2>New Appointment</h2>
+      <h2>New Appointment for {patient && patient.full_name}</h2>
       {errors && errors.length > 0 && (
         <div className="error-container">
           {errors.map((error, index) => (
@@ -111,9 +110,9 @@ const NewAppointmentForm = ({ submitButtonStyle, onAddAppointment }) => {
         />
         <select id="category" value={category} onChange={handleChange}>
           <option value="">Select Category</option>
-          <option value="MSC">MSC</option>
+          <option value="msc">MSC</option>
           <option value="Immunization">Immunization</option>
-          <option value="MTM">MTM</option>
+          <option value="mtm">MTM</option>
         </select>
         <input
           type="date"

@@ -1,11 +1,8 @@
-import React, { useContext, useState } from "react";
-import { UserContext } from "./context/user";
+import React, { useState } from "react";
 
 
 const EditAppointmentForm = ({ setIsEditing, appointment, onUpdateAppointment }) => {
   const [editedAppointment, setEditedAppointment] = useState(appointment);
-
-  const { errors } = useContext(UserContext);
 
   const handleInputChange = (e) => {
     const key = e.target.id;
@@ -38,6 +35,8 @@ const EditAppointmentForm = ({ setIsEditing, appointment, onUpdateAppointment })
     setIsEditing(false);
   };
 
+  console.log({appointment})
+
   return (
     <div className="edit-appointment-container">
       <h2>Edit Appointment</h2>
@@ -49,7 +48,7 @@ const EditAppointmentForm = ({ setIsEditing, appointment, onUpdateAppointment })
             name="category"
             value={editedAppointment.category}
             onChange={handleCategoryChange}
-            autoComplete="off"
+            autoComplete="on"
             required
           >
             <option value="">All Categories</option>
@@ -66,7 +65,7 @@ const EditAppointmentForm = ({ setIsEditing, appointment, onUpdateAppointment })
             name="name"
             value={editedAppointment.name}
             onChange={handleInputChange}
-            autoComplete="off"
+            autoComplete="on"
             required
           />
         </div>
@@ -78,7 +77,7 @@ const EditAppointmentForm = ({ setIsEditing, appointment, onUpdateAppointment })
             name="date"
             value={editedAppointment.date}
             onChange={handleInputChange}
-            autoComplete="off"
+            autoComplete="on"
             required
           />
         </div>
@@ -90,7 +89,7 @@ const EditAppointmentForm = ({ setIsEditing, appointment, onUpdateAppointment })
             name="location"
             value={editedAppointment.location}
             onChange={handleInputChange}
-            autoComplete="off"
+            autoComplete="on"
             required
           />
         </div>
@@ -101,7 +100,7 @@ const EditAppointmentForm = ({ setIsEditing, appointment, onUpdateAppointment })
             name="description"
             value={editedAppointment.description}
             onChange={handleInputChange}
-            autoComplete="off"
+            autoComplete="on"
             required
           />
         </div>

@@ -5,7 +5,7 @@ const NotFoundContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 25vh;
   background-color: #f2f2f2;
 `;
 

@@ -17,7 +17,7 @@ const PatientDetails = () => {
       const currentPatient = patients.find((p) => p.id === parseInt(id));
       setPatient(currentPatient);
     }
-  }, [id, patients]);
+  }, [id, patients, setErrors]);
 
   if (!patient) return <h2>Loading....</h2>;
 
@@ -108,15 +108,15 @@ const PatientDetails = () => {
             </button>
           )}
           <hr />
+          {errors && errors.length > 0 && (
+            <div className="error-container">{errors}</div>
+          )}
           <h2>Appointment(s)</h2>
           <NavLink to={`/patients/${id}/appointments/new`}>
             ✚ New Appointment
           </NavLink>
           {appointmentCards}
         </div>
-      )}
-      {errors && errors.length > 0 && (
-        <div className="error-container">{errors}</div>
       )}
       <hr />
       <button

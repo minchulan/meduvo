@@ -3,12 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from "./context/user";
 
 function Profile() {
-  const { fetchUserData, currentUser, logout, setErrors } = useContext(UserContext);
+  const {  currentUser, logout, setErrors } = useContext(UserContext);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchUserData();
+  useEffect(() => { 
+
+
   }, []);
 
   const goBack = () => navigate(-1);
@@ -50,7 +51,7 @@ function Profile() {
                 <div className="appointment-details">
                   <p>
                     <span className="patient-name">
-                      {appointment.patient.name}
+                      {appointment.patient.full_name}
                     </span>{" "}
                     ({appointment.patient.dob})
                   </p>

@@ -30,7 +30,7 @@ class PatientsController < ApplicationController
   private
 
   def patient_params
-    params.require(:patient).permit(:first_name, :last_name, :guardian, :gender, :dob, :address, :phone, :email, :allergies, :notes, :id, :language_preferences, :viewed_notice_of_privacy_practices, :created_at)
+    params.require(:patient).permit(:first_name, :last_name, :guardian, :gender, :dob, :address, :phone, :email, :allergies, :notes, :id, :viewed_notice_of_privacy_practices, :created_at)
   end 
 
   def find_patient
@@ -42,3 +42,12 @@ class PatientsController < ApplicationController
     render json: { errors: {User: "does not have admin permissions."}}, status: :forbidden unless permitted 
   end 
 end 
+
+# ~ patients#show ~
+# `find_patient` method retrieves the patient based on the `params[:id]`. If the patient is not found, it does not handle the error directly because it raises an `ActiveRecord::RecordNotFound` exception. 
+
+# if `current_user` is authorized in ApplicationController, and `find_patient` method successfully retrieves patient, the `show` action will render patient info as JSON. 
+
+# ActiveRecord::RecordNotFound -> if patient or user with specific ID is not found, `render_not_found` method in ApplicationController will handle it and return a JSON response with a "not found" status. 
+
+# `before_action` filter called `authorize_user` inherited from ApplicationController ensures user is logged in before any action is executed. If user is not logged in (i.e., `current_user` is `nil`), it will return "Not Authorized" response with a status of `:unauthorized`. 
