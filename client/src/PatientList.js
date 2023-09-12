@@ -17,7 +17,7 @@ const initialPatientState = {
   language_preferences: ""
 };
 
-const PatientList = () => {
+const PatientList = ({onAddAppointment}) => {
   const [showForm, setShowForm] = useState(false);
   const [patientFormData, setPatientFormData] = useState(initialPatientState);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -29,9 +29,14 @@ const PatientList = () => {
   
   const { first_name, last_name, dob, address, phone, allergies, email, guardian, notes, viewed_notice_of_privacy_practices, language_preferences } = patientFormData;
 
-  const patientCards = patients ? (patients.map((patient) => {
-    return <PatientCard key={patient.id} patient={patient} />
-  })) : (<div>Patient Not Found.</div>)
+  const patientCards = patients.map((patient) => (
+    <PatientCard
+      key={patient.id}
+      patient={patient}
+      appointment={patient.appointments}
+      onAddAppointment={onAddAppointment}
+    />
+  ));
 
   const handleChange = (e) => {
     const key = e.target.id;
@@ -206,7 +211,7 @@ const PatientList = () => {
           <label htmlFor="language_preferences" className="form-label">
             Language Preferences:
           </label>
-          <input
+          {/* <input
             type="text"
             id="language_preferences"
             name="language_preferences"
@@ -215,7 +220,7 @@ const PatientList = () => {
             value={language_preferences}
             onChange={handleChange}
             className="form-input"
-          />
+          /> */}
           <label htmlFor="notes" className="form-label">
             Quick notes:
           </label>

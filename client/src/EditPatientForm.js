@@ -2,15 +2,17 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "./context/user";
 import { useNavigate } from "react-router-dom";
 
-const EditPatientForm = ({ patient, onUpdate }) => {
+const EditPatientForm = ({ patient, onUpdate, setIsEditing }) => {
+
   // Format DOB to "YYYY-MM-DD"
   const formattedDOB = patient.dob
     ? new Date(patient.dob).toISOString().substring(0, 10)
     : "";
-  const [formData, setFormData] = useState({ ...patient, dob: formattedDOB });
+  const [formData, setFormData] = useState({ ...patient, dob: formattedDOB })
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+
   const { errors, setErrors } = useContext(UserContext);
 
   const handleChange = (e) => {
@@ -27,17 +29,19 @@ const EditPatientForm = ({ patient, onUpdate }) => {
   };
 
   const handleCancelClick = () => {
-    navigate(`/patients`);
+    setIsEditing(false);
   };
 
   return (
     <div className="edit-patient">
       <form onSubmit={handleSubmit}>
-        {errors ? errors.map((error, index) => (
-            <h2 key={index} style={{ color: "red" }}>
-              {error}
-            </h2>
-          )) : null}
+        {errors
+          ? errors.map((error, index) => (
+              <h2 key={index} style={{ color: "red" }}>
+                {error}
+              </h2>
+            ))
+          : null}
         <br />
         {isLoading ? (
           <p>Loading...</p>

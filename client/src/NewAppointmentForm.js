@@ -1,6 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "./context/user";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const initialAppointmentState = {
   name: "",
@@ -10,31 +10,38 @@ const initialAppointmentState = {
   description: "",
 };
 
-const NewAppointmentForm = ({ submitButtonStyle, onAppointmentAdded }) => {
-  const { addAppointment, currentUser, errors, setErrors } =
-    useContext(UserContext);
+const NewAppointmentForm = ({ submitButtonStyle, onAddAppointment }) => {
+  const [patient, setPatient] = useState(null);
+  const { patients, errors, setErrors } = useContext(UserContext);
   const [newAppointmentFormData, setNewAppointmentFormData] = useState(
     initialAppointmentState
   );
-
   const { patientId } = useParams();
 
   const navigate = useNavigate();
 
   const { name, category, location, date, description } =
     newAppointmentFormData;
+  
+  useEffect(() => {
+    if (patients.length > 0) {
+      const currentPatient = patients.find((patient) => (
+        patient.id === parseInt((patientId))
+      ))
+      setPatient(currentPatient)
+    }
+  }, [patientId, patients]);
 
   const handleSubmitNewAppointment = (e) => {
     e.preventDefault();
+    console.log("Patient ID:", patientId)
     const appointmentData = {
       ...newAppointmentFormData,
-      patient_id: currentUser.id,
+      patient_id: patientId,
     };
-    addAppointment(patientId, appointmentData, (newAppointment) => {
-      // Call the callback to pass the new appointment data to the parent component
-      onAppointmentAdded(newAppointment);
-      navigate(`/patients`);
-  });
+
+    onAddAppointment(patientId, appointmentData);
+    navigate(`/patients/${patientId}`)
   };
 
   const handleChange = (e) => {
@@ -47,8 +54,8 @@ const NewAppointmentForm = ({ submitButtonStyle, onAppointmentAdded }) => {
   };
 
   const handleCancelClick = () => {
-    navigate(`/patients/${patientId}`);
-  };
+    navigate(`/patients/${patientId}`)
+  }
 
   const handleGetLocation = () => {
     if (navigator.geolocation) {
@@ -103,7 +110,7 @@ const NewAppointmentForm = ({ submitButtonStyle, onAppointmentAdded }) => {
           autoComplete="off"
         />
         <select id="category" value={category} onChange={handleChange}>
-          <option value="disabled"> All Categories</option>
+          <option value="">Select Category</option>
           <option value="MSC">MSC</option>
           <option value="Immunization">Immunization</option>
           <option value="MTM">MTM</option>
@@ -143,11 +150,7 @@ const NewAppointmentForm = ({ submitButtonStyle, onAppointmentAdded }) => {
         <button type="submit" style={submitButtonStyle}>
           Add Appointment
         </button>
-        <button
-          type="button"
-          onClick={handleCancelClick}
-          style={cancelButtonStyle}
-        >
+        <button type="button" onClick={handleCancelClick} style={cancelButtonStyle}>
           Cancel
         </button>
       </form>
@@ -178,3 +181,12 @@ const getLocationButtonStyle = {
 };
 
 export default NewAppointmentForm;
+
+/*
+When the NewAppointment form is submitted, make a POST request to '/patients/:id/appointments`, with an appointment object. 
+
+After getting a response from the POST request, add the new appointment to the (specific) patient's list of appointments. Need to update this patient's object in the array of patients in global state. 
+
+[patientObj1, patientObj2, patientObj3]
+
+*/

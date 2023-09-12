@@ -9,7 +9,7 @@ class PatientsController < ApplicationController
   end
 
   def create #post '/patients'
-    patient = Patient.create!(patient_params) # creating an instance of Patient Class 
+    patient = Patient.create!(patient_params) 
     render json: patient, status: :created 
   end
 
@@ -42,18 +42,3 @@ class PatientsController < ApplicationController
     render json: { errors: {User: "does not have admin permissions."}}, status: :forbidden unless permitted 
   end 
 end 
-
-
-# see everyones patients, and in my own profile see only my patients 
-# methods that invoke our validations: `save`, `create`, `valid?`
-# `create` is two in one => new and save 
-
-# `.find` raises an exception rescued by ActiveRecord::RecordNotFound
-
-# extracted repetitive code where we find the patient by id, and made an instance variable bc instance variables are accessible to us in that instance of that controller. Before these actions (`before_action`), let's go ahead and run the `find_patient`, and create that instance variable. This will only happen for show, update, and destroy because we're going to have that id in the params.
-
-  # Then, we can create a new method called `is_owner?`
-  # def is_owner? 
-  #   permitted = @patient.user_id == current_user.id 
-  #   render json: {errors: {User: "does not own this"}}, status: :forbidden 
-  # end 

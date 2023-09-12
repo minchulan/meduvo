@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:email, :password)
+    params.require(:user).permit(:email, :password)
   end
 
   def find_user 
@@ -27,12 +27,3 @@ class UsersController < ApplicationController
     render_not_found unless @user 
   end 
 end
-
-  # def current_user 
-  #   @current_user ||= User.find_by_id(session[:user_id])
-  # end
-
-
-# skip before action: we need to let them sign up to our application, same applies for user logging in.
-
-# whenever we make a request to anyone else's account, it just shows our currently logged in user's account. 

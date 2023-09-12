@@ -11,8 +11,8 @@ function UserProvider({ children }) {
   const [showForm, setShowForm] = useState(true);
   const navigate = useNavigate();
 
-  // GET '/me', to: 'users#show'
-  useEffect(() => {
+  // FETCH USER DATA & UPDATE CURRENT USER STATE
+  const fetchUserData = () => {
     fetch("/me", {
       method: "GET",
       credentials: "include",
@@ -29,22 +29,11 @@ function UserProvider({ children }) {
         setErrors(["Authentication failed. Please login."]);
       }
     });
-  }, [setPatients]);
-
-  // GET ALL PATIENTS
-  const fetchPatients = () => {
-    fetch("/patients").then((resp) => {
-      if (resp.ok) {
-        resp.json().then((data) => {
-          setPatients(data);
-        });
-      } else {
-        resp.json().then((data) => {
-          setErrors(data.error);
-        });
-      }
-    });
   };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   // LOGIN
   const login = (user) => {
@@ -98,6 +87,21 @@ function UserProvider({ children }) {
     });
   };
 
+  // GET ALL PATIENTS
+  const fetchPatients = () => {
+    fetch("/patients").then((resp) => {
+      if (resp.ok) {
+        resp.json().then((data) => {
+          setPatients(data);
+        });
+      } else {
+        resp.json().then((data) => {
+          setErrors(data.error);
+        });
+      }
+    });
+  };
+
   // ADD A PATIENT
   const addPatient = (patient) => {
     fetch("/patients", {
@@ -127,9 +131,11 @@ function UserProvider({ children }) {
     }).then((res) => {
       if (res.ok) {
         return res.json().then((data) => {
+          console.log("Updated patient data:", data);
+          // Update the patient in the patients array with the new data
           setPatients((patients) =>
             patients.map((patient) =>
-              patient.id === id ? { ...patient, data } : patient
+              patient.id === id ? { ...patient, ...data } : patient
             )
           );
           return data;
@@ -169,61 +175,64 @@ function UserProvider({ children }) {
   const addAppointment = (id, appointmentData) => {
     fetch(`/patients/${id}/appointments`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(appointmentData),
-    }).then((res) => {
-      if (res.ok) {
-        res.json().then((data) => {
-          // Update the patient's appointments
-          setPatients((prevPatients) =>
-            prevPatients.map((patient) =>
-              patient.id === id
-                ? { ...patient, appointments: [...patient.appointments, data] }
-                : patient
-            )
-          );
-
-          // navigate to patient details page
-          navigate(`/patients/${id}`);
+    }).then((resp) => {
+      if (resp.ok) {
+        resp.json().then((data) => {
+          const updatedPatients = patients.map((patient) => {
+            if (patient.id === id) {
+              return {
+                ...patient,
+                appointments: [...patient.appointments, data],
+              };
+            }
+            return patient;
+          });
+          setPatients(updatedPatients);
         });
       } else {
-        res.json().then((data) => {
-          setErrors(Object.entries(data.errors).map((e) => `${e[0]} ${e[1]}`));
+        resp.json().then((data) => {
+          setErrors(data.errors);
         });
       }
+      fetchPatients();
     });
   };
 
   // UPDATE AN APPOINTMENT
-  const updateAppointment = (patientId, appointmentId, appointmentData) => {
+  const updateAppointment = (
+    patientId,
+    appointmentId,
+    updatedAppointmentData
+  ) => {
     return fetch(`/patients/${patientId}/appointments/${appointmentId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(appointmentData),
-    }).then((res) => {
-      if (res.ok) {
-        return res.json().then((data) => {
-          // Update state with the new data
-          setPatients((prevPatients) =>
-            prevPatients.map((patient) => {
-              if (patient.id === patientId) {
-                // Find the appointment to update
-                const updatedAppointments = patient.appointments.map(
-                  (appointment) =>
-                    appointment.id === appointmentId
-                      ? { ...appointment, ...data }
-                      : appointment
-                );
-                // Return the patient with the updated appointments
-                return { ...patient, appointments: updatedAppointments };
-              }
-              return patient;
-            })
-          );
-          return data;
+      body: JSON.stringify(updatedAppointmentData),
+    }).then((resp) => {
+      if (resp.ok) {
+        return resp.json().then((data) => {
+          const updatedPatients = patients.map((patient) => {
+            if (patient.id === patientId) {
+              return {
+                ...patient,
+                appointments: patient.appointments.map((appointment) => {
+                  if (appointment.id === appointmentId) {
+                    return { ...appointment, ...data };
+                  }
+                  return appointment;
+                }),
+              };
+            }
+            return patient;
+          });
+          setPatients(updatedPatients);
         });
       } else {
-        return res.json().then((data) => {
+        resp.json().then((data) => {
           setErrors(data.errors);
         });
       }
@@ -234,23 +243,22 @@ function UserProvider({ children }) {
   const deleteAppointment = (appointmentId) => {
     fetch(`/appointments/${appointmentId}`, {
       method: "DELETE",
-    })
-      .then((res) => {
-        if (res.ok) {
-          setPatients((prevPatients) =>
-            prevPatients.map((patient) => ({
-              ...patient,
-              appointments: patient.appointments.filter(
-                (appointment) => appointment.id !== appointmentId
-              ),
-            }))
-          );
-        } else {
-          res.json().then((data) => {
-            setErrors(data.errors);
-          });
-        }
-      })
+    }).then((res) => {
+      if (res.ok) {
+        setPatients((prevPatients) =>
+          prevPatients.map((patient) => ({
+            ...patient,
+            appointments: patient.appointments.filter(
+              (appointment) => appointment.id !== appointmentId
+            ),
+          }))
+        );
+      } else {
+        res.json().then((data) => {
+          setErrors(data.errors);
+        });
+      }
+    });
   };
 
   return (
@@ -272,6 +280,7 @@ function UserProvider({ children }) {
         errors,
         setErrors,
         showForm,
+        fetchUserData,
       }}
     >
       {children}

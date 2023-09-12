@@ -2,8 +2,8 @@ import React, { useContext, useState } from "react";
 import { UserContext } from "./context/user";
 import EditAppointmentForm from "./EditAppointmentForm";
 
-const AppointmentCard = ({ appointment, patient, setPatient }) => {
-  const { currentUser, appointments, setAppointments, deleteAppointment, updateAppointment } = useContext(UserContext);
+const AppointmentCard = ({ appointment }) => {
+  const { currentUser, deleteAppointment, updateAppointment } = useContext(UserContext);
   const [isEditing, setIsEditing] = useState(false);
 
   const renderCategory = (category) => {
@@ -23,20 +23,14 @@ const AppointmentCard = ({ appointment, patient, setPatient }) => {
     setIsEditing((isEditing) => !isEditing);
   };
 
-  // UPDATE APPOINTMENT
-  const handleAppointmentUpdate = (updatedAppointmentData, patientId) => {
-    updateAppointment(patientId, updatedAppointmentData.id, updatedAppointmentData).then(() => {
-      setIsEditing(false);
-      const updatedAppointments = patient.appointments.map((appointment) => {
-        if (appointment.id === updatedAppointmentData.id) {
-          return updatedAppointmentData;
-        } else {
-          return appointment;
-        }
-      })
-      setPatient((prevPatient) => ({ ...prevPatient, appointments: updatedAppointments }));
-    });
+  const handleUpdatedAppointment = (updatedAppointmentData) => {
+    updateAppointment(
+      appointment.patient_id,
+      appointment.id,
+      updatedAppointmentData
+    );
   };
+
 
   const handleDeleteAppointment = () => {
     deleteAppointment(appointment.id);
@@ -52,7 +46,7 @@ const AppointmentCard = ({ appointment, patient, setPatient }) => {
           <EditAppointmentForm
             appointment={appointment}
             setIsEditing={setIsEditing}
-            onUpdate={handleAppointmentUpdate}
+            onUpdateAppointment={handleUpdatedAppointment}
           />
         ) : (
           <>
@@ -63,6 +57,7 @@ const AppointmentCard = ({ appointment, patient, setPatient }) => {
             <p>Details: {appointment.description}</p>
           </>
         )}
+        {/* Render edit & delete buttons if currentUser owns the appointment(s) */}
         {isCurrentUser ? (
           <div className="card-actions">
             <button className="edit-button" onClick={handleAppointmentEditFlag}>

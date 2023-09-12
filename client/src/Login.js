@@ -33,7 +33,7 @@ const Login = () => {
     if (errors && errors.length > 0) {
       setTimeout(() => {
         setErrors([]); // Clear the errors after 5 seconds
-      }, 3000);
+      }, 5000);
     }
   };
 

@@ -16,6 +16,7 @@ class AppointmentsController < ApplicationController
   end
 
   def create
+    @patient = Patient.find(params[:patient_id])
     appointment = @patient.appointments.build(appointment_params)
     appointment.user = current_user
 

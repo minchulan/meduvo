@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { UserContext } from "./context/user";
 
-const EditAppointmentForm = ({ appointment, onUpdate }) => {
+
+const EditAppointmentForm = ({ setIsEditing, appointment, onUpdateAppointment }) => {
   const [editedAppointment, setEditedAppointment] = useState(appointment);
+
+  const { errors } = useContext(UserContext);
 
   const handleInputChange = (e) => {
     const key = e.target.id;
@@ -22,12 +26,17 @@ const EditAppointmentForm = ({ appointment, onUpdate }) => {
     });
   };
 
-const handleFormSubmit = (e) => {
-  e.preventDefault();
-  const formattedDate = new Date(editedAppointment.date).toISOString().slice(0, 10);
-  const updatedAppointment = { ...editedAppointment, date: formattedDate };
-  onUpdate(updatedAppointment);
-};
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    const updatedAppointmentObj = {
+      id: appointment.id,
+      ...editedAppointment,
+    };
+
+    onUpdateAppointment(updatedAppointmentObj)
+
+    setIsEditing(false);
+  };
 
   return (
     <div className="edit-appointment-container">
@@ -103,3 +112,12 @@ const handleFormSubmit = (e) => {
 };
 
 export default EditAppointmentForm;
+
+
+/*
+appointments#update
+With the EditAppointmentForm, make a PATCH request to '/patients/:patient_id/appointment/:id'
+
+Once you have successfully saved the edited appointment on the server, find a way to update the appointment in the application as well. You should also change the AppointmentCard component state to leave 'editing' mode.
+
+*/

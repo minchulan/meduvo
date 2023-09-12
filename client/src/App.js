@@ -22,10 +22,16 @@ import NotFound from "./NotFound";
 import EditAppointmentForm from "./EditAppointmentForm";
 
 const App = ({ appointments }) => {
-  const { deletePatient } = useContext(UserContext);
+  const { deletePatient, addAppointment } = useContext(UserContext);
 
+  // DELETE PATIENT
   const handleDeleteClick = (id) => {
     deletePatient(id);
+  };
+
+  // ADD APPOINTMENT
+  const handleAddAppointment = (id, newAppointmentObj) => {
+    addAppointment(id, newAppointmentObj);
   };
 
   return (
@@ -40,12 +46,19 @@ const App = ({ appointments }) => {
         <Route
           exact
           path="/patients/:id"
-          element={<PatientDetails appointments={appointments} onDelete={handleDeleteClick} />}
+          element={
+            <PatientDetails
+              appointments={appointments}
+              onDelete={handleDeleteClick}
+            />
+          }
         />
         <Route
           exact
           path="/patients/:patientId/appointments/new"
-          element={<NewAppointmentForm />}
+          element={
+            <NewAppointmentForm onAddAppointment={handleAddAppointment} />
+          }
         />
         <Route
           exact
