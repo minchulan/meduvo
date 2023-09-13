@@ -35,8 +35,6 @@ const EditAppointmentForm = ({ setIsEditing, appointment, onUpdateAppointment })
     setIsEditing(false);
   };
 
-  console.log({appointment})
-
   return (
     <div className="edit-appointment-container">
       <h2>Edit Appointment</h2>

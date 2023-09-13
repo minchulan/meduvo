@@ -72,14 +72,14 @@ const PatientList = () => {
       setErrors([]);
       setTimeout(() => {
         setShowConfirmation(false);
-      }, 2000);
+      }, 5000);
     } else {
       setErrors(["You do not have admin permissions to create a patient."]);
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
         setErrors([]);
-      }, 2000);
+      }, 5000);
     }
   };
 
@@ -90,7 +90,7 @@ const PatientList = () => {
       const timeout = setTimeout(() => {
         setShowError(false);
         setErrors([]);
-      }, 2000);
+      }, 5000);
       return () => clearTimeout(timeout);
     }
   }, [errors, setErrors]);
@@ -238,7 +238,7 @@ const PatientList = () => {
           </button>
         </form>
       ) : (
-        // Conditionally render the "Add patient" button based on admin status
+        // Conditionally render the "Add patient" button based on if admin
         currentUser &&
         currentUser.admin && (
           <button
@@ -254,6 +254,7 @@ const PatientList = () => {
       )}
       <br />
       <br />
+      {/* Render successful confirmation message */}
       {!showError && showConfirmation && (
         <div
           className="confirmation-message"
@@ -267,16 +268,6 @@ const PatientList = () => {
       <button
         className="go-back-button"
         onClick={goBack}
-        style={{
-          backgroundColor: "#ffffff",
-          color: "#333333",
-          border: "1px solid #cccccc",
-          borderRadius: "5px",
-          padding: "10px 20px",
-          fontSize: "16px",
-          fontWeight: "bold",
-          cursor: "pointer",
-        }}
       >
         ◁ Go Back
       </button>
@@ -288,11 +279,3 @@ const PatientList = () => {
 };
 
 export default PatientList;
-
-/*
-  also possible to add fetchPatients() in this component, instead of in user context. then just have the provider provide fetchPatients and call it in this component upon mount with a useEffect. 
-  I.e.,
-      useEffect(() => {
-        fetchPatients()
-      }, [])
-*/

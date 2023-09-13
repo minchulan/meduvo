@@ -17,7 +17,7 @@ const PatientDetails = () => {
       const currentPatient = patients.find((p) => p.id === parseInt(id));
       setPatient(currentPatient);
     }
-  }, [id, patients, setErrors]);
+  }, [id, patients]);
 
   if (!patient) return <h2>Loading....</h2>;
 
@@ -28,7 +28,7 @@ const PatientDetails = () => {
   const handleConfirmDeletePatient = () => {
     deletePatient(id);
     setConfirmDelete(false);
-    navigate("/patients"); // Redirect to the patients list after deletion
+    navigate("/patients");
   };
 
   const handlePatientUpdate = (updatedPatient) => {
@@ -122,16 +122,6 @@ const PatientDetails = () => {
       <button
         className="go-back-button"
         onClick={goBack}
-        style={{
-          backgroundColor: "#ffffff",
-          color: "#333333",
-          border: "1px solid #cccccc",
-          borderRadius: "5px",
-          padding: "10px 20px",
-          fontSize: "16px",
-          fontWeight: "bold",
-          cursor: "pointer",
-        }}
       >
         ◁ Go Back
       </button>

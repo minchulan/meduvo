@@ -10,16 +10,12 @@ const initialAppointmentState = {
   description: "",
 };
 
-const NewAppointmentForm = ({ submitButtonStyle, onAddAppointment }) => {
+const NewAppointmentForm = ({ onAddAppointment }) => {
   const [patient, setPatient] = useState(null);
   const { patients, errors, setErrors } = useContext(UserContext);
-  const [newAppointmentFormData, setNewAppointmentFormData] = useState(
-    initialAppointmentState
-  );
+  const [newAppointmentFormData, setNewAppointmentFormData] = useState(initialAppointmentState);
   const { patientId } = useParams();
-
   const navigate = useNavigate();
-
   const { name, category, location, date, description } =
     newAppointmentFormData;
   
@@ -40,11 +36,12 @@ const NewAppointmentForm = ({ submitButtonStyle, onAddAppointment }) => {
     };
 
     onAddAppointment(patientId, appointmentData);
+
     navigate(`/patients/${patientId}`)
   };
 
   const handleChange = (e) => {
-    setErrors([]); // clear errors when user interacts with form
+    setErrors([]); 
     const key = e.target.id;
     setNewAppointmentFormData({
       ...newAppointmentFormData,
@@ -56,30 +53,9 @@ const NewAppointmentForm = ({ submitButtonStyle, onAddAppointment }) => {
     navigate(`/patients/${patientId}`)
   }
 
-  const handleGetLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-
-          setNewAppointmentFormData((prevData) => ({
-            ...prevData,
-            location: `${latitude}, ${longitude}`,
-          }));
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  };
-
   const ephemeralErrors = () => {
     if (errors && errors.length > 0) {
-      setErrors([]); // Clear the errors immediately on focus
+      setErrors([]);
     }
   };
 
@@ -88,7 +64,7 @@ const NewAppointmentForm = ({ submitButtonStyle, onAddAppointment }) => {
   return (
     <div className="new-appointment-container">
       <br />
-      <h2>New Appointment for {patient && patient.full_name}</h2>
+      <h2>New Appointment ({patient && patient.full_name})</h2>
       {errors && errors.length > 0 && (
         <div className="error-container">
           {errors.map((error, index) => (
@@ -132,9 +108,6 @@ const NewAppointmentForm = ({ submitButtonStyle, onAddAppointment }) => {
           onFocus={() => setErrors([])}
           autoComplete="off"
         />
-        <button onClick={handleGetLocation} style={getLocationButtonStyle}>
-          📍 Get Location
-        </button>
         <br />
         <br />
         <textarea
@@ -146,37 +119,15 @@ const NewAppointmentForm = ({ submitButtonStyle, onAddAppointment }) => {
           onFocus={() => setErrors([])}
           autoComplete="off"
         />
-        <button type="submit" style={submitButtonStyle}>
+        <button type="submit">
           Add Appointment
         </button>
-        <button type="button" onClick={handleCancelClick} style={cancelButtonStyle}>
+        <button type="button" onClick={handleCancelClick} className="cancel-button">
           Cancel
         </button>
       </form>
     </div>
   );
-};
-
-const cancelButtonStyle = {
-  backgroundColor: "#ffffff",
-  color: "#333333",
-  border: "none",
-  borderRadius: "3px",
-  padding: "10px 20px",
-  fontSize: "16px",
-  cursor: "pointer",
-  marginLeft: "10px",
-};
-
-const getLocationButtonStyle = {
-  backgroundColor: "#007bff",
-  color: "#ffffff",
-  border: "none",
-  borderRadius: "3px",
-  padding: "5px 10px",
-  fontSize: "14px",
-  cursor: "pointer",
-  transition: "background-color 0.2s, color 0.2s",
 };
 
 export default NewAppointmentForm;
