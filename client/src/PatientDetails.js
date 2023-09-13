@@ -106,7 +106,17 @@ const PatientDetails = () => {
             <button className="delete-button" onClick={handleDeletePatient}>
               🗑️ Delete
             </button>
-          )}
+            )}
+          <br />
+          <hr />
+          {/* Render a unique list of provider emails / users who own the appointment associated with patient */}
+          <h2>Providers:</h2>
+          <ul>
+            {patient.unique_provider_emails.map((email, index) => (
+              <li key={index}>{email}</li>
+            ))}
+          </ul>
+          <br />
           <hr />
           {errors && errors.length > 0 && (
             <div className="error-container">{errors}</div>
@@ -119,10 +129,7 @@ const PatientDetails = () => {
         </div>
       )}
       <hr />
-      <button
-        className="go-back-button"
-        onClick={goBack}
-      >
+      <button className="go-back-button" onClick={goBack}>
         ◁ Go Back
       </button>
       <br />
