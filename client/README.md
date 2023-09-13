@@ -1,3 +1,66 @@
+# Meduvo - Calendly for Patient Care Scheduling
+
+Meduvo is a full-stack web application designed to simplify and streamline patient care scheduling. It provides a user-friendly interface for patients, caregivers, and healthcare providers to efficiently manage appointments, ensuring a seamless experience in healthcare management.
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Learning Goals](#learning-goals)
+- [Requirements](#requirements)
+- [Project Setup](#project-setup)
+- [Models and Relationships](#models-and-relationships)
+- [Getting Started with Create React App](#react)
+
+## Introduction
+
+Welcome to Meduvo, your platform for managing patient care scheduling. In this project, I've combined the power of a Rails API backend with a React frontend to create a robust healthcare scheduling solution. Meduvo is designed to streamline patient scheduling and care coordination for healthcare practitioners, including doctors, pharmacists, and other healthcare providers. It allows users to efficiently manage patient appointments, update patient information, and keep track of important healthcare schedules.
+
+## Learning Goals
+
+The primary objectives of the Meduvo project are as follows:
+
+- Build a full-stack application using a Rails backend and a React frontend.
+- Implement at least three models on the backend, including reciprocal many-to-many relationships using has-many-through relationships with a joins table.
+- Enable full CRUD (Create, Read, Update, Delete) actions for the resources, including form-based updates.
+- Follow RESTful routing conventions for backend routes.
+- Implement active record validations for model attributes.
+- Ensure proper handling of error responses and front-end state updates.
+- Create multiple client-side routes using React Router for seamless navigation.
+- Implement user authentication and authorization, including secure password protection.
+
+## Requirements
+
+To meet the project requirements, Meduvo adheres to the following criteria:
+
+- Use a Rails API backend combined with a React frontend.
+- Feature at least three models on the backend with a reciprocal many-to-many relationship.
+- Implement full CRUD actions for resources, including form-based updates.
+- Maintain RESTful routing conventions for backend routes.
+- Utilize active record validations for model attributes.
+- Manage error responses and front-end state updates effectively.
+- Create and manage multiple client-side routes using React Router.
+- Implement user authentication and authorization with secure password protection.
+
+## Project Setup
+
+To kickstart your Meduvo project, you can use the [project template](https://github.com/learn-co-curriculum/project-template-react-rails-api) provided. The template is configured similarly to the labs from this phase, making it easier to deploy your app to platforms like Render. Refer to the template's README for detailed setup instructions.
+
+Alternatively, you can choose to set up your project from scratch using this [project setup guide](https://github.com/learn-co-curriculum/react-rails-project-setup-guide).
+
+
+### Models and Relationships
+
+Models for Meduvo:
+- User
+- Patient
+- Appointment
+
+Relationships:
+- User has many Appointments and has many Patients through Appointments.
+- Patient has many appointments and has many users through Appointments.
+- Appointment belongs to User and Patient.
+
+## React
 # Getting Started with Create React App
 
 Thinking in React: https://reactjs.org/docs/thinking-in-react.html
