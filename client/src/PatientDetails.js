@@ -52,7 +52,7 @@ const PatientDetails = () => {
   const ephemeralErrors = () => {
     if (errors && errors.length > 0) {
       setTimeout(() => {
-        setErrors([]); // Clear the errors after 5 seconds
+        setErrors([]);
       }, 5000);
     }
   };
@@ -143,17 +143,3 @@ const PatientDetails = () => {
 };
 
 export default PatientDetails;
-
-// ADD APPOINTMENT LOGIC
-/*
-the PatientDetails component directly maps through the patient's appointments and renders the AppointmentCard component. This ensures that the AppointmentCard component receives the latest appointments, including the newly created ones.
-
-App
- |--- PatientList
-        |--- PatientCard
-                |--- PatientDetails 
-                        |--- AppointmentCard 
-                                |---EditAppointmentForm
-                        |--- NewAppointmentForm  : newAptObj ^ PatientCard
-                        |--- EditPatientForm
-*/

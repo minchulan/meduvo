@@ -24,12 +24,12 @@ import EditAppointmentForm from "./EditAppointmentForm";
 const App = ({ appointments }) => {
   const { deletePatient, addAppointment } = useContext(UserContext);
 
-  // DELETE PATIENT
+  // DELETE A PATIENT
   const handleDeleteClick = (id) => {
     deletePatient(id);
   };
 
-  // ADD APPOINTMENT
+  // ADD AN APPOINTMENT
   const handleAddAppointment = (id, newAppointmentObj) => {
     addAppointment(id, newAppointmentObj);
   };

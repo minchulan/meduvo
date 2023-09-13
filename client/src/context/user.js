@@ -5,10 +5,10 @@ const UserContext = createContext();
 
 function UserProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
-  const [errors, setErrors] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(false);
   const [patients, setPatients] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [showForm, setShowForm] = useState(true);
+  const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
 
   // FETCH USER DATA & UPDATE CURRENT USER STATE

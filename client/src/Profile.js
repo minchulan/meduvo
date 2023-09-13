@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from "./context/user";
 
@@ -6,11 +6,6 @@ function Profile() {
   const {  currentUser, logout, setErrors } = useContext(UserContext);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => { 
-
-
-  }, []);
 
   const goBack = () => navigate(-1);
 

@@ -38,7 +38,7 @@ const Signup = () => {
   const ephemeralErrors = () => {
     if (errors && errors.length > 0) {
       setTimeout(() => {
-        setErrors([]); // Clear the errors after 5 seconds
+        setErrors([]);
       }, 5000);
     }
   };

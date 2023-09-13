@@ -111,12 +111,3 @@ const EditAppointmentForm = ({ setIsEditing, appointment, onUpdateAppointment })
 };
 
 export default EditAppointmentForm;
-
-
-/*
-appointments#update
-With the EditAppointmentForm, make a PATCH request to '/patients/:patient_id/appointment/:id'
-
-Once you have successfully saved the edited appointment on the server, find a way to update the appointment in the application as well. You should also change the AppointmentCard component state to leave 'editing' mode.
-
-*/

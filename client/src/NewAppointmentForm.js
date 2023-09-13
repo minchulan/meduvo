@@ -105,7 +105,7 @@ const NewAppointmentForm = ({ submitButtonStyle, onAddAppointment }) => {
           placeholder="Name of appointment"
           value={name}
           onChange={handleChange}
-          onFocus={() => setErrors([])} // Clear errors on focus
+          onFocus={() => setErrors([])}
           autoComplete="off"
         />
         <select id="category" value={category} onChange={handleChange}>
@@ -180,12 +180,3 @@ const getLocationButtonStyle = {
 };
 
 export default NewAppointmentForm;
-
-/*
-When the NewAppointment form is submitted, make a POST request to '/patients/:id/appointments`, with an appointment object. 
-
-After getting a response from the POST request, add the new appointment to the (specific) patient's list of appointments. Need to update this patient's object in the array of patients in global state. 
-
-[patientObj1, patientObj2, patientObj3]
-
-*/

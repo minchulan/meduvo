@@ -48,7 +48,7 @@ const PatientList = () => {
     });
   };
 
-  // ADD PATIENT 
+  // ADD A PATIENT 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (currentUser && currentUser.admin) {
@@ -289,11 +289,10 @@ const PatientList = () => {
 
 export default PatientList;
 
-
 /*
-  also possible to add fetchPatients() in this component, instead of in user context. then just have the provider provide fetchPatients and call it in this component upon mount with a useEffect. I.e.,
+  also possible to add fetchPatients() in this component, instead of in user context. then just have the provider provide fetchPatients and call it in this component upon mount with a useEffect. 
+  I.e.,
       useEffect(() => {
         fetchPatients()
       }, [])
-
 */

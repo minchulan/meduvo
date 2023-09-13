@@ -31,7 +31,6 @@ const AppointmentCard = ({ appointment }) => {
     );
   };
 
-
   const handleDeleteAppointment = () => {
     deleteAppointment(appointment.id);
   };
