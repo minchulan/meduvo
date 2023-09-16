@@ -100,7 +100,13 @@ const PatientList = () => {
   return (
     <div className="patient-list">
       {errors && errors.length > 0 && (
-        <div className="error-container">{errors}</div>
+        <div className="error-container">
+          <ul className="error-list">
+            {errors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
+        </div>
       )}
       {showForm ? (
         <form onSubmit={handleSubmit} className="form-container">
@@ -265,10 +271,7 @@ const PatientList = () => {
       )}
       <ul>{patientCards}</ul>
       <hr />
-      <button
-        className="go-back-button"
-        onClick={goBack}
-      >
+      <button className="go-back-button" onClick={goBack}>
         ◁ Go Back
       </button>
       <br />

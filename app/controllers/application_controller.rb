@@ -24,6 +24,7 @@ class ApplicationController < ActionController::API
   end 
 end
 
+
 # ActiveRecord::RecordNotFound
 #ActiveRecord::RecordInvalid
 

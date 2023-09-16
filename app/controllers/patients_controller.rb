@@ -5,7 +5,6 @@ class PatientsController < ApplicationController
   
   def index #get '/patients'
     render json: Patient.all, status: :ok 
-    # render json: Patient.all.to_json(include: :appointment)
   end
 
   def create #post '/patients'

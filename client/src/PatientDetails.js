@@ -106,7 +106,7 @@ const PatientDetails = () => {
             <button className="delete-button" onClick={handleDeletePatient}>
               🗑️ Delete
             </button>
-            )}
+          )}
           <br />
           <hr />
           {/* Render a unique list of provider emails / users who own the appointment associated with patient */}
@@ -119,7 +119,13 @@ const PatientDetails = () => {
           <br />
           <hr />
           {errors && errors.length > 0 && (
-            <div className="error-container">{errors}</div>
+            <div className="error-container">
+              <ul className="error-list">
+                {errors.map((error, index) => (
+                  <li key={index}>{error}</li>
+                ))}
+              </ul>
+            </div>
           )}
           <h2>Appointment(s)</h2>
           <NavLink to={`/patients/${id}/appointments/new`}>

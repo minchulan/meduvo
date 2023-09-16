@@ -6,12 +6,14 @@ const UserContext = createContext();
 function UserProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [patients, setPatients] = useState([]);
+  const [uniqueProviderEmails, setUniqueProviderEmails] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [showForm, setShowForm] = useState(true);
   const [errors, setErrors] = useState([]);
+
   const navigate = useNavigate();
 
-  // FETCH USER DATA & UPDATE CURRENT USER STATE
+  // FETCH USER DATA
   const fetchUserData = () => {
     fetch("/me", {
       method: "GET",
@@ -181,6 +183,8 @@ function UserProvider({ children }) {
     }).then((resp) => {
       if (resp.ok) {
         resp.json().then((data) => {
+          console.log(data);
+          // Update patient state
           const updatedPatients = patients.map((patient) => {
             if (patient.id === parseInt(id)) {
               return {
@@ -191,12 +195,19 @@ function UserProvider({ children }) {
             return patient;
           });
           setPatients(updatedPatients);
-          // add to user's appointments also
+          // Update currentUser state
           const updatedUser = {
             ...currentUser,
             appointments: [...currentUser.appointments, data],
           };
           setCurrentUser(updatedUser);
+          // Update uniqueProviderEmails state
+          const updatedUniqueProviderEmails = [
+            ...uniqueProviderEmails,
+            data.user.email,
+          ];
+          setUniqueProviderEmails(updatedUniqueProviderEmails);
+          console.log(updatedUniqueProviderEmails);
         });
       } else {
         resp.json().then((data) => {
@@ -311,6 +322,7 @@ function UserProvider({ children }) {
         showForm,
         fetchUserData,
         fetchPatients,
+        uniqueProviderEmails,
       }}
     >
       {children}
@@ -320,8 +332,12 @@ function UserProvider({ children }) {
 
 export { UserContext, UserProvider };
 
-
+  
 /*
+I.e. adding a new appointment 'add new patient' button. patients state lives in parent component. how can we update state in the parent component when functionality to add new patient lives in child component? 
 
+Pass up onAdd function to pass down a callback function from parent component.
+pass callback function in parent component. update state in parent, and pass that state down to any components that need it. 
+updates to state are tied to our component tree. where we are able to pass state is tied to our component tree. 
 
 */

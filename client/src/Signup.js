@@ -99,7 +99,13 @@ const Signup = () => {
           </small>
           <hr />
           {errors && errors.length > 0 && (
-            <div className="error-container">{errors}</div>
+            <div className="error-container">
+              <ul className="error-list">
+                {errors.map((error, index) => (
+                  <li key={index}>{error}</li>
+                ))}
+              </ul>
+            </div>
           )}
         </>
       )}

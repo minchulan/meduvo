@@ -67,11 +67,11 @@ const NewAppointmentForm = ({ onAddAppointment }) => {
       <h2>New Appointment ({patient && patient.full_name})</h2>
       {errors && errors.length > 0 && (
         <div className="error-container">
-          {errors.map((error, index) => (
-            <div key={index} className="error-message">
-              {error}
-            </div>
-          ))}
+          <ul className="error-list">
+            {errors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
         </div>
       )}
       <form onSubmit={handleSubmitNewAppointment} className="appointment-form">
@@ -119,10 +119,12 @@ const NewAppointmentForm = ({ onAddAppointment }) => {
           onFocus={() => setErrors([])}
           autoComplete="off"
         />
-        <button type="submit">
-          Add Appointment
-        </button>
-        <button type="button" onClick={handleCancelClick} className="cancel-button">
+        <button type="submit">Add Appointment</button>
+        <button
+          type="button"
+          onClick={handleCancelClick}
+          className="cancel-button"
+        >
           Cancel
         </button>
       </form>
