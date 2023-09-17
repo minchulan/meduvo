@@ -3,11 +3,19 @@ import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from "./context/user";
 
 function Profile() {
-  const {  currentUser, logout, setErrors } = useContext(UserContext);
+  const { currentUser, logout, setErrors } = useContext(UserContext);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [categorySearchQuery, setCategorySearchQuery] = useState(""); // Initialize with an empty string
+
   const navigate = useNavigate();
 
   const goBack = () => navigate(-1);
+
+  const filteredAppointments = categorySearchQuery
+    ? currentUser.appointments.filter(
+        (appointment) => appointment.category === categorySearchQuery
+      )
+    : currentUser.appointments;
 
   const handleDeleteAccount = () => {
     const confirmation = window.confirm(
@@ -35,9 +43,25 @@ function Profile() {
   return (
     <div className="user-page-container">
       <h2>My Appointments</h2>
+      <div>
+        <label htmlFor="category-search">
+          Search By Category:{" "}
+          <select
+            id="category-search"
+            value={categorySearchQuery}
+            onChange={(e) => setCategorySearchQuery(e.target.value)}
+          >
+            <option value="">All Categories</option>
+            <option value="msc">MSC</option>
+            <option value="immunization">Immunization</option>
+            <option value="mtm">MTM</option>
+          </select>
+        </label>
+        <hr />
+      </div>
       <ul className="appointments-list">
         {currentUser && currentUser.appointments.length > 0 ? (
-          currentUser.appointments.map((appointment) => (
+          filteredAppointments.map((appointment) => (
             <li className="appointment-card" key={appointment.id}>
               <Link
                 to={`/appointments/${appointment.id}`}

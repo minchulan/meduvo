@@ -42,6 +42,10 @@ class PatientsController < ApplicationController
   end 
 end 
 
+# `.find` raises an ActiveRecord::RecordNotFound exception if there is no record ID in DB. To handle it, we must rescue from that exception.
+
+# `find_by` will return nil. 
+
 # ~ patients#show ~
 # `find_patient` method retrieves the patient based on the `params[:id]`. If the patient is not found, it does not handle the error directly because it raises an `ActiveRecord::RecordNotFound` exception. 
 

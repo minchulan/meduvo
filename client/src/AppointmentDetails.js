@@ -31,6 +31,8 @@ const AppointmentDetails = () => {
     return <div>Loading appointment details...</div>;
   }
 
+  console.log(appointment)
+
   return (
     <div className="appointment-details-container">
       <h2>Appointment Details</h2>
@@ -41,7 +43,10 @@ const AppointmentDetails = () => {
             onCancel={() => setIsEditing(false)}
           />
         ) : (
-          <>
+            <>
+            <h4>{appointment.patient.full_name}</h4>
+            <h5>{appointment.patient.dob}</h5>
+            <hr />
             <p>Category: {appointment.category}</p>
             <p>Name: {appointment.name}</p>
             <p>Date: {appointment.date}</p>

@@ -12,8 +12,6 @@ const PatientDetails = () => {
   const navigate = useNavigate();
   const { currentUser, patients, deletePatient, updatePatient, errors, setErrors } = useContext(UserContext);
 
-  console.log(currentUser)
-
   useEffect(() => {
     if (patients && patients.length > 0) {
       const currentPatient = patients.find((p) => p.id === parseInt(id));
@@ -114,7 +112,6 @@ const PatientDetails = () => {
           {/* Render a unique list of provider emails / users who own the appointment associated with patient */}
           <h2>Providers:</h2>
           <ul>
-            <b>Providers:</b>
             {patient.unique_provider_emails.length > 0 ? (
               patient.unique_provider_emails.map((email) => (
                 <li key={email}>

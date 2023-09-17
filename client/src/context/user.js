@@ -6,7 +6,6 @@ const UserContext = createContext();
 function UserProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [patients, setPatients] = useState([]);
-  const [uniqueProviderEmails, setUniqueProviderEmails] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [showForm, setShowForm] = useState(true);
   const [errors, setErrors] = useState([]);
@@ -313,7 +312,6 @@ function UserProvider({ children }) {
         showForm,
         fetchUserData,
         fetchPatients,
-        uniqueProviderEmails,
       }}
     >
       {children}
