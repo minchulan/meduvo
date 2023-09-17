@@ -201,13 +201,6 @@ function UserProvider({ children }) {
             appointments: [...currentUser.appointments, data],
           };
           setCurrentUser(updatedUser);
-          // Update uniqueProviderEmails state
-          const updatedUniqueProviderEmails = [
-            ...uniqueProviderEmails,
-            data.user.email,
-          ];
-          setUniqueProviderEmails(updatedUniqueProviderEmails);
-          console.log(updatedUniqueProviderEmails);
         });
       } else {
         resp.json().then((data) => {
@@ -247,7 +240,6 @@ function UserProvider({ children }) {
             return patient;
           });
           setPatients(updatedPatients);
-
           // Update currentUser to reflect the changes
           const updatedUser = {
             ...currentUser,
@@ -284,7 +276,6 @@ function UserProvider({ children }) {
             ),
           }))
         );
-
         // Update currentUser to remove the deleted appointment
         const updatedUser = {
           ...currentUser,

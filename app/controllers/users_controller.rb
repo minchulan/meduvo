@@ -2,6 +2,10 @@ class UsersController < ApplicationController
   before_action :find_user, only: [:show, :update, :destroy]
   skip_before_action :authorize_user, only: [:create]
 
+  def index 
+    users = User.all 
+  end 
+
   def show #get '/me'
     render json: @user, status: :ok 
   end

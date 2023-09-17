@@ -10,7 +10,9 @@ const PatientDetails = () => {
   const [isEditing, setIsEditing] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
-  const { patients, deletePatient, updatePatient, errors, setErrors } = useContext(UserContext);
+  const { currentUser, patients, deletePatient, updatePatient, errors, setErrors } = useContext(UserContext);
+
+  console.log(currentUser)
 
   useEffect(() => {
     if (patients && patients.length > 0) {
@@ -112,9 +114,18 @@ const PatientDetails = () => {
           {/* Render a unique list of provider emails / users who own the appointment associated with patient */}
           <h2>Providers:</h2>
           <ul>
-            {patient.unique_provider_emails.map((email, index) => (
-              <li key={index}>{email}</li>
-            ))}
+            <b>Providers:</b>
+            {patient.unique_provider_emails.length > 0 ? (
+              patient.unique_provider_emails.map((email) => (
+                <li key={email}>
+                  <div>
+                    <a href={`mailto:${email}`}>{email}</a>
+                  </div>
+                </li>
+              ))
+            ) : (
+              <li>N/A</li>
+            )}
           </ul>
           <br />
           <hr />

@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: appointments
-#
-#  id          :bigint           not null, primary key
-#  category    :string
-#  date        :date
-#  description :text
-#  location    :string
-#  name        :string
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  patient_id  :integer
-#  user_id     :integer
-#
 class Appointment < ApplicationRecord
   belongs_to :user
   belongs_to :patient 
@@ -24,3 +9,11 @@ class Appointment < ApplicationRecord
 end
 
 #With this default scope, every time you query the Appointment model, the records will be fetched in ascending order based on the date attribute. 
+
+# def user_email 
+#   self.user.email
+# end  
+
+# Custom method inside appointment serializer, add in the attribute :user_email 
+
+# Line 14: appointment must have user associated with it due to the associations set up in the models. 
