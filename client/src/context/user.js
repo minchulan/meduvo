@@ -182,7 +182,6 @@ function UserProvider({ children }) {
     }).then((resp) => {
       if (resp.ok) {
         resp.json().then((data) => {
-          console.log(data);
           // Update patient state
           const updatedPatients = patients.map((patient) => {
             if (patient.id === parseInt(id)) {
