@@ -7,4 +7,5 @@ class AppointmentSerializer < ActiveModel::Serializer
   def date 
     self.object.date.strftime('%m-%d-%Y')
   end 
+
 end

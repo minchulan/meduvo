@@ -12,7 +12,7 @@ const AppointmentCard = ({ appointment }) => {
         return <span className="category-mtm">MTM</span>;
       case "msc":
         return <span className="category-msc">MSC</span>;
-      case "immunization":
+      case "Immunization":
         return <span className="category-immunization">Immunization</span>;
       default:
         return <span className="category-common">{category}</span>;
@@ -35,7 +35,7 @@ const AppointmentCard = ({ appointment }) => {
     deleteAppointment(appointment.id);
   };
 
-  // Check if the current user is the owner of the appointment
+  // Check if the current user owns the appointment
   const isCurrentUser = appointment.user_id === currentUser.id;
 
   return (

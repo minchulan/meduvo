@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
-  include ActionController::Cookies #extended the middleware in our ApplicationController
+  include ActionController::Cookies
+
   rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity 
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found 
 
@@ -9,7 +10,7 @@ class ApplicationController < ActionController::API
     @current_user ||= User.find_by_id(session[:user_id])
   end
 
-  def authorize_user #checking to see if user is logged in only
+  def authorize_user
     render json: { errors: { User: "Not Authorized" } }, status: :unauthorized unless current_user
   end
 
@@ -23,33 +24,3 @@ class ApplicationController < ActionController::API
     render json: { errors: {error.model => "Not Found"} }, status: :not_found 
   end 
 end
-
-
-# ActiveRecord::RecordNotFound
-#ActiveRecord::RecordInvalid
-
-# errors are encapsulated as an array. set error state to an empty array in frontend.
-# `current_user` method: using find_by instead of find! to get that nil value 
-
-  # def render_unprocessable_entity(invalid)
-  #   errors_arr = invalid.record.errors.map{ |key,value| "#{key}" : "#{value}"}
-  #   render json: {errors: errors_arr}, status: :unprocessable_entity
-  # end 
-
-  #in frontend, can do setErrors(data.error) instead of setErrors([data.error])
-#render_unprocessable_entity method sends all of our errors to the frontend with status code 422 unprocessable entity. sends response with the errors that actually failed. handle the errors in our client.
-
-# 1) First implement a way to keep track of currently logged in user with method `current_user` - by using our user id from session hash ahd finding our user from the database. then caching it so we dont keep making calls to our database.
-# 2) Check to see if there is a current user with method `authorize_user`. If there is, we're good! If there is not, then send error message out saying user is not authorized. To actually implement and check this method, we need to also have the guard clause where we say here's where I want you to call this method .
-
-# think about: which parts of our app we don't want user access to unless they're logged in. 
-
-
-# parameter (error) lets us know which model errored out. 
-#`render_not_found`` takes a param and then we'll use that param to figure out which controller is failing. 
-
-# not preferred - do errors in serializer if going for backend 
-  # def render_unprocessable_entity(invalid)
-  #   errors_arr = invalid.record.errors.map{ |key, value| "#{key}: #{value}" }
-  #   render json: { errors: errors_arr }, status: :unprocessable_entity
-  # end

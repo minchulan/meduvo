@@ -114,7 +114,7 @@ const EditPatientForm = ({ patient, onUpdate, setIsEditing }) => {
               type="text"
               name="address"
               id="address"
-              value={formData.address}
+              value={formData.address || ""}
               onChange={handleChange}
               autoComplete="off"
             />
@@ -124,7 +124,7 @@ const EditPatientForm = ({ patient, onUpdate, setIsEditing }) => {
               type="text"
               name="notes"
               id="notes"
-              value={formData.notes}
+              value={formData.notes || ""}
               onChange={handleChange}
               autoComplete="off"
             />

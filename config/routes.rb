@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-
+  
   resources :appointments, only: [:destroy, :show] 
 
   resources :patients do 
@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   end
   
   resources :users, only: [:index, :update, :destroy]
+
   post '/signup', to: 'users#create'
 
   get '/me', to: 'users#show'

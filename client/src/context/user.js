@@ -194,7 +194,7 @@ function UserProvider({ children }) {
             return patient;
           });
           setPatients(updatedPatients);
-          // Update currentUser state
+          // Update currentUser state to reflect new appointment
           const updatedUser = {
             ...currentUser,
             appointments: [...currentUser.appointments, data],
@@ -320,13 +320,3 @@ function UserProvider({ children }) {
 }
 
 export { UserContext, UserProvider };
-
-  
-/*
-I.e. adding a new appointment 'add new patient' button. patients state lives in parent component. how can we update state in the parent component when functionality to add new patient lives in child component? 
-
-Pass up onAdd function to pass down a callback function from parent component.
-pass callback function in parent component. update state in parent, and pass that state down to any components that need it. 
-updates to state are tied to our component tree. where we are able to pass state is tied to our component tree. 
-
-*/

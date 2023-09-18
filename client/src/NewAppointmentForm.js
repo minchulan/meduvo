@@ -13,18 +13,20 @@ const initialAppointmentState = {
 const NewAppointmentForm = ({ onAddAppointment }) => {
   const [patient, setPatient] = useState(null);
   const { patients, errors, setErrors } = useContext(UserContext);
-  const [newAppointmentFormData, setNewAppointmentFormData] = useState(initialAppointmentState);
+  const [newAppointmentFormData, setNewAppointmentFormData] = useState(
+    initialAppointmentState
+  );
   const { patientId } = useParams();
   const navigate = useNavigate();
   const { name, category, location, date, description } =
     newAppointmentFormData;
-  
+
   useEffect(() => {
     if (patients.length > 0) {
-      const currentPatient = patients.find((patient) => (
-        patient.id === parseInt((patientId))
-      ))
-      setPatient(currentPatient)
+      const currentPatient = patients.find(
+        (patient) => patient.id === parseInt(patientId)
+      );
+      setPatient(currentPatient);
     }
   }, [patientId, patients]);
 
@@ -34,14 +36,12 @@ const NewAppointmentForm = ({ onAddAppointment }) => {
       ...newAppointmentFormData,
       patient_id: patientId,
     };
-
     onAddAppointment(patientId, appointmentData);
-
-    navigate(`/patients/${patientId}`)
+    navigate(`/patients/${patientId}`);
   };
 
   const handleChange = (e) => {
-    setErrors([]); 
+    setErrors([]);
     const key = e.target.id;
     setNewAppointmentFormData({
       ...newAppointmentFormData,
@@ -50,8 +50,8 @@ const NewAppointmentForm = ({ onAddAppointment }) => {
   };
 
   const handleCancelClick = () => {
-    navigate(`/patients/${patientId}`)
-  }
+    navigate(`/patients/${patientId}`);
+  };
 
   const ephemeralErrors = () => {
     if (errors && errors.length > 0) {

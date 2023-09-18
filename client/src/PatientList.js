@@ -244,7 +244,7 @@ const PatientList = () => {
           </button>
         </form>
       ) : (
-        // Conditionally render the "Add patient" button based on if admin
+        // Conditionally render the "Add patient" button based on if admin true.
         currentUser &&
         currentUser.admin && (
           <button
@@ -260,7 +260,6 @@ const PatientList = () => {
       )}
       <br />
       <br />
-      {/* Render successful confirmation message */}
       {!showError && showConfirmation && (
         <div
           className="confirmation-message"

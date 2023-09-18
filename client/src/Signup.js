@@ -101,9 +101,12 @@ const Signup = () => {
           {errors && errors.length > 0 && (
             <div className="error-container">
               <ul className="error-list">
-                {errors.map((error, index) => (
-                  <li key={index}>{error}</li>
-                ))}
+                {Array.isArray(errors) ? (
+                  // Render this block if `errors` is an array
+                  errors.map((error, index) => <li key={index}>{error}</li>)
+                ) : (
+                  <li>{errors}</li>
+                )}
               </ul>
             </div>
           )}
@@ -114,3 +117,8 @@ const Signup = () => {
 };
 
 export default Signup;
+
+/*
+Line 104: `Array.isArray()` is a built-in JavaScript function used to determine whether a given value is an array or not. It's useful when working with data of unknown types, ensures you're dealing with an array before performing any array-specific operations like `map`, `filter`, etc. 
+
+*/

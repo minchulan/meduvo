@@ -1,21 +1,26 @@
-import React, { useContext, useState } from "react";
+import React, { useContext,useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from "./context/user";
 
 function Profile() {
   const { currentUser, logout, setErrors } = useContext(UserContext);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const [categorySearchQuery, setCategorySearchQuery] = useState(""); // Initialize with an empty string
+  const [categorySearchQuery, setCategorySearchQuery] = useState("");
 
   const navigate = useNavigate();
 
   const goBack = () => navigate(-1);
 
-  const filteredAppointments = categorySearchQuery
-    ? currentUser.appointments.filter(
-        (appointment) => appointment.category === categorySearchQuery
-      )
-    : currentUser.appointments;
+  // Filter appointments when categorySearchQuery or currentUser.appointments change
+  const filteredAppointments = useMemo(() => {
+    if (!currentUser) return []; // Ensure currentUser is defined
+    const normalizedCategorySearchQuery = categorySearchQuery.toLowerCase(); // Normalize to lowercase
+    if (!normalizedCategorySearchQuery) return currentUser.appointments; // No filter
+    return currentUser.appointments.filter(
+      (appointment) =>
+        appointment.category.toLowerCase() === normalizedCategorySearchQuery
+    );
+  }, [categorySearchQuery, currentUser]);
 
   const handleDeleteAccount = () => {
     const confirmation = window.confirm(
@@ -53,7 +58,7 @@ function Profile() {
           >
             <option value="">All Categories</option>
             <option value="msc">MSC</option>
-            <option value="immunization">Immunization</option>
+            <option value="Immunization">Immunization</option>
             <option value="mtm">MTM</option>
           </select>
         </label>
@@ -61,6 +66,7 @@ function Profile() {
       </div>
       <ul className="appointments-list">
         {currentUser && currentUser.appointments.length > 0 ? (
+          // In the Profile component where you're mapping through appointments
           filteredAppointments.map((appointment) => (
             <li className="appointment-card" key={appointment.id}>
               <Link

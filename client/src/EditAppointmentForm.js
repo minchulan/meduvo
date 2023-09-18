@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-
 const EditAppointmentForm = ({ setIsEditing, appointment, onUpdateAppointment }) => {
   const [editedAppointment, setEditedAppointment] = useState(appointment);
 
@@ -52,7 +51,7 @@ const EditAppointmentForm = ({ setIsEditing, appointment, onUpdateAppointment })
             <option value="">All Categories</option>
             <option value="mtm">MTM</option>
             <option value="msc">MSC</option>
-            <option value="immunization">Immunization</option>
+            <option value="Immunization">Immunization</option>
           </select>
         </div>
         <div>

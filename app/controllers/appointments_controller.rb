@@ -5,7 +5,7 @@ class AppointmentsController < ApplicationController
   before_action :check_owner, only: [:update, :destroy]
 
   def index # get "/patients/:patient_id/appointments"
-    if params[:patient_id]
+    if params[:patient_id] 
       load_patient
       if @patient
         render json: @patient.appointments

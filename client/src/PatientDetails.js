@@ -3,6 +3,7 @@ import { useParams, useNavigate, NavLink } from "react-router-dom";
 import { UserContext } from "./context/user";
 import EditPatientForm from "./EditPatientForm";
 import AppointmentCard from "./AppointmentCard";
+import NotFound from "./NotFound";
 
 const PatientDetails = () => {
   const [patient, setPatient] = useState(null);
@@ -10,7 +11,7 @@ const PatientDetails = () => {
   const [isEditing, setIsEditing] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
-  const { currentUser, patients, deletePatient, updatePatient, errors, setErrors } = useContext(UserContext);
+  const { patients, deletePatient, updatePatient, errors, setErrors } = useContext(UserContext);
 
   useEffect(() => {
     if (patients && patients.length > 0) {
@@ -19,7 +20,7 @@ const PatientDetails = () => {
     }
   }, [id, patients]);
 
-  if (!patient) return <h2>Loading....</h2>;
+  if (!patient) return <NotFound />;
 
   const handleDeletePatient = () => {
     setConfirmDelete(true);
@@ -74,7 +75,7 @@ const PatientDetails = () => {
       ) : (
         <div>
           <h2>
-            {patient.first_name} {patient.last_name}
+              {patient.full_name}
           </h2>
           <h2>{patient.dob}</h2>
           <h3>Allergies: {patient.allergies}</h3>
@@ -109,7 +110,7 @@ const PatientDetails = () => {
           )}
           <br />
           <hr />
-          {/* Render a unique list of provider emails / users who own the appointment associated with patient */}
+          {/* Render a unique list of provider emails --> users who own the appointment associated with patient */}
           <h2>Providers:</h2>
           <ul>
             {patient.unique_provider_emails.length > 0 ? (
