@@ -18,7 +18,7 @@ const PatientDetails = () => {
       const currentPatient = patients.find((p) => p.id === parseInt(id));
       setPatient(currentPatient);
     }
-  }, [id, patients]);
+  }, [id, patients, setPatient]);
 
   if (!patient) return <NotFound />;
 
@@ -114,8 +114,8 @@ const PatientDetails = () => {
           <h2>Providers:</h2>
           <ul>
             {patient.unique_provider_emails.length > 0 ? (
-              patient.unique_provider_emails.map((email) => (
-                <li key={email}>
+              patient.unique_provider_emails.map((email, index) => (
+                <li key={index}>
                   <div>
                     <a href={`mailto:${email}`}>{email}</a>
                   </div>

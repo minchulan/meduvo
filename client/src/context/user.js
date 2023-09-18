@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const UserContext = createContext();
 
 function UserProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState({});
   const [patients, setPatients] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [showForm, setShowForm] = useState(true);
@@ -35,7 +35,7 @@ function UserProvider({ children }) {
   useEffect(() => {
     fetchUserData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setCurrentUser, setPatients]);
+  }, [setPatients]);
 
   // GET ALL PATIENTS
   const fetchPatients = () => {
@@ -188,6 +188,11 @@ function UserProvider({ children }) {
               return {
                 ...patient,
                 appointments: [...patient.appointments, data],
+                // Update unique_provider_emails with the new provider's email
+                unique_provider_emails: [
+                  ...patient.unique_provider_emails,
+                  data.provider_email,
+                ],
               };
             }
             return patient;
@@ -200,6 +205,7 @@ function UserProvider({ children }) {
           };
           setCurrentUser(updatedUser);
         });
+
       } else {
         resp.json().then((data) => {
           setErrors(
@@ -264,30 +270,43 @@ function UserProvider({ children }) {
   const deleteAppointment = (appointmentId) => {
     fetch(`/appointments/${appointmentId}`, {
       method: "DELETE",
-    }).then((res) => {
-      if (res.ok) {
-        setPatients((prevPatients) =>
-          prevPatients.map((patient) => ({
-            ...patient,
-            appointments: patient.appointments.filter(
+    })
+      .then((res) => {
+        if (res.ok) {
+          // Find the appointment that will be deleted
+          const deletedAppointment = currentUser.appointments.find(
+            (appointment) => appointment.id === appointmentId
+          );
+          // Update the patient's unique_provider_emails by removing the provider's email
+          const updatedPatients = patients.map((patient) => {
+            if (patient.id === deletedAppointment.patient_id) {
+              return {
+                ...patient,
+                appointments: patient.appointments.filter(
+                  (appointment) => appointment.id !== appointmentId
+                ),
+                unique_provider_emails: patient.unique_provider_emails.filter(
+                  (email) => email !== deletedAppointment.provider_email
+                ),
+              };
+            }
+            return patient;
+          });
+          setPatients(updatedPatients);
+          // Update currentUser state to remove the deleted appointment
+          const updatedUser = {
+            ...currentUser,
+            appointments: currentUser.appointments.filter(
               (appointment) => appointment.id !== appointmentId
             ),
-          }))
-        );
-        // Update currentUser to remove the deleted appointment
-        const updatedUser = {
-          ...currentUser,
-          appointments: currentUser.appointments.filter(
-            (appointment) => appointment.id !== appointmentId
-          ),
-        };
-        setCurrentUser(updatedUser);
-      } else {
-        res.json().then((data) => {
-          setErrors(data.errors);
-        });
-      }
-    });
+          };
+          setCurrentUser(updatedUser);
+        } else {
+          res.json().then((data) => {
+            setErrors(data.errors);
+          });
+        }
+      })
   };
 
   return (

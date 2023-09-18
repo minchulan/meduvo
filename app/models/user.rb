@@ -4,7 +4,7 @@ class User < ApplicationRecord
 
   has_secure_password
 
-  validates :email, presence: true, uniqueness: { message: "This email address is already in use." }
+  validates :email, presence: true, uniqueness: { message: " address is already in use." }
   validates :password, length: { minimum: 4, message: "must be greater than 4 characters" }, if: -> { new_record? || !password.nil? }
 end
 
