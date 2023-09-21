@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   
   resources :users, only: [:index, :update, :destroy]
 
+  get '/patient_appts/:n', to: 'patients#patient_appts'
+
   post '/signup', to: 'users#create'
 
   get '/me', to: 'users#show'

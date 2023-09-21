@@ -13,9 +13,9 @@ function Profile() {
 
   // Filter appointments when categorySearchQuery or currentUser.appointments change
   const filteredAppointments = useMemo(() => {
-    if (!currentUser) return []; // Ensure currentUser is defined
-    const normalizedCategorySearchQuery = categorySearchQuery.toLowerCase(); // Normalize to lowercase
-    if (!normalizedCategorySearchQuery) return currentUser.appointments; // No filter
+    if (!currentUser) return []; 
+    const normalizedCategorySearchQuery = categorySearchQuery.toLowerCase(); 
+    if (!normalizedCategorySearchQuery) return currentUser.appointments; 
     return currentUser.appointments.filter(
       (appointment) =>
         appointment.category.toLowerCase() === normalizedCategorySearchQuery
@@ -66,7 +66,6 @@ function Profile() {
       </div>
       <ul className="appointments-list">
         {currentUser && currentUser.appointments.length > 0 ? (
-          // In the Profile component where you're mapping through appointments
           filteredAppointments.map((appointment) => (
             <li className="appointment-card" key={appointment.id}>
               <Link
